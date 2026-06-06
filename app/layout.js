@@ -8,6 +8,7 @@ import { SITE } from '../lib/site';
 // you can swap to next/font/google with Tajawal + Reem_Kufi.
 
 export const metadata = {
+  <meta name="msvalidate.01" content="3E99ADC007E7015A2CCB2849B198E4E0" />
   metadataBase: new URL(SITE.url),
   title: {
     default: `${SITE.name} | مرجع صحة الأسنان والفم الموثوق`,
