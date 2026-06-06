@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Reem+Kufi:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-body: 'Tajawal', system-ui, sans-serif;
+    --font-display: 'Reem Kufi', serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-sand text-ink font-body;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* RTL is set on <html dir="rtl"> in layout */
+  h1, h2, h3, h4 {
+    @apply font-display text-ink;
+    line-height: 1.4;
+  }
+}
+
+@layer components {
+  /* ====== THE ANSWER BLOCK — highest-impact GEO element ====== */
+  /* Self-contained direct answer AI engines extract cleanly */
+  .answer-block {
+    @apply bg-mint border-r-4 border-teal rounded-lg p-5 md:p-6 my-6;
+    @apply text-lg leading-relaxed text-ink;
+  }
+  .answer-block strong { @apply text-teal-dark; }
+
+  /* ====== Article prose ====== */
+  .prose-ar {
+    @apply text-ink leading-loose;
+    font-size: 1.075rem;
+  }
+  .prose-ar p { @apply my-5; }
+  .prose-ar h2 {
+    @apply text-2xl md:text-3xl mt-12 mb-4 pb-2 border-b border-line;
+  }
+  .prose-ar h3 { @apply text-xl md:text-2xl mt-8 mb-3; }
+  .prose-ar ul { @apply my-5 pr-6 space-y-2; }
+  .prose-ar ul li { @apply relative; }
+  .prose-ar ul li::before {
+    content: '';
+    @apply absolute w-2 h-2 bg-coral rounded-full;
+    right: -1.25rem;
+    top: 0.7em;
+  }
+  .prose-ar a { @apply text-teal underline decoration-teal-light underline-offset-4; }
+  .prose-ar strong { @apply text-teal-dark font-bold; }
+
+  /* ====== FAQ ====== */
+  .faq-item {
+    @apply border-b border-line py-4;
+  }
+  .faq-q { @apply font-display text-lg text-ink mb-2; }
+
+  /* decorative tooth-grain texture for hero */
+  .grain {
+    background-image: radial-gradient(circle at 1px 1px, rgba(14,92,99,0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+}

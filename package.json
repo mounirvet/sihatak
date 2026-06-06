@@ -1,0 +1,25 @@
+{
+  "name": "sihatak-dental",
+  "version": "1.0.0",
+  "description": "صحتك - مرجع تثقيفي موثوق لصحة الأسنان والفم في الخليج العربي",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "gray-matter": "4.0.3",
+    "next": "^15.5.19",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remark": "15.0.1",
+    "remark-html": "16.0.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.19",
+    "postcss": "8.4.40",
+    "tailwindcss": "3.4.7"
+  }
+}
