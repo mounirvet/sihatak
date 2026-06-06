@@ -6,9 +6,9 @@ import { SITE } from '../lib/site';
 // NOTE: Fonts are loaded via CSS @import in globals.css (works everywhere,
 // including restricted build sandboxes). For best performance in production
 // you can swap to next/font/google with Tajawal + Reem_Kufi.
+  <meta name="msvalidate.01" content="3E99ADC007E7015A2CCB2849B198E4E0" />
 
 export const metadata = {
-  <meta name="msvalidate.01" content="3E99ADC007E7015A2CCB2849B198E4E0" />
   metadataBase: new URL(SITE.url),
   title: {
     default: `${SITE.name} | مرجع صحة الأسنان والفم الموثوق`,
@@ -16,6 +16,9 @@ export const metadata = {
   },
   description: SITE.description,
   alternates: { canonical: '/' },
+  verification: {
+    other: { 'msvalidate.01': '3E99ADC007E7015A2CCB2849B198E4E0' },
+  },
   openGraph: {
     type: 'website',
     locale: 'ar_AE',
