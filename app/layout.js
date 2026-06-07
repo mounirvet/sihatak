@@ -1,8 +1,12 @@
 import '../styles/globals.css';
+import Script from 'next/script';
 import { Tajawal, Reem_Kufi } from 'next/font/google';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { SITE } from '../lib/site';
+
+// Google Analytics 4 measurement ID
+const GA_ID = 'G-B1YP77CM1Z';
 
 // Fonts loaded via Next.js optimized font loader: self-hosted, preloaded,
 // and non-render-blocking. This eliminates the slow CSS @import and improves LCP.
@@ -79,6 +83,21 @@ export default function RootLayout({ children }) {
         <Header />
         <main>{children}</main>
         <Footer />
+
+        {/* Google Analytics 4 — loads after page is interactive so it doesn't
+            hurt Core Web Vitals / LCP. */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );

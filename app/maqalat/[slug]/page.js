@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
 import { getRelatedArticles } from '../../../lib/related';
 import { getPillarImage } from '../../../lib/pillarImages';
+import { getAuthoritativeSources } from '../../../lib/authorities';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
@@ -53,6 +54,9 @@ export default async function ArticlePage({ params }) {
 
   // Hero image for this article's pillar (null if none yet).
   const heroImage = getPillarImage(meta.pillar);
+
+  // Verified authoritative outbound sources for this pillar (trust signal).
+  const authSources = getAuthoritativeSources(meta.pillar);
 
   return (
     <article className="bg-sand">
@@ -110,6 +114,33 @@ export default async function ArticlePage({ params }) {
 
         {/* Sources */}
         <Sources items={meta.sources} />
+
+        {/* Authoritative external sources — trust-neighborhood signal.
+            Links to recognized health authorities (WHO, ADA, CDC). */}
+        {authSources.length > 0 && (
+          <div className="mt-8 bg-cream border border-line rounded-xl p-5">
+            <h2 className="text-base font-display text-ink mb-3">مصادر موثوقة للاستزادة</h2>
+            <ul className="space-y-2.5">
+              {authSources.map((s) => (
+                <li key={s.url} className="text-sm leading-relaxed">
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-teal hover:underline font-medium"
+                  >
+                    {s.name}
+                  </a>
+                  <span className="text-ink/45"> — {s.desc}</span>
+                  <span className="text-ink/30 block text-xs" dir="ltr">{s.nameEn}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-ink/35 text-xs mt-3">
+              روابط لمؤسسات صحية عالمية موثوقة للاطّلاع على مزيد من المعلومات.
+            </p>
+          </div>
+        )}
 
         {/* Internal links up + across */}
         {pillar && (
