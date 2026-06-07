@@ -1,8 +1,22 @@
 import { getReviewer } from '../lib/reviewers';
 
-// ===== Medical reviewer byline — visible trust signal =====
+// Format an ISO date (YYYY-MM-DD) as a readable Arabic date, e.g. "7 يونيو 2026".
+const AR_MONTHS = [
+  'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+  'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+];
+function formatArabicDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = String(iso).split('-').map((n) => parseInt(n, 10));
+  if (!y || !m || !d) return iso;
+  return `${d} ${AR_MONTHS[m - 1]} ${y}`;
+}
+
+// ===== Medical reviewer byline — visible trust + freshness signal =====
 export function ReviewerByline({ reviewerId, date, updated }) {
   const r = getReviewer(reviewerId);
+  const reviewedDate = updated || date;
+  const showPublished = date && updated && date !== updated;
   return (
     <div className="flex items-start gap-3 bg-cream border border-line rounded-lg p-4 my-6">
       <div className="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center text-teal shrink-0">
@@ -14,7 +28,13 @@ export function ReviewerByline({ reviewerId, date, updated }) {
         </div>
         <div className="text-ink/60">{r.credentials}</div>
         <div className="text-ink/50 mt-1 text-xs">
-          آخر مراجعة: {updated || date}
+          آخر مراجعة طبية:{' '}
+          <time dateTime={reviewedDate}>{formatArabicDate(reviewedDate)}</time>
+          {showPublished && (
+            <>
+              {' '}· نُشر في <time dateTime={date}>{formatArabicDate(date)}</time>
+            </>
+          )}
         </div>
       </div>
     </div>
