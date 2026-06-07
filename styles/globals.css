@@ -55,6 +55,29 @@
   .prose-ar a { @apply text-teal underline decoration-teal-light underline-offset-4; }
   .prose-ar strong { @apply text-teal-dark font-bold; }
 
+  /* ====== Tables (information-gain comparison tables) ====== */
+  .prose-ar table {
+    @apply w-full my-8 text-sm md:text-base border-collapse overflow-hidden rounded-xl;
+    box-shadow: 0 1px 3px rgba(11,32,39,0.08);
+  }
+  .prose-ar thead { @apply bg-teal text-cream; }
+  .prose-ar th {
+    @apply px-4 py-3 text-right font-display font-semibold;
+  }
+  .prose-ar td {
+    @apply px-4 py-3 border-t border-line align-top;
+  }
+  .prose-ar tbody tr:nth-child(even) { @apply bg-cream; }
+  .prose-ar tbody tr:nth-child(odd) { @apply bg-sand; }
+  .prose-ar table strong { @apply text-ink; }
+
+  /* ====== Blockquote callout (regional data / key facts) ====== */
+  .prose-ar blockquote {
+    @apply my-8 bg-mint/40 border-r-4 border-teal rounded-lg px-5 py-4 text-ink;
+  }
+  .prose-ar blockquote p { @apply my-2; }
+  .prose-ar blockquote em { @apply text-ink/50 text-sm not-italic; }
+
   /* ====== FAQ ====== */
   .faq-item {
     @apply border-b border-line py-4;
