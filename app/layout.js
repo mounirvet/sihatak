@@ -1,12 +1,24 @@
 import '../styles/globals.css';
+import { Tajawal, Reem_Kufi } from 'next/font/google';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { SITE } from '../lib/site';
 
-// NOTE: Fonts are loaded via CSS @import in globals.css (works everywhere,
-// including restricted build sandboxes). For best performance in production
-// you can swap to next/font/google with Tajawal + Reem_Kufi.
-  <meta name="msvalidate.01" content="3E99ADC007E7015A2CCB2849B198E4E0" />
+// Fonts loaded via Next.js optimized font loader: self-hosted, preloaded,
+// and non-render-blocking. This eliminates the slow CSS @import and improves LCP.
+const tajawal = Tajawal({
+  subsets: ['arabic'],
+  weight: ['400', '500', '700'],
+  variable: '--font-body',
+  display: 'swap',
+});
+
+const reemKufi = Reem_Kufi({
+  subsets: ['arabic'],
+  weight: ['500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
 
 export const metadata = {
   metadataBase: new URL(SITE.url),
@@ -16,9 +28,6 @@ export const metadata = {
   },
   description: SITE.description,
   alternates: { canonical: '/' },
-  verification: {
-    other: { 'msvalidate.01': '3E99ADC007E7015A2CCB2849B198E4E0' },
-  },
   openGraph: {
     type: 'website',
     locale: 'ar_AE',
@@ -62,10 +71,8 @@ function SiteSchema() {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" className={`${tajawal.variable} ${reemKufi.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <SiteSchema />
       </head>
       <body>
