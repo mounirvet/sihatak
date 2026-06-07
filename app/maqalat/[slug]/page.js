@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
 import { getRelatedArticles } from '../../../lib/related';
+import { getPillarImage } from '../../../lib/pillarImages';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
@@ -50,9 +51,27 @@ export default async function ArticlePage({ params }) {
   // Map pillar slug -> title for labeling related cards.
   const pillarTitle = (s) => (PILLARS.find((p) => p.slug === s) || {}).title || '';
 
+  // Hero image for this article's pillar (null if none yet).
+  const heroImage = getPillarImage(meta.pillar);
+
   return (
     <article className="bg-sand">
       <ArticleSchema slug={slug} meta={meta} />
+
+      {/* Hero image — relevant pillar photo, also aids SEO/AI multimodal */}
+      {heroImage && (
+        <div className="w-full max-w-5xl mx-auto px-5 pt-8">
+          <img
+            src={heroImage}
+            alt={pillar ? pillar.title : meta.title}
+            width={1280}
+            height={720}
+            className="w-full h-auto rounded-2xl shadow-card object-cover"
+            style={{ aspectRatio: '16 / 9' }}
+            loading="eager"
+          />
+        </div>
+      )}
 
       <div className="max-w-prose mx-auto px-5 py-12">
         {/* Breadcrumb — helps both users and crawlers map the hierarchy */}
