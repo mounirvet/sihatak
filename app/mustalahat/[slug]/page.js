@@ -22,12 +22,16 @@ export async function generateMetadata({ params }) {
 
 function TermSchema({ t }) {
   const pageUrl = `${SITE.url}/mustalahat/${t.slug}/`;
+  // alternateName carries every name the entity is known by (Arabic + English),
+  // which helps search engines + AI connect this entity across languages and
+  // to the global knowledge graph.
+  const altNames = Array.from(new Set([t.termEn, ...(t.synonyms || [])].filter(Boolean)));
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'DefinedTerm',
     '@id': `${pageUrl}#term`,
     name: t.term,
-    alternateName: t.termEn,
+    alternateName: altNames,
     description: t.definition,
     url: pageUrl,
     inDefinedTermSet: `${SITE.url}/mustalahat/#glossary`,
@@ -71,7 +75,21 @@ export default async function GlossaryTermPage({ params }) {
         <h1 className="text-3xl md:text-4xl font-display font-bold text-ink leading-tight mb-1">
           {t.term}
         </h1>
-        {t.termEn && <p className="text-ink/45 text-lg mb-6" dir="ltr">{t.termEn}</p>}
+        {t.termEn && <p className="text-ink/45 text-lg mb-4" dir="ltr">{t.termEn}</p>}
+
+        {/* Synonyms / alternate names (Arabic + English) */}
+        {t.synonyms && t.synonyms.length > 0 && (
+          <div className="mb-6">
+            <span className="text-sm text-ink/50 ml-2">يُعرف أيضاً بـ:</span>
+            <span className="inline-flex flex-wrap gap-2 align-middle">
+              {t.synonyms.map((s) => (
+                <span key={s} className="text-sm text-ink/70 bg-sand border border-line rounded-full px-3 py-0.5">
+                  {s}
+                </span>
+              ))}
+            </span>
+          </div>
+        )}
 
         {/* Answer-first definition — the AI-citable block */}
         <div className="bg-mint/40 border-r-4 border-teal rounded-lg p-5 mb-8">
