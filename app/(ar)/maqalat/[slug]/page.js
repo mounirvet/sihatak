@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
-import { getRelatedArticles } from '../../../lib/related';
-import { getPillarImage } from '../../../lib/pillarImages';
-import { getAuthoritativeSources } from '../../../lib/authorities';
-import { PILLARS } from '../../../lib/site';
-import ArticleSchema from '../../../components/ArticleSchema';
-import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
-import { ArticleCard } from '../../../components/Cards';
+import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../../lib/content';
+import { getRelatedArticles } from '../../../../lib/related';
+import { getPillarImage } from '../../../../lib/pillarImages';
+import { getAuthoritativeSources } from '../../../../lib/authorities';
+import { PILLARS } from '../../../../lib/site';
+import ArticleSchema from '../../../../components/ArticleSchema';
+import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../../components/ArticleParts';
+import { ArticleCard } from '../../../../components/Cards';
 
 export async function generateStaticParams() {
   return getArticleSlugs().map((slug) => ({ slug }));

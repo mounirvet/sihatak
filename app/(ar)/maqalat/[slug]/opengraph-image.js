@@ -1,9 +1,9 @@
 import { ImageResponse } from 'next/og';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { getArticle, getArticleSlugs } from '../../../lib/content';
-import { getPillarImage } from '../../../lib/pillarImages';
-import { SITE, PILLARS } from '../../../lib/site';
+import { getArticle, getArticleSlugs } from '../../../../lib/content';
+import { getPillarImage } from '../../../../lib/pillarImages';
+import { SITE, PILLARS } from '../../../../lib/site';
 
 export const dynamic = 'force-static';
 export const size = { width: 1200, height: 630 };

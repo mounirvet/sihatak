@@ -1,5 +1,5 @@
-import { getAllArticles } from '../../lib/content';
-import { ArticleCard } from '../../components/Cards';
+import { getAllArticles } from '../../../lib/content';
+import { ArticleCard } from '../../../components/Cards';
 
 export const metadata = {
   title: 'جميع المقالات',

@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { GLOSSARY } from '../../lib/glossary';
-import { SITE } from '../../lib/site';
+import { GLOSSARY } from '../../../lib/glossary';
+import { SITE } from '../../../lib/site';
 
 export const metadata = {
   title: 'مصطلحات طب الأسنان — قاموس مبسّط',

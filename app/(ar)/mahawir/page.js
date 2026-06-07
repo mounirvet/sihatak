@@ -1,5 +1,5 @@
-import { PILLARS } from '../../lib/site';
-import { PillarCard } from '../../components/Cards';
+import { PILLARS } from '../../../lib/site';
+import { PillarCard } from '../../../components/Cards';
 
 export const metadata = {
   title: 'المحاور الرئيسية',
