@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticle, getArticleSlugs, getArticlesByPillar } from '../../../lib/content';
+import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
+import { getRelatedArticles } from '../../../lib/related';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
@@ -34,10 +35,20 @@ export default async function ArticlePage({ params }) {
   const { slug, meta, contentHtml } = article;
   const pillar = PILLARS.find((p) => p.slug === meta.pillar);
 
-  // sibling articles for internal linking (topical authority graph)
+  // All articles, used for both sibling links and the cross-pillar related engine.
+  const allArticles = await getAllArticles();
+
+  // Same-pillar siblings (deepens cluster authority).
   const siblings = pillar
-    ? (await getArticlesByPillar(pillar.slug)).filter((a) => a.slug !== slug).slice(0, 3)
+    ? allArticles.filter((a) => a.meta.pillar === pillar.slug && a.slug !== slug).slice(0, 3)
     : [];
+
+  // Cross-pillar related articles, scored by topical relevance — builds the
+  // site-wide internal-linking graph that Google + AI engines reward.
+  const related = getRelatedArticles(article, allArticles, 4);
+
+  // Map pillar slug -> title for labeling related cards.
+  const pillarTitle = (s) => (PILLARS.find((p) => p.slug === s) || {}).title || '';
 
   return (
     <article className="bg-sand">
@@ -91,13 +102,40 @@ export default async function ArticlePage({ params }) {
         )}
       </div>
 
-      {/* Related articles — sibling cluster links */}
+      {/* Same-pillar siblings — deepens cluster authority */}
       {siblings.length > 0 && (
-        <section className="max-w-6xl mx-auto px-5 pb-16">
-          <h2 className="text-2xl font-display text-ink mb-6">مقالات ذات صلة</h2>
+        <section className="max-w-6xl mx-auto px-5 pb-8">
+          <h2 className="text-2xl font-display text-ink mb-6">
+            من نفس المحور{pillar ? `: ${pillar.title}` : ''}
+          </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {siblings.map((a) => (
               <ArticleCard key={a.slug} article={a} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Cross-pillar related — builds the site-wide topical graph */}
+      {related.length > 0 && (
+        <section className="max-w-6xl mx-auto px-5 pb-16">
+          <h2 className="text-2xl font-display text-ink mb-6">قد يهمّك أيضاً</h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((a) => (
+              <Link
+                key={a.slug}
+                href={`/maqalat/${a.slug}/`}
+                className="block bg-cream border border-line rounded-xl p-5 shadow-card hover:shadow-soft hover:border-teal-light transition-all group"
+              >
+                {pillarTitle(a.meta.pillar) && (
+                  <span className="inline-block text-xs text-teal-dark bg-mint rounded-full px-2.5 py-0.5 mb-2">
+                    {pillarTitle(a.meta.pillar)}
+                  </span>
+                )}
+                <h3 className="font-display text-base text-ink group-hover:text-teal leading-snug">
+                  {a.meta.title}
+                </h3>
+              </Link>
             ))}
           </div>
         </section>
