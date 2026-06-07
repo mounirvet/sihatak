@@ -1,11 +1,12 @@
 import { SITE, PILLARS } from '../lib/site';
 import { getArticleSlugs } from '../lib/content';
+import { getGlossarySlugs } from '../lib/glossary';
 
 export const dynamic = 'force-static';
 
 export default function sitemap() {
   const now = new Date();
-  const staticPages = ['', '/mahawir', '/maqalat', '/man-nahnu', '/man-nahnu/siyasat-al-tahrir', '/man-nahnu/al-masadir'];
+  const staticPages = ['', '/mahawir', '/maqalat', '/mustalahat', '/man-nahnu', '/man-nahnu/siyasat-al-tahrir', '/man-nahnu/al-masadir'];
   const pages = staticPages.map((p) => ({
     url: `${SITE.url}${p}/`,
     lastModified: now,
@@ -18,5 +19,9 @@ export default function sitemap() {
     url: `${SITE.url}/maqalat/${slug}/`,
     lastModified: now,
   }));
-  return [...pages, ...pillarPages, ...articlePages];
+  const glossaryPages = getGlossarySlugs().map((slug) => ({
+    url: `${SITE.url}/mustalahat/${slug}/`,
+    lastModified: now,
+  }));
+  return [...pages, ...pillarPages, ...articlePages, ...glossaryPages];
 }
