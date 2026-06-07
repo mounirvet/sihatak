@@ -3,7 +3,7 @@ import { ArticleCard } from '../../components/Cards';
 
 export const metadata = {
   title: 'جميع المقالات',
-  description: 'تصفّح جميع مقالات صحتك التثقيفية عن صحة الأسنان والفم.',
+  description: 'تصفّح جميع مقالات أسنانك التثقيفية عن صحة الأسنان والفم.',
 };
 
 export default async function ArticlesIndex() {

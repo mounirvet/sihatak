@@ -3,7 +3,7 @@ import { SITE } from '../../lib/site';
 
 export const metadata = {
   title: 'من نحن',
-  description: 'صحتك منصة تثقيفية مستقلة لصحة الأسنان والفم في الخليج العربي، يراجع محتواها أطباء أسنان مختصون.',
+  description: 'أسنانك منصة تثقيفية مستقلة لصحة الأسنان والفم في الخليج العربي، يراجع محتواها أطباء أسنان مختصون.',
 };
 
 export default function AboutPage() {
