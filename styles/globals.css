@@ -55,19 +55,6 @@
   .prose-ar a { @apply text-teal underline decoration-teal-light underline-offset-4; }
   .prose-ar strong { @apply text-teal-dark font-bold; }
 
-  /* ====== English content overrides (LTR) ====== */
-  .prose-en {
-    direction: ltr;
-    text-align: left;
-  }
-  .prose-en ul { @apply pr-0 pl-6; }
-  .prose-en ul li::before {
-    right: auto;
-    left: -1.25rem;
-  }
-  .prose-en table { direction: ltr; }
-  .prose-en th, .prose-en td { text-align: left; }
-
   /* ====== Tables (information-gain comparison tables) ====== */
   .prose-ar table {
     @apply w-full my-8 text-sm md:text-base border-collapse overflow-hidden rounded-xl;

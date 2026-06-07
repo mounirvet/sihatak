@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SITE } from '../../../lib/site';
+import { SITE } from '../../lib/site';
 
 export const metadata = {
   title: 'من نحن',

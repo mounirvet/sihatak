@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getGlossaryTerm, getGlossarySlugs, GLOSSARY } from '../../../../lib/glossary';
-import { getAllArticles } from '../../../../lib/content';
-import { SITE, PILLARS } from '../../../../lib/site';
+import { getGlossaryTerm, getGlossarySlugs, GLOSSARY } from '../../../lib/glossary';
+import { getAllArticles } from '../../../lib/content';
+import { SITE, PILLARS } from '../../../lib/site';
 
 export function generateStaticParams() {
   return getGlossarySlugs().map((slug) => ({ slug }));

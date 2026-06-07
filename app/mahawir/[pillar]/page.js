@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { PILLARS, SITE } from '../../../../lib/site';
-import { getArticlesByPillar } from '../../../../lib/content';
-import { ArticleCard } from '../../../../components/Cards';
+import { PILLARS, SITE } from '../../../lib/site';
+import { getArticlesByPillar } from '../../../lib/content';
+import { ArticleCard } from '../../../components/Cards';
 
 export function generateStaticParams() {
   return PILLARS.map((p) => ({ pillar: p.slug }));

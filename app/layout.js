@@ -1,6 +1,8 @@
 import '../styles/globals.css';
 import Script from 'next/script';
 import { Tajawal, Reem_Kufi } from 'next/font/google';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import { SITE } from '../lib/site';
 
 // Google Analytics 4 measurement ID
@@ -78,7 +80,9 @@ export default function RootLayout({ children }) {
         <SiteSchema />
       </head>
       <body>
-        {children}
+        <Header />
+        <main>{children}</main>
+        <Footer />
 
         {/* Google Analytics 4 — loads after page is interactive so it doesn't
             hurt Core Web Vitals / LCP. */}

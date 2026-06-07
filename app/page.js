@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { SITE, PILLARS } from '../../lib/site';
-import { getAllArticles } from '../../lib/content';
-import { PillarCard, ArticleCard } from '../../components/Cards';
+import { SITE, PILLARS } from '../lib/site';
+import { getAllArticles } from '../lib/content';
+import { PillarCard, ArticleCard } from '../components/Cards';
 
 export default async function HomePage() {
   const articles = await getAllArticles();
