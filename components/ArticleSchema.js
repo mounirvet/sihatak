@@ -1,13 +1,14 @@
-import { SITE } from '../lib/site';
+import { SITE, PILLARS } from '../lib/site';
 import { getReviewer } from '../lib/reviewers';
 
 // This component emits the structured data that makes AI engines and Google
 // understand: what the page is, that it's medical, who wrote/reviewed it,
-// and the FAQ. This is the single most important technical GEO element.
+// the FAQ, and the breadcrumb hierarchy. This is the core GEO element.
 
 export default function ArticleSchema({ slug, meta }) {
   const reviewer = getReviewer(meta.reviewer);
   const pageUrl = `${SITE.url}/maqalat/${slug}/`;
+  const pillar = PILLARS.find((p) => p.slug === meta.pillar);
 
   const graph = [
     {
@@ -48,6 +49,31 @@ export default function ArticleSchema({ slug, meta }) {
       })),
     });
   }
+
+  // BreadcrumbList — tells Google the page hierarchy (Home → Pillar → Article),
+  // and can produce breadcrumb trails in search results instead of a raw URL.
+  const breadcrumbItems = [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: `${SITE.url}/` },
+  ];
+  if (pillar) {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: pillar.title,
+      item: `${SITE.url}/mahawir/${pillar.slug}/`,
+    });
+  }
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: breadcrumbItems.length + 1,
+    name: meta.title,
+    item: pageUrl,
+  });
+  graph.push({
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumb`,
+    itemListElement: breadcrumbItems,
+  });
 
   const schema = { '@context': 'https://schema.org', '@graph': graph };
 
