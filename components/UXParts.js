@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { IconShare, IconWhatsApp, IconX, IconLink, IconCheck, IconArrowUp, IconChevronDown } from './Icons';
 
 // ===== Share row =====
 // Lets readers share an article via WhatsApp (huge in the GCC), X/Twitter, or a
@@ -50,20 +51,20 @@ export function ShareRow({ title }) {
 
         {canNativeShare && (
           <button type="button" onClick={nativeShare} className={btn} aria-label="مشاركة">
-            <span aria-hidden="true">↗</span> مشاركة
+            <IconShare className="w-4 h-4" /> مشاركة
           </button>
         )}
 
         <a href={waHref} target="_blank" rel="noopener noreferrer" className={btn} aria-label="مشاركة عبر واتساب">
-          <span aria-hidden="true">🟢</span> واتساب
+          <IconWhatsApp className="w-4 h-4" /> واتساب
         </a>
 
         <a href={xHref} target="_blank" rel="noopener noreferrer" className={btn} aria-label="مشاركة عبر إكس">
-          <span aria-hidden="true">𝕏</span> إكس
+          <IconX className="w-4 h-4" /> إكس
         </a>
 
         <button type="button" onClick={copyLink} className={btn} aria-label="نسخ الرابط">
-          <span aria-hidden="true">{copied ? '✓' : '🔗'}</span>
+          {copied ? <IconCheck className="w-4 h-4" /> : <IconLink className="w-4 h-4" />}
           {copied ? 'تم النسخ' : 'نسخ الرابط'}
         </button>
       </div>
@@ -85,10 +86,9 @@ export function TableOfContents({ items }) {
       <details open className="group">
         <summary className="flex items-center justify-between cursor-pointer list-none font-display text-ink text-base">
           <span className="flex items-center gap-2">
-            <span className="text-teal" aria-hidden="true">☰</span>
             في هذا المقال
           </span>
-          <span className="text-ink/40 text-sm group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+          <IconChevronDown className="w-4 h-4 text-ink/40 group-open:rotate-180 transition-transform" />
         </summary>
         <ol className="mt-4 space-y-2 pr-1">
           {items.map((it, i) => (
@@ -160,7 +160,7 @@ export function ReadingProgress() {
           showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
         }`}
       >
-        <span aria-hidden="true">↑</span>
+        <IconArrowUp className="w-5 h-5" />
       </button>
     </>
   );

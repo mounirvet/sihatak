@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { SITE, NAV } from '../lib/site';
+import { IconSearch, IconMenu, IconClose } from './Icons';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function Header() {
             aria-label="بحث"
             className="ml-1 w-9 h-9 flex items-center justify-center text-ink hover:text-teal rounded-md hover:bg-mint/50 transition-colors"
           >
-            <span aria-hidden="true" className="text-lg">🔍</span>
+            <IconSearch className="w-5 h-5" />
           </Link>
         </nav>
 
@@ -48,7 +49,7 @@ export default function Header() {
             className="w-10 h-10 flex items-center justify-center text-ink hover:text-teal rounded-md hover:bg-mint/50 transition-colors"
             onClick={() => setOpen(false)}
           >
-            <span aria-hidden="true" className="text-lg">🔍</span>
+            <IconSearch className="w-5 h-5" />
           </Link>
           <button
             type="button"
@@ -57,7 +58,7 @@ export default function Header() {
             aria-expanded={open}
             className="w-10 h-10 flex items-center justify-center text-ink hover:text-teal rounded-md hover:bg-mint/50 transition-colors"
           >
-            <span aria-hidden="true" className="text-xl">{open ? '✕' : '☰'}</span>
+            {open ? <IconClose className="w-6 h-6" /> : <IconMenu className="w-6 h-6" />}
           </button>
         </div>
       </div>

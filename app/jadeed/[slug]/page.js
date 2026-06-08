@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getInsight, getInsightSlugs } from '../../../lib/insights';
 import { SITE } from '../../../lib/site';
 import { getReviewer } from '../../../lib/reviewers';
+import { IconCheck } from '../../../components/Icons';
 
 const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 function formatArabicDate(iso) {
@@ -78,7 +79,7 @@ export default async function InsightPage({ params }) {
         {/* Reviewer line */}
         {reviewer && (
           <div className="flex items-center gap-2 text-sm text-ink/55 mb-6 pb-6 border-b border-line">
-            <span className="text-teal">✓</span>
+            <IconCheck className="w-4 h-4 text-teal" />
             <span>راجعه طبياً {reviewer.name}</span>
           </div>
         )}

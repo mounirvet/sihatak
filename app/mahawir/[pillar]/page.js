@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { PILLARS, SITE } from '../../../lib/site';
 import { getArticlesByPillar } from '../../../lib/content';
 import { ArticleCard } from '../../../components/Cards';
+import { PILLAR_ICONS } from '../../../components/Icons';
 
 export function generateStaticParams() {
   return PILLARS.map((p) => ({ pillar: p.slug }));
@@ -45,7 +46,9 @@ export default async function PillarPage({ params }) {
             <span className="mx-2">/</span>
             <span className="text-ink/70">{pillar.title}</span>
           </nav>
-          <div className="text-5xl mb-4">{pillar.icon}</div>
+          {(() => { const Icon = PILLAR_ICONS[pillar.slug]; return Icon ? (
+            <div className="w-14 h-14 rounded-2xl bg-mint text-teal flex items-center justify-center mb-5"><Icon className="w-7 h-7" /></div>
+          ) : null; })()}
           <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-3">{pillar.title}</h1>
           <p className="text-lg text-ink/70 max-w-2xl leading-relaxed">{pillar.summary}</p>
         </div>

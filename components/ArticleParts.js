@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getReviewer } from '../lib/reviewers';
+import { IconCheck } from './Icons';
 
 // Format an ISO date (YYYY-MM-DD) as a readable Arabic date, e.g. "7 يونيو 2026".
 const AR_MONTHS = [
@@ -21,7 +22,7 @@ export function ReviewerByline({ reviewerId, date, updated }) {
   return (
     <div className="flex items-start gap-3 bg-cream border border-line rounded-lg p-4 my-6">
       <div className="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center text-teal shrink-0">
-        ✓
+        <IconCheck className="w-5 h-5" />
       </div>
       <div className="text-sm">
         <div className="text-ink">

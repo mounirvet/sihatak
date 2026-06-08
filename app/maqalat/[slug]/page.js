@@ -8,6 +8,7 @@ import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
 import { TableOfContents, ReadingProgress, ShareRow } from '../../../components/UXParts';
+import { IconClock } from '../../../components/Icons';
 import { ArticleCard } from '../../../components/Cards';
 
 export async function generateStaticParams() {
@@ -107,8 +108,8 @@ export default async function ArticlePage({ params }) {
         </h1>
 
         {/* Reading time — a small orientation cue for the reader */}
-        <p className="text-sm text-ink/45 mb-2 print:hidden">
-          <span aria-hidden="true">🕑</span> وقت القراءة: نحو {readingMinutes} دقيقة
+        <p className="flex items-center gap-1.5 text-sm text-ink/45 mb-2 print:hidden">
+          <IconClock className="w-4 h-4" /> وقت القراءة: نحو {readingMinutes} دقيقة
         </p>
 
         {/* Answer block — placed immediately, what AI extracts */}
