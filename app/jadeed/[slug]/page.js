@@ -5,7 +5,7 @@ import { getAllArticles } from '../../../lib/content';
 import { getRelatedArticles } from '../../../lib/related';
 import { SITE, PILLARS } from '../../../lib/site';
 import InsightSchema from '../../../components/InsightSchema';
-import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
+import { ReviewerByline, AnswerBlock, KeyTakeaways, FAQ, Sources } from '../../../components/ArticleParts';
 import { TableOfContents, ReadingProgress, ShareRow } from '../../../components/UXParts';
 
 const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
@@ -91,6 +91,9 @@ export default async function InsightPage({ params }) {
         {!meta.answer && meta.excerpt && (
           <p className="text-lg text-ink/75 leading-relaxed mb-6">{meta.excerpt}</p>
         )}
+
+        {/* Key takeaways — scannable, AI-extractable summary bullets */}
+        <KeyTakeaways items={meta.takeaways} />
 
         {/* Visible medical reviewer trust signal */}
         {meta.reviewer && (
