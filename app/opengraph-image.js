@@ -31,7 +31,7 @@ export default function OGImage() {
         }}
       >
         <div style={{ fontSize: 120, fontWeight: 700, marginBottom: 20 }}>{SITE.name}</div>
-        <div style={{ fontSize: 40, color: '#D9EBE9', maxWidth: 900 }}>
+        <div style={{ fontSize: 40, color: '#D9EBE9', maxWidth: 900, direction: 'rtl', textAlign: 'center', whiteSpace: 'pre-wrap' }}>
           مرجع موثوق لصحة الأسنان والفم — يراجعه أطباء مختصون
         </div>
       </div>
