@@ -42,6 +42,10 @@ export default function AboutPage() {
         <Link href="/man-nahnu/al-fariq-al-tibbi/" className="text-teal hover:underline">الفريق الطبي ←</Link>
         <Link href="/man-nahnu/siyasat-al-tahrir/" className="text-teal hover:underline">سياسة التحرير والمراجعة الطبية ←</Link>
         <Link href="/man-nahnu/al-masadir/" className="text-teal hover:underline">مصادرنا العلمية ←</Link>
+        <Link href="/man-nahnu/ittasil-bina/" className="text-teal hover:underline">اتصل بنا ←</Link>
+        <Link href="/man-nahnu/siyasat-al-khususiyya/" className="text-teal hover:underline">سياسة الخصوصية ←</Link>
+        <Link href="/man-nahnu/shurut-al-istikhdam/" className="text-teal hover:underline">شروط الاستخدام ←</Link>
+        <Link href="/man-nahnu/ikhla-al-masuliyya/" className="text-teal hover:underline">إخلاء المسؤولية الطبية ←</Link>
       </div>
     </div>
   );
