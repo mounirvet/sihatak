@@ -7,6 +7,7 @@ import { getAuthoritativeSources } from '../../../lib/authorities';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
+import { TableOfContents, ReadingProgress } from '../../../components/UXParts';
 import { ArticleCard } from '../../../components/Cards';
 
 export async function generateStaticParams() {
@@ -34,7 +35,7 @@ export default async function ArticlePage({ params }) {
   } catch {
     notFound();
   }
-  const { slug, meta, contentHtml } = article;
+  const { slug, meta, contentHtml, toc } = article;
   const pillar = PILLARS.find((p) => p.slug === meta.pillar);
 
   // All articles, used for both sibling links and the cross-pillar related engine.
@@ -49,6 +50,14 @@ export default async function ArticlePage({ params }) {
   // site-wide internal-linking graph that Google + AI engines reward.
   const related = getRelatedArticles(article, allArticles, 4);
 
+  // "Read next" — the single strongest next step for the reader. Prefer the top
+  // related article; fall back to the first sibling. Keeps readers moving
+  // through the site (better engagement + internal link flow).
+  const nextRead = related[0] || siblings[0] || null;
+  // Avoid repeating the next-read pick in the grids below.
+  const relatedRest = related.filter((a) => !nextRead || a.slug !== nextRead.slug);
+  const siblingsRest = siblings.filter((a) => !nextRead || a.slug !== nextRead.slug).slice(0, 3);
+
   // Map pillar slug -> title for labeling related cards.
   const pillarTitle = (s) => (PILLARS.find((p) => p.slug === s) || {}).title || '';
 
@@ -61,6 +70,7 @@ export default async function ArticlePage({ params }) {
   return (
     <article className="bg-sand">
       <ArticleSchema slug={slug} meta={meta} />
+      <ReadingProgress />
 
       {/* Hero image — relevant pillar photo, also aids SEO/AI multimodal */}
       {heroImage && (
@@ -105,6 +115,9 @@ export default async function ArticlePage({ params }) {
 
         {/* Visible medical reviewer trust signal */}
         <ReviewerByline reviewerId={meta.reviewer} date={meta.date} updated={meta.updated} />
+
+        {/* Table of contents — jump-links built from the article's headings */}
+        <TableOfContents items={toc} />
 
         {/* Body */}
         <div className="prose-ar" dangerouslySetInnerHTML={{ __html: contentHtml }} />
@@ -152,14 +165,32 @@ export default async function ArticlePage({ params }) {
         )}
       </div>
 
+      {/* Read next — a single strong next step to keep the reader engaged */}
+      {nextRead && (
+        <section className="max-w-6xl mx-auto px-5 pt-4 pb-2">
+          <Link
+            href={`/maqalat/${nextRead.slug}/`}
+            className="flex items-center gap-4 bg-teal/5 border border-teal-light/40 rounded-2xl p-5 hover:bg-teal/10 hover:border-teal-light transition-all group"
+          >
+            <span className="shrink-0 w-12 h-12 rounded-full bg-teal text-white flex items-center justify-center text-xl" aria-hidden="true">←</span>
+            <span>
+              <span className="block text-xs text-teal-dark font-medium mb-1">اقرأ بعد ذلك</span>
+              <span className="block font-display text-lg text-ink group-hover:text-teal leading-snug">
+                {nextRead.meta.title}
+              </span>
+            </span>
+          </Link>
+        </section>
+      )}
+
       {/* Same-pillar siblings — deepens cluster authority */}
-      {siblings.length > 0 && (
-        <section className="max-w-6xl mx-auto px-5 pb-8">
+      {siblingsRest.length > 0 && (
+        <section className="max-w-6xl mx-auto px-5 pb-8 pt-6">
           <h2 className="text-2xl font-display text-ink mb-6">
             من نفس المحور{pillar ? `: ${pillar.title}` : ''}
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {siblings.map((a) => (
+            {siblingsRest.map((a) => (
               <ArticleCard key={a.slug} article={a} />
             ))}
           </div>
@@ -167,11 +198,11 @@ export default async function ArticlePage({ params }) {
       )}
 
       {/* Cross-pillar related — builds the site-wide topical graph */}
-      {related.length > 0 && (
+      {relatedRest.length > 0 && (
         <section className="max-w-6xl mx-auto px-5 pb-16">
           <h2 className="text-2xl font-display text-ink mb-6">قد يهمّك أيضاً</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {related.map((a) => (
+            {relatedRest.map((a) => (
               <Link
                 key={a.slug}
                 href={`/maqalat/${a.slug}/`}

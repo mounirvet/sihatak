@@ -23,6 +23,13 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/bahth/"
+            aria-label="بحث"
+            className="ml-1 w-9 h-9 flex items-center justify-center text-ink hover:text-teal rounded-md hover:bg-mint/50 transition-colors"
+          >
+            <span aria-hidden="true" className="text-lg">🔍</span>
+          </Link>
         </nav>
       </div>
     </header>
