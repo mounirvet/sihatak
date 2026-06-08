@@ -7,7 +7,7 @@ import { getPillarImage, getArticleImage } from '../../../lib/pillarImages';
 import { getAuthoritativeSources } from '../../../lib/authorities';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
-import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
+import { ReviewerByline, AnswerBlock, KeyTakeaways, FAQ, Sources } from '../../../components/ArticleParts';
 import { TableOfContents, ReadingProgress, ShareRow } from '../../../components/UXParts';
 import { IconClock } from '../../../components/Icons';
 import { ArticleCard } from '../../../components/Cards';
@@ -123,6 +123,10 @@ export default async function ArticlePage({ params }) {
             <p dangerouslySetInnerHTML={{ __html: meta.answer }} />
           </AnswerBlock>
         )}
+
+        {/* Key takeaways — scannable bullet summary; high-value extractable
+            content for AI answer engines. Renders only when provided. */}
+        <KeyTakeaways items={meta.takeaways} />
 
         {/* Visible medical reviewer trust signal */}
         <ReviewerByline reviewerId={meta.reviewer} date={meta.date} updated={meta.updated} />

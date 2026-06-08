@@ -58,6 +58,27 @@ export function AnswerBlock({ children }) {
   );
 }
 
+// ===== Key takeaways — a scannable bullet summary near the top of long
+// articles. These short, self-contained points are exactly the chunks that
+// AI answer engines and skimming readers extract, complementing the prose
+// answer block above. Renders only when takeaways are provided.
+export function KeyTakeaways({ items }) {
+  if (!Array.isArray(items) || items.length === 0) return null;
+  return (
+    <section
+      aria-label="أبرز النقاط"
+      className="my-6 bg-mint/30 border border-mint rounded-xl p-5"
+    >
+      <h2 className="text-base font-display text-ink mb-3">أبرز النقاط</h2>
+      <ul className="space-y-2 text-ink/85 text-sm leading-relaxed list-disc pr-5 mb-0">
+        {items.map((t, i) => (
+          <li key={i} dangerouslySetInnerHTML={{ __html: t }} />
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 // ===== FAQ section — mirrors the FAQPage schema =====
 export function FAQ({ items }) {
   if (!items || !items.length) return null;
