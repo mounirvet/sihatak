@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
 import { getAllInsights } from '../../../lib/insights';
 import { getRelatedArticles } from '../../../lib/related';
-import { getPillarImage } from '../../../lib/pillarImages';
+import { getPillarImage, getArticleImage } from '../../../lib/pillarImages';
 import { getAuthoritativeSources } from '../../../lib/authorities';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
@@ -68,7 +68,7 @@ export default async function ArticlePage({ params }) {
   const hrefFor = (item) => (item.kind === 'insight' ? `/jadeed/${item.slug}/` : `/maqalat/${item.slug}/`);
 
   // Hero image for this article's pillar (null if none yet).
-  const heroImage = getPillarImage(meta.pillar);
+  const heroImage = getArticleImage(slug, meta);
 
   // Verified authoritative outbound sources for this pillar (trust signal).
   const authSources = getAuthoritativeSources(meta.pillar);
@@ -83,7 +83,7 @@ export default async function ArticlePage({ params }) {
         <div className="w-full max-w-5xl mx-auto px-5 pt-8">
           <img
             src={heroImage}
-            alt={pillar ? pillar.title : meta.title}
+            alt={meta.title}
             width={1280}
             height={720}
             className="w-full h-auto rounded-2xl shadow-card object-cover"
