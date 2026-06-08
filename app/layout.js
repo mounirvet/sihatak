@@ -52,8 +52,15 @@ function SiteSchema() {
         name: SITE.name,
         url: SITE.url,
         description: SITE.description,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${SITE.url}/logo.png`,
+          width: 512,
+          height: 512,
+        },
         knowsLanguage: ['ar', 'en'],
         areaServed: ['AE', 'SA', 'KW', 'QA', 'BH', 'OM'],
+        sameAs: [],
       },
       {
         '@type': 'WebSite',
