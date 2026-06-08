@@ -23,11 +23,25 @@ export default function ArticleSchema({ slug, meta }) {
       dateModified: meta.updated || meta.date,
       isPartOf: { '@id': `${SITE.url}/#website` },
       publisher: { '@id': `${SITE.url}/#organization` },
-      // reviewedBy is a strong medical-trust signal
+      // reviewedBy is a strong medical-trust signal. Linking to a real entity
+      // page with credentials is what makes it verifiable (key for YMYL E-E-A-T).
       reviewedBy: {
         '@type': 'Person',
-        name: reviewer.name,
-        jobTitle: reviewer.credentials,
+        name: reviewer.nameEn || reviewer.name,
+        alternateName: reviewer.name,
+        url: `${SITE.url}${reviewer.url || '/man-nahnu/al-fariq-al-tibbi/'}`,
+        jobTitle: reviewer.specialtyEn || reviewer.credentials,
+        ...(reviewer.university ? {
+          alumniOf: { '@type': 'CollegeOrUniversity', name: reviewer.university },
+        } : {}),
+        ...(reviewer.degree ? {
+          hasCredential: {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'degree',
+            name: reviewer.degree,
+          },
+        } : {}),
+        ...(reviewer.sameAs && reviewer.sameAs.length ? { sameAs: reviewer.sameAs } : {}),
       },
       lastReviewed: meta.updated || meta.date,
       audience: {

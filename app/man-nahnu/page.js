@@ -38,7 +38,8 @@ export default function AboutPage() {
         قرارات أفضل لصحتك.
       </p>
 
-      <div className="mt-10 flex gap-4 text-sm not-prose">
+      <div className="mt-10 flex gap-4 text-sm not-prose flex-wrap">
+        <Link href="/man-nahnu/al-fariq-al-tibbi/" className="text-teal hover:underline">الفريق الطبي ←</Link>
         <Link href="/man-nahnu/siyasat-al-tahrir/" className="text-teal hover:underline">سياسة التحرير والمراجعة الطبية ←</Link>
         <Link href="/man-nahnu/al-masadir/" className="text-teal hover:underline">مصادرنا العلمية ←</Link>
       </div>

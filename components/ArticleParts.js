@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getReviewer } from '../lib/reviewers';
 
 // Format an ISO date (YYYY-MM-DD) as a readable Arabic date, e.g. "7 يونيو 2026".
@@ -24,7 +25,10 @@ export function ReviewerByline({ reviewerId, date, updated }) {
       </div>
       <div className="text-sm">
         <div className="text-ink">
-          راجَعَه طبياً <strong className="text-teal-dark">{r.name}</strong>
+          راجَعَه طبياً{' '}
+          <Link href={r.url || '/man-nahnu/al-fariq-al-tibbi/'} className="text-teal-dark font-bold hover:underline">
+            {r.name}
+          </Link>
         </div>
         <div className="text-ink/60">{r.credentials}</div>
         <div className="text-ink/50 mt-1 text-xs">

@@ -7,7 +7,7 @@ export const dynamic = 'force-static';
 
 export default function sitemap() {
   const now = new Date();
-  const staticPages = ['', '/mahawir', '/maqalat', '/jadeed', '/mustalahat', '/man-nahnu', '/man-nahnu/siyasat-al-tahrir', '/man-nahnu/al-masadir'];
+  const staticPages = ['', '/mahawir', '/maqalat', '/jadeed', '/mustalahat', '/man-nahnu', '/man-nahnu/al-fariq-al-tibbi', '/man-nahnu/siyasat-al-tahrir', '/man-nahnu/al-masadir'];
   const pages = staticPages.map((p) => ({
     url: `${SITE.url}${p}/`,
     lastModified: now,
