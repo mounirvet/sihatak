@@ -1,26 +1,23 @@
 import '../styles/globals.css';
-import Script from 'next/script';
 import { Tajawal, Reem_Kufi } from 'next/font/google';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import CookieConsent from '../components/CookieConsent';
 import { SITE } from '../lib/site';
-
-// Google Analytics 4 measurement ID
-const GA_ID = 'G-B1YP77CM1Z';
 
 // Fonts loaded via Next.js optimized font loader: self-hosted, preloaded,
 // and non-render-blocking. This eliminates the slow CSS @import and improves LCP.
 const tajawal = Tajawal({
-  subsets: ['arabic'],
+  subsets: ['arabic', 'latin'],
   weight: ['400', '500', '700'],
-  variable: '--font-body',
+  variable: '--font-tajawal',
   display: 'swap',
 });
 
 const reemKufi = Reem_Kufi({
-  subsets: ['arabic'],
-  weight: ['500', '600', '700'],
-  variable: '--font-display',
+  subsets: ['arabic', 'latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-reem',
   display: 'swap',
 });
 
@@ -38,11 +35,6 @@ export const metadata = {
     siteName: SITE.name,
     title: `${SITE.name} | مرجع صحة الأسنان والفم الموثوق`,
     description: SITE.description,
-    images: ['/og-default.png'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['/og-default.png'],
   },
 };
 
@@ -57,15 +49,8 @@ function SiteSchema() {
         name: SITE.name,
         url: SITE.url,
         description: SITE.description,
-        logo: {
-          '@type': 'ImageObject',
-          url: `${SITE.url}/logo.png`,
-          width: 512,
-          height: 512,
-        },
         knowsLanguage: ['ar', 'en'],
         areaServed: ['AE', 'SA', 'KW', 'QA', 'BH', 'OM'],
-        sameAs: [],
       },
       {
         '@type': 'WebSite',
@@ -96,20 +81,8 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
 
-        {/* Google Analytics 4 — loads after page is interactive so it doesn't
-            hurt Core Web Vitals / LCP. */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_ID}');
-          `}
-        </Script>
+        {/* Cookie consent — loads Google Analytics ONLY after the user accepts. */}
+        <CookieConsent />
       </body>
     </html>
   );
