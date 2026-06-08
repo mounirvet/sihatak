@@ -168,6 +168,20 @@ export function IconImplant({ className = 'w-7 h-7' }) {
   );
 }
 
+export function IconBraces({ className = 'w-7 h-7' }) {
+  // Orthodontics: a bracket/arch wire across teeth
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden="true">
+      <path d="M4 9h16" />
+      <path d="M7 9v2.5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9" />
+      <path d="M9 13.5V16M12 13.5V16M15 13.5V16" />
+      <circle cx="9" cy="9" r="0.6" />
+      <circle cx="12" cy="9" r="0.6" />
+      <circle cx="15" cy="9" r="0.6" />
+    </svg>
+  );
+}
+
 // Map pillar slug -> icon component, used by PillarCard.
 export const PILLAR_ICONS = {
   'amrad-al-litha': IconTooth,
@@ -176,4 +190,5 @@ export const PILLAR_ICONS = {
   'tabyid-al-asnan': IconSparkle,
   'al-inaya-al-yawmiyya': IconBrush,
   'ziraat-al-asnan': IconImplant,
+  'taqwim-al-asnan': IconBraces,
 };

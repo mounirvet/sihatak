@@ -1,6 +1,6 @@
 ---
 title: "تقويم الأسنان للكبار: الشفّاف أم المعدني؟ وما الذي يحدّد التكلفة؟"
-pillar: "tasawwus-al-asnan"
+pillar: "taqwim-al-asnan"
 reviewer: "dr-placeholder"
 date: "2026-06-08"
 updated: "2026-06-08"

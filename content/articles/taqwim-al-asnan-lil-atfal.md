@@ -1,6 +1,6 @@
 ---
 title: "تقويم الأسنان للأطفال: متى يحتاجه طفلي؟"
-pillar: "asnan-al-atfal"
+pillar: "taqwim-al-asnan"
 reviewer: "dr-placeholder"
 date: "2026-06-07"
 updated: "2026-06-07"
