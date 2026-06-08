@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
+import { getAllInsights } from '../../../lib/insights';
 import { getRelatedArticles } from '../../../lib/related';
 import { getPillarImage } from '../../../lib/pillarImages';
 import { getAuthoritativeSources } from '../../../lib/authorities';
@@ -47,9 +48,11 @@ export default async function ArticlePage({ params }) {
     ? allArticles.filter((a) => a.meta.pillar === pillar.slug && a.slug !== slug).slice(0, 3)
     : [];
 
-  // Cross-pillar related articles, scored by topical relevance — builds the
-  // site-wide internal-linking graph that Google + AI engines reward.
-  const related = getRelatedArticles(article, allArticles, 4);
+  // Cross-pillar related, scored by topical relevance — now also includes
+  // insights, so evergreen articles can surface and link into the "الجديد"
+  // hubs (and the link graph runs both directions, not just outward).
+  const allInsights = await getAllInsights();
+  const related = getRelatedArticles(article, [...allArticles, ...allInsights], 4);
 
   // "Read next" — the single strongest next step for the reader. Prefer the top
   // related article; fall back to the first sibling. Keeps readers moving
@@ -61,6 +64,8 @@ export default async function ArticlePage({ params }) {
 
   // Map pillar slug -> title for labeling related cards.
   const pillarTitle = (s) => (PILLARS.find((p) => p.slug === s) || {}).title || '';
+  // Build the correct href for a related item, which may be an article or an insight.
+  const hrefFor = (item) => (item.kind === 'insight' ? `/jadeed/${item.slug}/` : `/maqalat/${item.slug}/`);
 
   // Hero image for this article's pillar (null if none yet).
   const heroImage = getPillarImage(meta.pillar);
@@ -178,7 +183,7 @@ export default async function ArticlePage({ params }) {
       {nextRead && (
         <section className="max-w-6xl mx-auto px-5 pt-4 pb-2 print:hidden">
           <Link
-            href={`/maqalat/${nextRead.slug}/`}
+            href={hrefFor(nextRead)}
             className="flex items-center gap-4 bg-teal/5 border border-teal-light/40 rounded-2xl p-5 hover:bg-teal/10 hover:border-teal-light transition-all group"
           >
             <span className="shrink-0 w-12 h-12 rounded-full bg-teal text-white flex items-center justify-center text-xl" aria-hidden="true">←</span>
@@ -213,14 +218,20 @@ export default async function ArticlePage({ params }) {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {relatedRest.map((a) => (
               <Link
-                key={a.slug}
-                href={`/maqalat/${a.slug}/`}
+                key={`${a.kind || 'article'}:${a.slug}`}
+                href={hrefFor(a)}
                 className="block bg-cream border border-line rounded-xl p-5 shadow-card hover:shadow-soft hover:border-teal-light transition-all group"
               >
-                {pillarTitle(a.meta.pillar) && (
-                  <span className="inline-block text-xs text-teal-dark bg-mint rounded-full px-2.5 py-0.5 mb-2">
-                    {pillarTitle(a.meta.pillar)}
+                {a.kind === 'insight' ? (
+                  <span className="inline-block text-xs text-coral bg-coral/10 rounded-full px-2.5 py-0.5 mb-2">
+                    الجديد
                   </span>
+                ) : (
+                  pillarTitle(a.meta.pillar) && (
+                    <span className="inline-block text-xs text-teal-dark bg-mint rounded-full px-2.5 py-0.5 mb-2">
+                      {pillarTitle(a.meta.pillar)}
+                    </span>
+                  )
                 )}
                 <h3 className="font-display text-base text-ink group-hover:text-teal leading-snug">
                   {a.meta.title}
