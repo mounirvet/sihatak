@@ -38,6 +38,11 @@ export const metadata = {
     siteName: SITE.name,
     title: `${SITE.name} | مرجع صحة الأسنان والفم الموثوق`,
     description: SITE.description,
+    images: ['/og-default.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og-default.png'],
   },
 };
 
