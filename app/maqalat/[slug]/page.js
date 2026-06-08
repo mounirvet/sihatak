@@ -7,7 +7,7 @@ import { getAuthoritativeSources } from '../../../lib/authorities';
 import { PILLARS } from '../../../lib/site';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, FAQ, Sources } from '../../../components/ArticleParts';
-import { TableOfContents, ReadingProgress } from '../../../components/UXParts';
+import { TableOfContents, ReadingProgress, ShareRow } from '../../../components/UXParts';
 import { ArticleCard } from '../../../components/Cards';
 
 export async function generateStaticParams() {
@@ -35,7 +35,7 @@ export default async function ArticlePage({ params }) {
   } catch {
     notFound();
   }
-  const { slug, meta, contentHtml, toc } = article;
+  const { slug, meta, contentHtml, toc, readingMinutes } = article;
   const pillar = PILLARS.find((p) => p.slug === meta.pillar);
 
   // All articles, used for both sibling links and the cross-pillar related engine.
@@ -106,6 +106,11 @@ export default async function ArticlePage({ params }) {
           {meta.title}
         </h1>
 
+        {/* Reading time — a small orientation cue for the reader */}
+        <p className="text-sm text-ink/45 mb-2 print:hidden">
+          <span aria-hidden="true">🕑</span> وقت القراءة: نحو {readingMinutes} دقيقة
+        </p>
+
         {/* Answer block — placed immediately, what AI extracts */}
         {meta.answer && (
           <AnswerBlock>
@@ -121,6 +126,9 @@ export default async function ArticlePage({ params }) {
 
         {/* Body */}
         <div className="prose-ar" dangerouslySetInnerHTML={{ __html: contentHtml }} />
+
+        {/* Share row — WhatsApp / X / copy link (privacy-friendly) */}
+        <ShareRow title={meta.title} />
 
         {/* FAQ — mirrors FAQPage schema */}
         <FAQ items={meta.faq} />
@@ -167,7 +175,7 @@ export default async function ArticlePage({ params }) {
 
       {/* Read next — a single strong next step to keep the reader engaged */}
       {nextRead && (
-        <section className="max-w-6xl mx-auto px-5 pt-4 pb-2">
+        <section className="max-w-6xl mx-auto px-5 pt-4 pb-2 print:hidden">
           <Link
             href={`/maqalat/${nextRead.slug}/`}
             className="flex items-center gap-4 bg-teal/5 border border-teal-light/40 rounded-2xl p-5 hover:bg-teal/10 hover:border-teal-light transition-all group"
@@ -185,7 +193,7 @@ export default async function ArticlePage({ params }) {
 
       {/* Same-pillar siblings — deepens cluster authority */}
       {siblingsRest.length > 0 && (
-        <section className="max-w-6xl mx-auto px-5 pb-8 pt-6">
+        <section className="max-w-6xl mx-auto px-5 pb-8 pt-6 print:hidden">
           <h2 className="text-2xl font-display text-ink mb-6">
             من نفس المحور{pillar ? `: ${pillar.title}` : ''}
           </h2>
@@ -199,7 +207,7 @@ export default async function ArticlePage({ params }) {
 
       {/* Cross-pillar related — builds the site-wide topical graph */}
       {relatedRest.length > 0 && (
-        <section className="max-w-6xl mx-auto px-5 pb-16">
+        <section className="max-w-6xl mx-auto px-5 pb-16 print:hidden">
           <h2 className="text-2xl font-display text-ink mb-6">قد يهمّك أيضاً</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {relatedRest.map((a) => (

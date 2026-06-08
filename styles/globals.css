@@ -104,3 +104,20 @@
     background-size: 22px 22px;
   }
 }
+
+/* ====== Print / save-as-PDF friendly ====== */
+/* Health readers often print or save articles. Hide site chrome and keep a
+   clean, legible article + sources. Pairs with `print:hidden` utility classes
+   on interactive elements (progress bar, share row, TOC, back-to-top, grids). */
+@media print {
+  header, footer, nav { display: none !important; }
+  .print\:hidden { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .bg-sand, .bg-cream, .bg-mint, .bg-teal\/5 { background: #fff !important; }
+  .prose-ar { max-width: 100% !important; font-size: 12pt; }
+  .prose-ar a { color: #000 !important; text-decoration: underline; }
+  /* show full URLs for in-text links so a printout is self-contained */
+  .prose-ar a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555; }
+  .shadow-card, .shadow-soft { box-shadow: none !important; }
+  img { max-width: 100% !important; }
+}
