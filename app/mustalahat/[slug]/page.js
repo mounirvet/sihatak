@@ -41,6 +41,23 @@ function TermSchema({ t }) {
   );
 }
 
+// BreadcrumbList schema — mirrors the visual breadcrumb so search engines
+// can show the page's position in the site hierarchy.
+function BreadcrumbSchema({ t }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'المصطلحات', item: `${SITE.url}/mustalahat/` },
+      { '@type': 'ListItem', position: 3, name: t.term, item: `${SITE.url}/mustalahat/${t.slug}/` },
+    ],
+  };
+  return (
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  );
+}
+
 export default async function GlossaryTermPage({ params }) {
   const t = getGlossaryTerm(params.slug);
   if (!t) notFound();
@@ -61,6 +78,7 @@ export default async function GlossaryTermPage({ params }) {
   return (
     <div className="bg-sand">
       <TermSchema t={t} />
+      <BreadcrumbSchema t={t} />
       <div className="max-w-prose mx-auto px-5 py-12">
         {/* Breadcrumb */}
         <nav className="text-sm text-ink/50 mb-6 flex items-center gap-2 flex-wrap">
