@@ -98,24 +98,32 @@ export function FAQ({ items }) {
 }
 
 // ===== Sources — cite authoritative bodies (WHO, AAPD...) =====
+// Supports BOTH a plain string ("ADA — Implants") and an object
+// ({ title, url, publisher }). All current content stores plain strings,
+// so the string branch is what makes the المصادر العلمية list show text.
 export function Sources({ items }) {
   if (!items || !items.length) return null;
   return (
     <section className="mt-12 bg-cream border border-line rounded-lg p-5">
       <h2 className="text-lg font-display mb-3 text-ink">المصادر العلمية</h2>
       <ol className="space-y-2 text-sm text-ink/70 list-decimal pr-5">
-        {items.map((s, i) => (
-          <li key={i}>
-            {s.url ? (
-              <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:text-teal underline underline-offset-2">
-                {s.title}
-              </a>
-            ) : (
-              s.title
-            )}
-            {s.publisher && <span className="text-ink/50"> — {s.publisher}</span>}
-          </li>
-        ))}
+        {items.map((s, i) => {
+          if (typeof s === 'string') {
+            return <li key={i}>{s}</li>;
+          }
+          return (
+            <li key={i}>
+              {s.url ? (
+                <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:text-teal underline underline-offset-2">
+                  {s.title}
+                </a>
+              ) : (
+                s.title
+              )}
+              {s.publisher && <span className="text-ink/50"> — {s.publisher}</span>}
+            </li>
+          );
+        })}
       </ol>
     </section>
   );
