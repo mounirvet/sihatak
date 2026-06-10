@@ -130,7 +130,7 @@ export default async function HomePage() {
               <span className="inline-block text-xs font-medium text-mint/90 bg-teal/30 rounded-full px-3 py-1 mb-4">
                 الجديد في طب الأسنان
               </span>
-              <h2 className="text-2xl md:text-3xl font-display mb-3 leading-snug">{latestInsight.meta.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-display mb-3 leading-snug text-cream">{latestInsight.meta.title}</h2>
               <p className="text-cream/70 leading-relaxed line-clamp-2 mb-5 max-w-xl">
                 {latestInsight.meta.excerpt || ''}
               </p>
