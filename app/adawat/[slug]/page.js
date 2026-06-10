@@ -90,15 +90,13 @@ export default async function ToolCategoryPage({ params }) {
                 <h3 className="font-display text-lg text-ink mb-1">{p.name}</h3>
                 {p.why && <p className="text-sm text-ink/70 leading-relaxed mb-3">{p.why}</p>}
                 <div className="flex items-center gap-3 flex-wrap">
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="nofollow sponsored noopener"
+                  <Link
+                    href={`/adawat/muntaj/${p.slug}/`}
                     className="inline-block bg-teal text-cream rounded-full px-5 py-2 text-sm hover:bg-teal-dark transition-colors"
                   >
                     عرض المنتج
-                  </a>
-                  {p.priceNote && <span className="text-xs text-ink/50">{p.priceNote}</span>}
+                  </Link>
+                  {p.price && <span className="text-xs text-ink/50">{p.price} {p.priceCurrency || 'AED'}</span>}
                 </div>
               </div>
             ))}
