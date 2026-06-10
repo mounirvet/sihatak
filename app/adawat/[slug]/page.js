@@ -14,16 +14,16 @@ export async function generateMetadata({ params }) {
   const c = getToolCategory(params.slug);
   if (!c) return {};
   return {
-    title: `${c.title} — كيف تختار + توصيات | أسنانك`,
+    title: `${c.title} — كيف تختار + مقارنة وتوصيات | أسنانك`,
     description: c.intro.slice(0, 155),
     alternates: { canonical: `/adawat/${params.slug}/` },
   };
 }
 
-// Honest ItemList of recommended products — NOT Review/AggregateRating.
+// Honest ItemList — NOT Review/AggregateRating. Plus FAQ schema from howToChoose-derived Q&A.
 function CategorySchema({ c }) {
   const pageUrl = `${SITE.url}/adawat/${c.slug}/`;
-  const schema = {
+  const itemList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: c.title,
@@ -32,9 +32,30 @@ function CategorySchema({ c }) {
       '@type': 'ListItem',
       position: i + 1,
       name: p.name,
+      url: `${SITE.url}/adawat/muntaj/${p.slug}/`,
     })),
   };
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+    />
+  );
+}
+
+// Collect the union of spec labels across products for the comparison table columns.
+function specColumns(products) {
+  const seen = [];
+  products.forEach((p) =>
+    (p.specs || []).forEach((s) => {
+      if (!seen.includes(s.label)) seen.push(s.label);
+    })
+  );
+  return seen.slice(0, 5); // keep table readable
+}
+function specValue(p, label) {
+  const hit = (p.specs || []).find((s) => s.label === label);
+  return hit ? hit.value : '—';
 }
 
 export default async function ToolCategoryPage({ params }) {
@@ -49,6 +70,19 @@ export default async function ToolCategoryPage({ params }) {
   const relatedTerms = (c.relatedTerms || [])
     .map((slug) => GLOSSARY.find((g) => g.slug === slug))
     .filter(Boolean);
+
+  const realProducts = c.products.filter((p) => !p.name.includes('PLACEHOLDER'));
+  const cols = specColumns(realProducts.length ? realProducts : c.products);
+
+  // Decision helper: gather distinct bestFor tags -> product(s)
+  const tagMap = {};
+  (realProducts.length ? realProducts : c.products).forEach((p) => {
+    (p.bestFor || []).forEach((t) => {
+      if (t.includes('PLACEHOLDER')) return;
+      (tagMap[t] = tagMap[t] || []).push(p);
+    });
+  });
+  const decisionTags = Object.keys(tagMap).slice(0, 8);
 
   return (
     <div className="bg-sand">
@@ -68,10 +102,26 @@ export default async function ToolCategoryPage({ params }) {
 
         <AffiliateDisclosure />
 
+        {/* Honest trust band — our differentiator is honesty, surfaced */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
+          <div className="bg-mint/40 rounded-lg p-3 text-center">
+            <div className="text-sm font-display text-teal-dark">محايد بين الماركات</div>
+            <div className="text-xs text-ink/60 mt-1">معايير لا إعلانات</div>
+          </div>
+          <div className="bg-mint/40 rounded-lg p-3 text-center">
+            <div className="text-sm font-display text-teal-dark">نذكر الحدود بصراحة</div>
+            <div className="text-xs text-ink/60 mt-1">لا وعود مبالغ فيها</div>
+          </div>
+          <div className="bg-mint/40 rounded-lg p-3 text-center">
+            <div className="text-sm font-display text-teal-dark">مراجَع طبياً</div>
+            <div className="text-xs text-ink/60 mt-1">واستشر طبيبك دائماً</div>
+          </div>
+        </div>
+
         {/* Intro / educational framing */}
         <p className="text-ink/80 text-lg leading-relaxed mb-8">{c.intro}</p>
 
-        {/* How to choose — the trust-earning value before any product */}
+        {/* How to choose */}
         <div className="mb-10">
           <h2 className="text-xl font-display text-ink mb-3">كيف تختار؟</h2>
           <ul className="space-y-2 text-ink/80 leading-relaxed list-disc pr-5">
@@ -81,7 +131,77 @@ export default async function ToolCategoryPage({ params }) {
           </ul>
         </div>
 
-        {/* Recommended products */}
+        {/* Decision helper — "which is right for you?" */}
+        {decisionTags.length > 0 && (
+          <div className="mb-10 bg-cream border border-line rounded-xl p-5">
+            <h2 className="text-xl font-display text-ink mb-1">أيّها يناسبك؟</h2>
+            <p className="text-sm text-ink/60 mb-4">اختر ما يصفك لترى الأنسب لحالتك:</p>
+            <div className="space-y-3">
+              {decisionTags.map((tag) => (
+                <div key={tag} className="flex items-start gap-3 flex-wrap">
+                  <span className="text-sm text-teal-dark bg-mint rounded-full px-3 py-1 shrink-0">
+                    {tag}
+                  </span>
+                  <span className="text-sm text-ink/70">
+                    {tagMap[tag].map((p, idx) => (
+                      <span key={p.slug}>
+                        {idx > 0 && '، '}
+                        <Link href={`/adawat/muntaj/${p.slug}/`} className="text-teal hover:underline">
+                          {p.name}
+                        </Link>
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-ink/45 mt-4">
+              اقتراحات إرشادية بحسب معايير الاختيار، لا تشخيص. لحالتك الخاصة استشر طبيب الأسنان.
+            </p>
+          </div>
+        )}
+
+        {/* Comparison table */}
+        {realProducts.length > 1 && cols.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-xl font-display text-ink mb-3">مقارنة سريعة</h2>
+            <div className="overflow-x-auto -mx-5 px-5">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b-2 border-teal/30">
+                    <th className="text-right py-2 pl-3 font-display text-ink">المنتج</th>
+                    {cols.map((col) => (
+                      <th key={col} className="text-right py-2 px-3 font-display text-ink/80 whitespace-nowrap">
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {realProducts.map((p) => (
+                    <tr key={p.slug} className="border-b border-line">
+                      <td className="py-2 pl-3">
+                        <Link href={`/adawat/muntaj/${p.slug}/`} className="text-teal hover:underline">
+                          {p.name}
+                        </Link>
+                      </td>
+                      {cols.map((col) => (
+                        <td key={col} className="py-2 px-3 text-ink/70 whitespace-nowrap">
+                          {specValue(p, col)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-ink/45 mt-2">
+              المواصفات للمقارنة الإرشادية؛ راجع تفاصيل كل منتج وتأكّد منها قبل الشراء.
+            </p>
+          </div>
+        )}
+
+        {/* Recommended products — richer cards */}
         <div className="mb-10">
           <h2 className="text-xl font-display text-ink mb-4">منتجات نوصي بها</h2>
           <div className="space-y-4">
@@ -89,25 +209,43 @@ export default async function ToolCategoryPage({ params }) {
               <div key={i} className="bg-cream border border-line rounded-xl p-5 shadow-card">
                 <h3 className="font-display text-lg text-ink mb-1">{p.name}</h3>
                 {p.why && <p className="text-sm text-ink/70 leading-relaxed mb-3">{p.why}</p>}
-                <div className="flex items-center gap-3 flex-wrap">
-                  <Link
-                    href={`/adawat/muntaj/${p.slug}/`}
-                    className="inline-block bg-teal text-cream rounded-full px-5 py-2 text-sm hover:bg-teal-dark transition-colors"
-                  >
-                    عرض المنتج
-                  </Link>
-                  
-                </div>
+                {/* top features on the card */}
+                {p.features && p.features.length > 0 && !p.features[0].includes('PLACEHOLDER') && (
+                  <ul className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
+                    {p.features.slice(0, 3).map((f, fi) => (
+                      <li key={fi} className="text-xs text-ink/60 flex items-center gap-1">
+                        <span className="text-teal">✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {/* bestFor chips */}
+                {p.bestFor && p.bestFor.length > 0 && !p.bestFor[0].includes('PLACEHOLDER') && (
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {p.bestFor.map((t, ti) => (
+                      <span key={ti} className="text-xs text-teal-dark bg-mint/60 rounded-full px-2.5 py-0.5">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <Link
+                  href={`/adawat/muntaj/${p.slug}/`}
+                  className="inline-block bg-teal text-cream rounded-full px-5 py-2 text-sm hover:bg-teal-dark transition-colors"
+                >
+                  عرض المنتج
+                </Link>
               </div>
             ))}
           </div>
           <p className="text-xs text-ink/45 mt-3">
-            الروابط أعلاه قد تكون روابط شراكة. اختيارنا مبني على معايير الاختيار الموضّحة، وننصح
-            دائماً باستشارة طبيب الأسنان.
+            الروابط قد تكون روابط شراكة. اختيارنا مبني على معايير الاختيار الموضّحة، وننصح دائماً
+            باستشارة طبيب الأسنان.
           </p>
         </div>
 
-        {/* Related educational articles — trust content feeds commerce, not the reverse */}
+        {/* Related educational articles */}
         {related.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-display text-ink mb-3">مقالات ذات صلة</h2>

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProduct, getProductSlugs } from '../../../../lib/tools';
+import { getProduct, getProductSlugs, getToolCategory } from '../../../../lib/tools';
 import { SITE } from '../../../../lib/site';
 import AffiliateDisclosure from '../../../../components/AffiliateDisclosure';
 
@@ -18,8 +18,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// Product schema — honest. Emits price `offers` ONLY when a real price is set,
-// never fake ratings/reviews.
+// Product schema — honest. Specs become additionalProperty (real, useful structured data).
+// NEVER fake ratings/reviews; no price unless real.
 function ProductSchema({ p }) {
   const pageUrl = `${SITE.url}/adawat/muntaj/${p.slug}/`;
   const schema = {
@@ -31,13 +31,34 @@ function ProductSchema({ p }) {
     category: p.category.title,
     url: pageUrl,
   };
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+  const realSpecs = (p.specs || []).filter((s) => s.value && !s.value.includes('PLACEHOLDER'));
+  if (realSpecs.length) {
+    schema.additionalProperty = realSpecs.map((s) => ({
+      '@type': 'PropertyValue',
+      name: s.label,
+      value: s.value,
+    }));
+  }
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
 }
 
 export default function ProductPage({ params }) {
   const p = getProduct(params.slug);
   if (!p) notFound();
   const c = p.category;
+
+  const realSpecs = (p.specs || []).filter((s) => s.value && !s.value.includes('PLACEHOLDER'));
+  const realBestFor = (p.bestFor || []).filter((t) => !t.includes('PLACEHOLDER'));
+
+  // sibling products in same category (excluding this one), real ones only
+  const siblings = (getToolCategory(c.slug)?.products || [])
+    .filter((x) => x.slug !== p.slug && !x.name.includes('PLACEHOLDER'))
+    .slice(0, 4);
 
   return (
     <div className="bg-sand">
@@ -57,17 +78,42 @@ export default function ProductPage({ params }) {
         <h1 className="text-3xl md:text-4xl font-display font-bold text-ink leading-tight mb-2">
           {p.name}
         </h1>
-        <p className="text-teal-dark text-sm mb-6">
+        <p className="text-teal-dark text-sm mb-4">
           ضمن: <Link href={`/adawat/${c.slug}/`} className="hover:underline">{c.title}</Link>
         </p>
 
+        {/* bestFor chips up top — quick "is this me?" signal */}
+        {realBestFor.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-6">
+            {realBestFor.map((t, i) => (
+              <span key={i} className="text-xs text-teal-dark bg-mint rounded-full px-3 py-1">
+                مناسب لـ: {t}
+              </span>
+            ))}
+          </div>
+        )}
+
         <AffiliateDisclosure />
 
-        
         {/* Description */}
         {p.description && (
           <div className="bg-mint/40 border-r-4 border-teal rounded-lg p-5 mb-8">
             <p className="text-ink text-lg leading-relaxed">{p.description}</p>
+          </div>
+        )}
+
+        {/* Primary CTA — where to buy (only if set) */}
+        {p.whereToBuy && (
+          <div className="mb-8">
+            <a
+              href={p.whereToBuy}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+              className="inline-block bg-teal text-cream rounded-full px-7 py-3 text-base hover:bg-teal-dark transition-colors shadow-card"
+            >
+              أين تشتريه ←
+            </a>
+            <p className="text-xs text-ink/45 mt-2">رابط شراكة قد ينقلك إلى متجر خارجي.</p>
           </div>
         )}
 
@@ -79,41 +125,63 @@ export default function ProductPage({ params }) {
           </div>
         )}
 
-        {/* Features */}
-        {p.features && p.features.length > 0 && (
+        {/* Specs table */}
+        {realSpecs.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-display text-ink mb-3">المواصفات والميزات</h2>
-            <ul className="space-y-2 text-ink/80 leading-relaxed list-disc pr-5">
+            <h2 className="text-xl font-display text-ink mb-3">المواصفات</h2>
+            <table className="w-full text-sm border-collapse">
+              <tbody>
+                {realSpecs.map((s, i) => (
+                  <tr key={i} className="border-b border-line">
+                    <td className="py-2 pl-3 text-ink/60 w-1/2">{s.label}</td>
+                    <td className="py-2 text-ink font-medium">{s.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Features */}
+        {p.features && p.features.length > 0 && !p.features[0].includes('PLACEHOLDER') && (
+          <div className="mb-8">
+            <h2 className="text-xl font-display text-ink mb-3">الميزات</h2>
+            <ul className="space-y-2 text-ink/80 leading-relaxed">
               {p.features.map((f, i) => (
-                <li key={i}>{f}</li>
+                <li key={i} className="flex items-start gap-2">
+                  <span className="text-teal mt-1">✓</span>
+                  <span>{f}</span>
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Optional external link (only if provided) */}
-        {p.whereToBuy && (
+        {/* Compare with others in category */}
+        {siblings.length > 0 && (
           <div className="mb-8">
-            <a
-              href={p.whereToBuy}
-              target="_blank"
-              rel="nofollow sponsored noopener"
-              className="inline-block bg-teal text-cream rounded-full px-6 py-2.5 text-sm hover:bg-teal-dark transition-colors"
-            >
-              أين تشتريه
-            </a>
+            <h2 className="text-xl font-display text-ink mb-3">قارن مع خيارات أخرى</h2>
+            <div className="flex flex-wrap gap-2">
+              {siblings.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/adawat/muntaj/${s.slug}/`}
+                  className="text-sm text-teal border border-teal/30 rounded-full px-4 py-1.5 hover:bg-teal hover:text-cream transition-colors"
+                >
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+            <div className="mt-3">
+              <Link href={`/adawat/${c.slug}/`} className="text-sm text-teal hover:underline">
+                ← جدول المقارنة الكامل ودليل الاختيار
+              </Link>
+            </div>
           </div>
         )}
 
-        {/* Back to category + how to choose */}
-        <div className="mt-10 pt-6 border-t border-line text-sm">
-          <Link href={`/adawat/${c.slug}/`} className="text-teal hover:underline">
-            ← العودة إلى {c.title} وكيفية الاختيار
-          </Link>
-        </div>
-
         {/* Medical note */}
-        <p className="text-xs text-ink/45 mt-6 leading-relaxed">
+        <p className="text-xs text-ink/45 mt-10 pt-6 border-t border-line leading-relaxed">
           هذه الصفحة تثقيفية لمساعدتك على الاختيار، ولا تُغني عن استشارة طبيب الأسنان، خاصة عند
           وجود حساسية أو مشاكل في الأسنان أو اللثة.
         </p>
