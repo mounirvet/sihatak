@@ -182,6 +182,16 @@ export function IconBraces({ className = 'w-7 h-7' }) {
   );
 }
 
+export function IconLeaf({ className = 'w-7 h-7' }) {
+  // Nutrition & oral health: a leaf/sprig — tooth-friendly nutrition
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden="true">
+      <path d="M4 20c0-7 4-12 11-12.5C15 14.5 11 19 4 20Z" />
+      <path d="M4 20c2.5-4 5.5-6.5 9-8" />
+    </svg>
+  );
+}
+
 // Map pillar slug -> icon component, used by PillarCard.
 export const PILLAR_ICONS = {
   'amrad-al-litha': IconTooth,
@@ -191,4 +201,5 @@ export const PILLAR_ICONS = {
   'al-inaya-al-yawmiyya': IconBrush,
   'ziraat-al-asnan': IconImplant,
   'taqwim-al-asnan': IconBraces,
+  'taghdiya-wa-sihhat-al-fam': IconLeaf,
 };
