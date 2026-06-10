@@ -21,6 +21,7 @@ function ReviewerSchema() {
     alternateName: reviewer.name,
     url: `${SITE.url}${reviewer.url}`,
     jobTitle: reviewer.specialtyEn,
+    medicalSpecialty: 'Dentistry',
     description: reviewer.bio,
     knowsAbout: [
       'Dentistry',
@@ -31,6 +32,7 @@ function ReviewerSchema() {
       'Pediatric Dentistry',
       'Teeth Whitening',
       'Dental Implants',
+      'Orthodontics',
       'طب الأسنان',
       'صحة الفم',
     ],
@@ -58,6 +60,7 @@ function ReviewerSchema() {
 
 export default function MedicalTeamPage() {
   const r = reviewer;
+  const pillarCount = PILLARS.length;
   return (
     <div className="bg-sand">
       <ReviewerSchema />
@@ -85,7 +88,7 @@ export default function MedicalTeamPage() {
             <div className="text-xs text-ink/55 mt-1">من المقالات مراجَعة طبياً</div>
           </div>
           <div className="bg-cream border border-line rounded-xl p-4 text-center">
-            <div className="text-2xl font-display text-teal-dark">٦</div>
+            <div className="text-2xl font-display text-teal-dark">{pillarCount}</div>
             <div className="text-xs text-ink/55 mt-1">محاور رئيسية مغطّاة</div>
           </div>
           <div className="bg-cream border border-line rounded-xl p-4 text-center">
@@ -143,12 +146,12 @@ export default function MedicalTeamPage() {
           </div>
         </div>
 
-        {/* Areas of expertise — links the reviewer entity to our 6 pillars,
+        {/* Areas of expertise — links the reviewer entity to our pillars,
             reinforcing the topical authority association for search + AI. */}
         <div className="mt-10">
           <h2 className="text-xl font-display text-ink mb-3">نطاق المراجعة الطبية</h2>
           <p className="text-ink/70 text-sm leading-relaxed mb-4">
-            يراجع {r.name} محتوى «أسنانك» عبر محاوره الستّة الرئيسية، لضمان دقّة المعلومات في كل مجال:
+            يراجع {r.name} محتوى «أسنانك» عبر محاوره الرئيسية، لضمان دقّة المعلومات في كل مجال:
           </p>
           <div className="grid sm:grid-cols-2 gap-3">
             {PILLARS.map((p) => (
