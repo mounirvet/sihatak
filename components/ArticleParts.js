@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getReviewer } from '../lib/reviewers';
-import { IconCheck } from './Icons';
+import { IconCheck, IconArrowL } from './Icons';
+import { LINK_MAP } from '../lib/autolink';
 
 // Format an ISO date (YYYY-MM-DD) as a readable Arabic date, e.g. "7 يونيو 2026".
 const AR_MONTHS = [
@@ -80,18 +81,48 @@ export function KeyTakeaways({ items }) {
 }
 
 // ===== FAQ section — mirrors the FAQPage schema =====
-export function FAQ({ items }) {
+// Each question may auto-link to the article that best covers it (a contextual
+// "اقرأ المزيد" link), reusing the autolink LINK_MAP so there is no new data to
+// maintain and no separate pages are created. The link is shown only when a
+// confident topic match is found, and never points the article at itself.
+function findReadMore(question, currentSlug) {
+  if (!question) return null;
+  // Longest terms first so the most specific topic wins (mirrors autolink).
+  const sorted = [...LINK_MAP].sort((a, b) => b.term.length - a.term.length);
+  for (const entry of sorted) {
+    if (entry.slug === currentSlug) continue; // never self-link
+    if (entry.term.length < 6) continue; // skip very short/ambiguous terms
+    if (question.includes(entry.term)) {
+      const base = entry.type === 'insight' ? '/jadeed' : '/maqalat';
+      return { href: `${base}/${entry.slug}/`, term: entry.term };
+    }
+  }
+  return null;
+}
+
+export function FAQ({ items, currentSlug }) {
   if (!items || !items.length) return null;
   return (
     <section className="mt-12">
       <h2 className="text-2xl font-display mb-4 text-ink">أسئلة شائعة</h2>
       <div>
-        {items.map((f, i) => (
-          <div key={i} className="faq-item">
-            <div className="faq-q">{f.q}</div>
-            <p className="text-ink/80 leading-relaxed">{f.a}</p>
-          </div>
-        ))}
+        {items.map((f, i) => {
+          const more = findReadMore(f.q, currentSlug);
+          return (
+            <div key={i} className="faq-item">
+              <div className="faq-q">{f.q}</div>
+              <p className="text-ink/80 leading-relaxed">{f.a}</p>
+              {more && (
+                <Link
+                  href={more.href}
+                  className="inline-flex items-center gap-1 text-teal text-sm font-medium hover:text-teal-dark hover:underline mt-1 print:hidden"
+                >
+                  اقرأ المزيد <IconArrowL className="w-3.5 h-3.5" />
+                </Link>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
