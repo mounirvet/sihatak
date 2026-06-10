@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { GLOSSARY } from '../../lib/glossary';
 import { SITE } from '../../lib/site';
+import GlossaryBrowser from '../../components/GlossaryBrowser';
 
 export const metadata = {
   title: 'مصطلحات طب الأسنان — قاموس مبسّط',
@@ -9,7 +10,8 @@ export const metadata = {
   alternates: { canonical: '/mustalahat/' },
 };
 
-// DefinedTermSet schema — tells AI/Google this is an authoritative glossary of entities.
+// DefinedTermSet schema — server-rendered for SEO (tells AI/Google this is an
+// authoritative glossary of entities). The interactive browsing is a client component.
 function GlossarySchema() {
   const schema = {
     '@context': 'https://schema.org',
@@ -21,19 +23,26 @@ function GlossarySchema() {
       '@type': 'DefinedTerm',
       '@id': `${SITE.url}/mustalahat/${t.slug}/#term`,
       name: t.term,
+      alternateName: Array.from(new Set([t.termEn, ...(t.alternateName || [])].filter(Boolean))),
       url: `${SITE.url}/mustalahat/${t.slug}/`,
     })),
   };
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
   );
 }
 
 export default function GlossaryIndex() {
-  // group alphabetically isn't meaningful in Arabic ordering here; list as-is
+  // Pass only the fields the browser needs (keeps client payload lean).
+  const terms = GLOSSARY.map((t) => ({
+    slug: t.slug,
+    term: t.term,
+    termEn: t.termEn || '',
+    pillar: t.pillar,
+    alternateName: t.alternateName || [],
+    blurb: (t.quickAnswer || t.definition.split('.')[0] + '.'),
+  }));
+
   return (
     <div className="max-w-5xl mx-auto px-5 py-14">
       <GlossarySchema />
@@ -43,24 +52,11 @@ export default function GlossaryIndex() {
         <span className="text-ink/70">المصطلحات</span>
       </nav>
       <h1 className="text-4xl font-display font-bold text-ink mb-2">مصطلحات طب الأسنان</h1>
-      <p className="text-ink/60 mb-10 max-w-2xl">
+      <p className="text-ink/60 mb-8 max-w-2xl">
         قاموس مبسّط لأهمّ المصطلحات في طب الأسنان وصحة الفم، بتعريفات علمية واضحة يراجعها أطباء
-        مختصون. اضغط على أي مصطلح لقراءة تعريفه الكامل والمقالات المرتبطة به.
+        مختصون. ابحث عن مصطلح أو تصفّح حسب المحور، واضغط على أي مصطلح لقراءة تعريفه الكامل.
       </p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {GLOSSARY.map((t) => (
-          <Link
-            key={t.slug}
-            href={`/mustalahat/${t.slug}/`}
-            className="block bg-cream border border-line rounded-xl p-5 shadow-card hover:shadow-soft hover:border-teal-light transition-all group"
-          >
-            <h2 className="font-display text-lg text-ink group-hover:text-teal mb-1">{t.term}</h2>
-            <p className="text-sm text-ink/55 leading-relaxed line-clamp-2">
-              {t.definition.split('.')[0]}.
-            </p>
-          </Link>
-        ))}
-      </div>
+      <GlossaryBrowser terms={terms} />
     </div>
   );
 }

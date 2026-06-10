@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getGlossaryTerm, getGlossarySlugs, GLOSSARY } from '../../../lib/glossary';
 import { getAllArticles } from '../../../lib/content';
+import { TOOL_CATEGORIES } from '../../../lib/tools';
 import { SITE, PILLARS } from '../../../lib/site';
 
 export function generateStaticParams() {
@@ -11,21 +12,20 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const t = getGlossaryTerm(params.slug);
   if (!t) return {};
-  const firstSentence = t.definition.split('.')[0] + '.';
+  const desc = t.quickAnswer || (t.definition.split('.')[0] + '.');
   return {
     title: `${t.term} — ما هو؟ التعريف والمعنى`,
-    description: firstSentence,
+    description: desc,
     alternates: { canonical: `/mustalahat/${params.slug}/` },
-    openGraph: { title: `${t.term} — التعريف`, description: firstSentence, type: 'article' },
+    openGraph: { title: `${t.term} — التعريف`, description: desc, type: 'article' },
   };
 }
 
 function TermSchema({ t }) {
   const pageUrl = `${SITE.url}/mustalahat/${t.slug}/`;
-  // alternateName carries every name the entity is known by (Arabic + English),
-  // which helps search engines + AI connect this entity across languages and
-  // to the global knowledge graph.
-  const altNames = Array.from(new Set([t.termEn, ...(t.synonyms || [])].filter(Boolean)));
+  // alternateName carries every name the entity is known by (Arabic synonyms + English),
+  // helping search engines + AI connect this entity across languages and phrasings.
+  const altNames = Array.from(new Set([t.termEn, ...(t.alternateName || [])].filter(Boolean)));
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'DefinedTerm',
@@ -41,8 +41,26 @@ function TermSchema({ t }) {
   );
 }
 
-// BreadcrumbList schema — mirrors the visual breadcrumb so search engines
-// can show the page's position in the site hierarchy.
+// FAQPage schema built from the term's quick answer — the "ما هو X؟" Q&A that
+// AI answer-engines and Google's FAQ rich results extract.
+function TermFaqSchema({ t }) {
+  if (!t.quickAnswer) return null;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `ما هو ${t.term}؟`,
+        acceptedAnswer: { '@type': 'Answer', text: t.quickAnswer },
+      },
+    ],
+  };
+  return (
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  );
+}
+
 function BreadcrumbSchema({ t }) {
   const schema = {
     '@context': 'https://schema.org',
@@ -65,19 +83,23 @@ export default async function GlossaryTermPage({ params }) {
   const pillar = PILLARS.find((p) => p.slug === t.pillar);
   const allArticles = await getAllArticles();
 
-  // resolve related articles (only ones that exist)
   const related = (t.relatedArticles || [])
     .map((slug) => allArticles.find((a) => a.slug === slug))
     .filter(Boolean);
 
-  // resolve related terms
   const relatedTerms = (t.relatedTerms || [])
     .map((slug) => GLOSSARY.find((g) => g.slug === slug))
     .filter(Boolean);
 
+  // related product categories: any /adawat/ category that lists this term in relatedTerms
+  const relatedTools = (TOOL_CATEGORIES || []).filter((c) =>
+    (c.relatedTerms || []).includes(t.slug)
+  );
+
   return (
     <div className="bg-sand">
       <TermSchema t={t} />
+      <TermFaqSchema t={t} />
       <BreadcrumbSchema t={t} />
       <div className="max-w-prose mx-auto px-5 py-12">
         {/* Breadcrumb */}
@@ -89,18 +111,23 @@ export default async function GlossaryTermPage({ params }) {
           <span className="text-ink/70">{t.term}</span>
         </nav>
 
-        {/* Term + English name */}
+        {/* Term + English name + pronunciation */}
         <h1 className="text-3xl md:text-4xl font-display font-bold text-ink leading-tight mb-1">
           {t.term}
         </h1>
-        {t.termEn && <p className="text-ink/45 text-lg mb-4" dir="ltr">{t.termEn}</p>}
+        <div className="flex items-center gap-3 flex-wrap mb-4">
+          {t.termEn && <span className="text-ink/45 text-lg" dir="ltr">{t.termEn}</span>}
+          {t.pronunciation && (
+            <span className="text-ink/40 text-sm" dir="ltr">/ {t.pronunciation} /</span>
+          )}
+        </div>
 
-        {/* Synonyms / alternate names (Arabic + English) */}
-        {t.synonyms && t.synonyms.length > 0 && (
+        {/* Synonyms / alternate names */}
+        {t.alternateName && t.alternateName.length > 0 && (
           <div className="mb-6">
             <span className="text-sm text-ink/50 ml-2">يُعرف أيضاً بـ:</span>
             <span className="inline-flex flex-wrap gap-2 align-middle">
-              {t.synonyms.map((s) => (
+              {t.alternateName.map((s) => (
                 <span key={s} className="text-sm text-ink/70 bg-sand border border-line rounded-full px-3 py-0.5">
                   {s}
                 </span>
@@ -109,7 +136,31 @@ export default async function GlossaryTermPage({ params }) {
           </div>
         )}
 
-        {/* Answer-first definition — the AI-citable block */}
+        {/* Quick answer — the TL;DR the answer-engines pull */}
+        {t.quickAnswer && (
+          <div className="bg-cream border border-teal/30 rounded-lg p-4 mb-6">
+            <div className="text-xs text-teal-dark font-display mb-1">الإجابة المختصرة</div>
+            <p className="text-ink text-lg leading-relaxed">{t.quickAnswer}</p>
+          </div>
+        )}
+
+        {/* Optional diagram (only if a term provides one) */}
+        {t.image && (
+          <figure className="mb-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={t.image}
+              alt={t.imageAlt || t.term}
+              className="w-full rounded-xl border border-line"
+              loading="lazy"
+            />
+            {t.imageAlt && (
+              <figcaption className="text-xs text-ink/45 mt-2 text-center">{t.imageAlt}</figcaption>
+            )}
+          </figure>
+        )}
+
+        {/* Full definition */}
         <div className="bg-mint/40 border-r-4 border-teal rounded-lg p-5 mb-8">
           <p className="text-ink text-lg leading-relaxed">{t.definition}</p>
         </div>
@@ -145,6 +196,27 @@ export default async function GlossaryTermPage({ params }) {
                 </Link>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Related tools/products — education → commercial bridge (contextual, not spammy) */}
+        {relatedTools.length > 0 && (
+          <div className="mb-8 bg-cream border border-line rounded-xl p-5">
+            <h2 className="text-base font-display text-ink mb-2">أدوات قد تهمّك</h2>
+            <div className="flex flex-wrap gap-2">
+              {relatedTools.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/adawat/${c.slug}/`}
+                  className="text-sm text-teal border border-teal/30 rounded-full px-4 py-1.5 hover:bg-teal hover:text-cream transition-colors"
+                >
+                  {c.title}
+                </Link>
+              ))}
+            </div>
+            <p className="text-xs text-ink/40 mt-3">
+              صفحات إرشادية لاختيار الأدوات؛ المحتوى تثقيفي ولا يُغني عن استشارة طبيب الأسنان.
+            </p>
           </div>
         )}
 
