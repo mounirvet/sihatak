@@ -96,7 +96,7 @@ export default async function ToolCategoryPage({ params }) {
                   >
                     عرض المنتج
                   </Link>
-                  {p.price && <span className="text-xs text-ink/50">{p.price} {p.priceCurrency || 'AED'}</span>}
+                  
                 </div>
               </div>
             ))}

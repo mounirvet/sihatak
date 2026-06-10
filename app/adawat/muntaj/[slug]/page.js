@@ -31,19 +31,6 @@ function ProductSchema({ p }) {
     category: p.category.title,
     url: pageUrl,
   };
-  if (p.price) {
-    schema.offers = {
-      '@type': 'Offer',
-      price: p.price,
-      priceCurrency: p.priceCurrency || 'AED',
-      url: pageUrl,
-      ...(p.availability === 'in_stock'
-        ? { availability: 'https://schema.org/InStock' }
-        : p.availability === 'out_of_stock'
-        ? { availability: 'https://schema.org/OutOfStock' }
-        : {}),
-    };
-  }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
@@ -76,20 +63,7 @@ export default function ProductPage({ params }) {
 
         <AffiliateDisclosure />
 
-        {/* Price (only if set) */}
-        {p.price && (
-          <div className="mb-6">
-            <span className="text-2xl font-display text-ink">{p.price}</span>
-            <span className="text-ink/60 text-sm mr-1">{p.priceCurrency || 'AED'}</span>
-            {p.availability === 'in_stock' && (
-              <span className="text-xs text-teal-dark bg-mint rounded-full px-3 py-0.5 mr-3">متوفّر</span>
-            )}
-            {p.availability === 'out_of_stock' && (
-              <span className="text-xs text-coral bg-coral/10 rounded-full px-3 py-0.5 mr-3">غير متوفّر حالياً</span>
-            )}
-          </div>
-        )}
-
+        
         {/* Description */}
         {p.description && (
           <div className="bg-mint/40 border-r-4 border-teal rounded-lg p-5 mb-8">
@@ -118,15 +92,15 @@ export default function ProductPage({ params }) {
         )}
 
         {/* Optional external link (only if provided) */}
-        {p.externalUrl && (
+        {p.whereToBuy && (
           <div className="mb-8">
             <a
-              href={p.externalUrl}
+              href={p.whereToBuy}
               target="_blank"
               rel="nofollow sponsored noopener"
               className="inline-block bg-teal text-cream rounded-full px-6 py-2.5 text-sm hover:bg-teal-dark transition-colors"
             >
-              عرض لدى المتجر
+              أين تشتريه
             </a>
           </div>
         )}
