@@ -1,5 +1,5 @@
 import { getAllArticles } from '../../lib/content';
-import { ArticleCard } from '../../components/Cards';
+import MaqalatExplorer from '../../components/MaqalatExplorer';
 
 export const metadata = {
   title: 'جميع المقالات',
@@ -7,7 +7,23 @@ export const metadata = {
 };
 
 export default async function ArticlesIndex() {
-  const articles = await getAllArticles();
+  const all = await getAllArticles();
+  // Pass only the lightweight fields the explorer needs (no heavy contentHtml),
+  // so the client bundle stays small. All articles are still rendered/searchable.
+  const articles = all.map((a) => ({
+    slug: a.slug,
+    readingMinutes: a.readingMinutes,
+    meta: {
+      title: a.meta.title,
+      excerpt: a.meta.excerpt || '',
+      answer: a.meta.answer || '',
+      pillar: a.meta.pillar || '',
+      date: a.meta.date || '',
+      updated: a.meta.updated || '',
+      order: a.meta.order || 0,
+    },
+  }));
+
   return (
     <div className="max-w-6xl mx-auto px-5 py-14">
       <h1 className="text-4xl font-display font-bold text-ink mb-2">جميع المقالات</h1>
@@ -15,11 +31,7 @@ export default async function ArticlesIndex() {
       {articles.length === 0 ? (
         <p className="text-ink/50">لا توجد مقالات بعد.</p>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((a) => (
-            <ArticleCard key={a.slug} article={a} />
-          ))}
-        </div>
+        <MaqalatExplorer articles={articles} />
       )}
     </div>
   );
