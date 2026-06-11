@@ -5,15 +5,12 @@ import Footer from '../components/Footer';
 import CookieConsent from '../components/CookieConsent';
 import { SITE } from '../lib/site';
 
-// Fonts loaded via Next.js optimized font loader: self-hosted, preloaded,
-// and non-render-blocking. This eliminates the slow CSS @import and improves LCP.
 const tajawal = Tajawal({
   subsets: ['arabic', 'latin'],
   weight: ['400', '500', '700'],
   variable: '--font-tajawal',
   display: 'swap',
 });
-
 const reemKufi = Reem_Kufi({
   subsets: ['arabic', 'latin'],
   weight: ['400', '500', '700'],
@@ -38,7 +35,6 @@ export const metadata = {
   },
 };
 
-// ===== Site-wide schema: tells AI/Google WHO this entity is (E-E-A-T core) =====
 function SiteSchema() {
   const schema = {
     '@context': 'https://schema.org',
@@ -75,13 +71,16 @@ export default function RootLayout({ children }) {
     <html lang="ar" dir="rtl" className={`${tajawal.variable} ${reemKufi.variable}`}>
       <head>
         <SiteSchema />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2689172979896587"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         <Header />
         <main>{children}</main>
         <Footer />
-
-        {/* Cookie consent — loads Google Analytics ONLY after the user accepts. */}
         <CookieConsent />
       </body>
     </html>
