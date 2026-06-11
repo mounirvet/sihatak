@@ -46,7 +46,7 @@ sources:
 اعتبار مهمّ آخر: بعض الإجراءات التجميلية **دائمة وتتطلّب التضحية بنسيج سليم**:
 
 - [الفينير](/maqalat/al-qushur-al-khazafiyya-al-finir/) يتطلّب غالباً برد طبقة من المينا (لا تُعوَّض).
-- [نحت الأسنvان](/maqalat/naht-wa-iadat-tashkil-al-asnan/) يزيل مينا دائماً.
+- [نحت الأسنان](/maqalat/naht-wa-iadat-tashkil-al-asnan/) يزيل مينا دائماً.
 - بعض أنواع [الزينة](/maqalat/zinat-al-asnan-wal-jawahir-al-aman/) قد تتطلّب حفراً.
 
 لهذا تطبّق قاعدة [الأقلّ تدخّلاً أولاً](/maqalat/tajmil-al-ibtisama-khayarat/): ابدأ بالأبسط الذي يحقّق هدفك.
