@@ -26,6 +26,14 @@ export const metadata = {
   },
   description: SITE.description,
   alternates: { canonical: '/' },
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
   openGraph: {
     type: 'website',
     locale: 'ar_AE',
@@ -43,8 +51,18 @@ function SiteSchema() {
         '@type': 'Organization',
         '@id': `${SITE.url}/#organization`,
         name: SITE.name,
+        alternateName: SITE.nameEn,
         url: SITE.url,
         description: SITE.description,
+        logo: {
+          '@type': 'ImageObject',
+          '@id': `${SITE.url}/#logo`,
+          url: `${SITE.url}/icons/logo-512.png`,
+          width: 512,
+          height: 512,
+          caption: SITE.name,
+        },
+        image: { '@id': `${SITE.url}/#logo` },
         knowsLanguage: ['ar', 'en'],
         areaServed: ['AE', 'SA', 'KW', 'QA', 'BH', 'OM'],
       },
