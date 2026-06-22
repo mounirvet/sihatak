@@ -1,6 +1,6 @@
 ---
 title: "القهوة العربية والشاي وأثرهما على الأسنان: الدليل الشامل"
-pillar: "al-inaya-al-yawmiyya"
+pillar: "taghdiya-wa-sihhat-al-fam"
 reviewer: "dr-placeholder"
 date: "2026-06-10"
 updated: "2026-06-10"
