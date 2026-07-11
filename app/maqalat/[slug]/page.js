@@ -6,6 +6,7 @@ import { getRelatedArticles } from '../../../lib/related';
 import { getPillarImage, getArticleImage } from '../../../lib/pillarImages';
 import { getAuthoritativeSources } from '../../../lib/authorities';
 import { PILLARS } from '../../../lib/site';
+import { getCategoriesForPillar } from '../../../lib/storeCategories';
 import ArticleSchema from '../../../components/ArticleSchema';
 import { ReviewerByline, AnswerBlock, KeyTakeaways, FAQ, Sources } from '../../../components/ArticleParts';
 import { TableOfContents, ReadingProgress, ShareRow } from '../../../components/UXParts';
@@ -74,6 +75,8 @@ export default async function ArticlePage({ params }) {
 
   // Verified authoritative outbound sources for this pillar (trust signal).
   const authSources = getAuthoritativeSources(meta.pillar);
+  // Brand-neutral shop categories relevant to this article's pillar (may be empty).
+  const shopCategories = getCategoriesForPillar(meta.pillar);
 
   return (
     <article className="bg-sand">
@@ -172,6 +175,31 @@ export default async function ArticlePage({ params }) {
             <p className="text-ink/35 text-xs mt-3">
               روابط لمؤسسات صحية عالمية موثوقة للاطّلاع على مزيد من المعلومات.
             </p>
+          </div>
+        )}
+
+        {/* Brand-neutral shop CTA — links to relevant shop CATEGORIES only,
+            never a branded product. Keeps the editorial/commerce wall intact
+            while giving readers a helpful next step to explore tools. */}
+        {shopCategories.length > 0 && (
+          <div className="mt-8 bg-mint/30 border border-mint rounded-xl p-5">
+            <h2 className="text-base font-display text-teal-dark mb-2">أدوات قد تساعدك</h2>
+            <p className="text-sm text-ink/70 mb-4">
+              إذا كنت تبحث عن أدوات للعناية بأسنانك، يمكنك تصفّح فئات المتجر ذات الصلة.
+              استشر طبيب الأسنان لاختيار ما يناسب حالتك.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {shopCategories.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/shop/${c.slug}/`}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white border border-teal/20 px-4 py-2 text-sm font-medium text-teal hover:bg-teal hover:text-white transition"
+                >
+                  {c.title_ar}
+                  <span aria-hidden="true">←</span>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
 
