@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getToolCategory, getToolSlugs, TOOL_CATEGORIES } from '../../../lib/tools';
-import { getAllArticles } from '../../../lib/content';
+import { getAllArticlesMeta } from '../../../lib/content';
 import { GLOSSARY } from '../../../lib/glossary';
 import { SITE, PILLARS } from '../../../lib/site';
 import AffiliateDisclosure from '../../../components/AffiliateDisclosure';
@@ -63,7 +63,7 @@ export default async function ToolCategoryPage({ params }) {
   if (!c) notFound();
 
   const pillar = PILLARS.find((p) => p.slug === c.pillar);
-  const allArticles = await getAllArticles();
+  const allArticles = getAllArticlesMeta();
   const related = (c.relatedArticles || [])
     .map((slug) => allArticles.find((a) => a.slug === slug))
     .filter(Boolean);

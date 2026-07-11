@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getGlossaryTerm, getGlossarySlugs, GLOSSARY } from '../../../lib/glossary';
-import { getAllArticles } from '../../../lib/content';
+import { getAllArticlesMeta } from '../../../lib/content';
 import { TOOL_CATEGORIES } from '../../../lib/tools';
 import { SITE, PILLARS } from '../../../lib/site';
 
@@ -81,7 +81,7 @@ export default async function GlossaryTermPage({ params }) {
   if (!t) notFound();
 
   const pillar = PILLARS.find((p) => p.slug === t.pillar);
-  const allArticles = await getAllArticles();
+  const allArticles = getAllArticlesMeta();
 
   const related = (t.relatedArticles || [])
     .map((slug) => allArticles.find((a) => a.slug === slug))

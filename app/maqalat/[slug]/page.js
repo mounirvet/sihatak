@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles } from '../../../lib/content';
-import { getAllInsights } from '../../../lib/insights';
+import { getArticle, getArticleSlugs, getArticlesByPillar, getAllArticles, getAllArticlesMeta } from '../../../lib/content';
+import { getAllInsights, getAllInsightsMeta } from '../../../lib/insights';
 import { getRelatedArticles } from '../../../lib/related';
 import { getPillarImage, getArticleImage } from '../../../lib/pillarImages';
 import { getAuthoritativeSources } from '../../../lib/authorities';
@@ -40,8 +40,10 @@ export default async function ArticlePage({ params }) {
   const { slug, meta, contentHtml, toc, readingMinutes } = article;
   const pillar = PILLARS.find((p) => p.slug === meta.pillar);
 
-  // All articles, used for both sibling links and the cross-pillar related engine.
-  const allArticles = await getAllArticles();
+  // All articles (metadata only) — used for sibling links and the cross-pillar
+  // related engine. These consumers need only { slug, meta }, so we use the
+  // cached frontmatter-only loader instead of rendering every article's body.
+  const allArticles = getAllArticlesMeta();
 
   // Same-pillar siblings (deepens cluster authority).
   const siblings = pillar
@@ -51,7 +53,7 @@ export default async function ArticlePage({ params }) {
   // Cross-pillar related, scored by topical relevance — now also includes
   // insights, so evergreen articles can surface and link into the "الجديد"
   // hubs (and the link graph runs both directions, not just outward).
-  const allInsights = await getAllInsights();
+  const allInsights = getAllInsightsMeta();
   const related = getRelatedArticles(article, [...allArticles, ...allInsights], 4);
 
   // "Read next" — the single strongest next step for the reader. Prefer the top

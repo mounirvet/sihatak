@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getInsight, getInsightSlugs, getAllInsights } from '../../../lib/insights';
-import { getAllArticles } from '../../../lib/content';
+import { getInsight, getInsightSlugs, getAllInsightsMeta } from '../../../lib/insights';
+import { getAllArticlesMeta } from '../../../lib/content';
 import { getRelatedArticles } from '../../../lib/related';
 import { SITE, PILLARS } from '../../../lib/site';
 import InsightSchema from '../../../components/InsightSchema';
@@ -40,8 +40,8 @@ export default async function InsightPage({ params }) {
   // Cross-link OUT into the evergreen library + sibling insights, using the
   // same relevance engine articles use. This is the core of making insights
   // first-class hubs in the internal-linking graph rather than dead ends.
-  const allArticles = await getAllArticles();
-  const allInsights = await getAllInsights();
+  const allArticles = getAllArticlesMeta();
+  const allInsights = getAllInsightsMeta();
   const pool = [
     ...allArticles,
     ...allInsights.filter((i) => i.slug !== slug),

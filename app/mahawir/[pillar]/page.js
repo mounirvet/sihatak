@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PILLARS, SITE } from '../../../lib/site';
-import { getArticlesByPillar } from '../../../lib/content';
+import { getArticlesByPillarMeta } from '../../../lib/content';
 import { ArticleCard } from '../../../components/Cards';
 import { PILLAR_ICONS } from '../../../components/Icons';
 
@@ -23,7 +23,7 @@ export default async function PillarPage({ params }) {
   const pillar = PILLARS.find((p) => p.slug === params.pillar);
   if (!pillar) notFound();
 
-  const articles = await getArticlesByPillar(pillar.slug);
+  const articles = getArticlesByPillarMeta(pillar.slug);
 
   const schema = {
     '@context': 'https://schema.org',
