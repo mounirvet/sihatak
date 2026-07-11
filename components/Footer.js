@@ -26,6 +26,7 @@ export default function Footer() {
         <div>
           <h4 className="font-display text-cream mb-3">عن المنصة</h4>
           <ul className="space-y-2 text-sm">
+            <li><Link href="/shop/" className="text-cream/70 hover:text-coral">المتجر</Link></li>
             <li><Link href="/man-nahnu/" className="text-cream/70 hover:text-coral">من نحن</Link></li>
             <li><Link href="/man-nahnu/al-fariq-al-tibbi/" className="text-cream/70 hover:text-coral">الفريق الطبي</Link></li>
             <li><Link href="/man-nahnu/siyasat-al-tahrir/" className="text-cream/70 hover:text-coral">سياسة التحرير والمراجعة الطبية</Link></li>
