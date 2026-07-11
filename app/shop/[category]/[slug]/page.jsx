@@ -6,6 +6,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "../../../../lib/storeCategories.js";
+import { getArticleMeta } from "../../../../lib/content.js";
 import {
   getAllProducts,
   getProductBySlug,
@@ -117,11 +118,19 @@ export default function ProductPage({ params }) {
       ? p.benefits.map((b) => (Array.isArray(b) ? b : [b.icon, b.title, b.text]))
       : CATEGORY_BENEFITS[p.category]) || [];
 
-  const compare = p.compare_table || CATEGORY_COMPARE[p.category] || null;
-  const faqs =
+  const compare = p.compare_table || CATEGORY_COMPARE[p.category] || null;  const faqs =
     (Array.isArray(p.faq) && p.faq.length
       ? p.faq.map((f) => (Array.isArray(f) ? f : [f.q, f.a]))
       : CATEGORY_FAQ[p.category]) || [];
+
+  const relatedArticles = (p.related_articles || []).map((slug) => {
+    try {
+      const { meta } = getArticleMeta(slug);
+      return { slug, title: meta.title || slug };
+    } catch {
+      return { slug, title: slug };
+    }
+  });
 
   const savePct =
     p.compare_at_price && p.compare_at_price > p.price
@@ -337,13 +346,13 @@ export default function ProductPage({ params }) {
           </p>
         </section>
 
-        {p.related_articles && p.related_articles.length > 0 && (
+        {relatedArticles.length > 0 && (
           <section className="mt-12 border-t border-line pt-6">
             <h2 className="font-display text-lg text-teal-dark">مقالات ذات صلة</h2>
             <ul className="mt-3 list-disc pr-5 text-teal">
-              {p.related_articles.map((slug) => (
-                <li key={slug}>
-                  <Link href={`/maqalat/${slug}/`} className="hover:underline">{slug}</Link>
+              {relatedArticles.map((a) => (
+                <li key={a.slug}>
+                  <Link href={`/maqalat/${a.slug}/`} className="hover:underline">{a.title}</Link>
                 </li>
               ))}
             </ul>
