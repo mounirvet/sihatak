@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/m3-retainer-cleaner-tablets-1.jpg
   - /images/shop/m3-retainer-cleaner-tablets-2.jpg
+  - /images/shop/m3-retainer-cleaner-tablets-3.jpg
+  - /images/shop/m3-retainer-cleaner-tablets-4.jpg
+  - /images/shop/m3-retainer-cleaner-tablets-5.jpg
 short_desc: أقراص فوّارة لتنظيف التقويم الشفاف والأطقم والحافظات، تساعد على إزالة الترسبات والروائح.
 related_articles:
   - hal-tarkib-al-taqwim-mulim

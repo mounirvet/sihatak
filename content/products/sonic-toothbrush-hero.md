@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/sonic-toothbrush-hero-1.jpg
   - /images/shop/sonic-toothbrush-hero-2.jpg
+  - /images/shop/sonic-toothbrush-hero-3.jpg
+  - /images/shop/sonic-toothbrush-hero-4.jpg
+  - /images/shop/sonic-toothbrush-hero-5.jpg
 short_desc: فرشاة أسنان كهربائية سونيك من فئة عالية بتقنية اهتزاز صوتي، أوضاع تنظيف متعددة، ومستشعر ضغط.
 related_articles:
   - al-furshat-al-yadawiyya-am-al-kahrabaiyya

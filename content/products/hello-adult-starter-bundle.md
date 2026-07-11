@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/hello-adult-starter-bundle-1.jpg
   - /images/shop/hello-adult-starter-bundle-2.jpg
+  - /images/shop/hello-adult-starter-bundle-3.jpg
+  - /images/shop/hello-adult-starter-bundle-4.jpg
+  - /images/shop/hello-adult-starter-bundle-5.jpg
 short_desc: باقة عناية للكبار تشمل معجونًا خاليًا من الفلورايد وأدوات مكمّلة للروتين اليومي.
 related_articles:
   - fluorayd-miyah-al-shurb-fi-dual-al-khalij

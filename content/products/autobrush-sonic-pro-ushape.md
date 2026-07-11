@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/autobrush-sonic-pro-ushape-1.jpg
   - /images/shop/autobrush-sonic-pro-ushape-2.jpg
+  - /images/shop/autobrush-sonic-pro-ushape-3.jpg
+  - /images/shop/autobrush-sonic-pro-ushape-4.jpg
+  - /images/shop/autobrush-sonic-pro-ushape-5.jpg
 short_desc: فرشاة سونيك على شكل U تنظّف الأسنان دفعة واحدة، بتصميم حاصل على قبول جمعية طب الأسنان الأمريكية حسب المصنّع.
 related_articles:
   - al-furshat-al-yadawiyya-am-al-kahrabaiyya

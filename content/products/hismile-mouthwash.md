@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/hismile-mouthwash-1.jpg
   - /images/shop/hismile-mouthwash-2.jpg
+  - /images/shop/hismile-mouthwash-3.jpg
+  - /images/shop/hismile-mouthwash-4.jpg
+  - /images/shop/hismile-mouthwash-5.jpg
 short_desc: غسول فم من Hismile للعناية اليومية وانتعاش النفس، بتركيبة لطيفة.
 related_articles:
   - ghasul-al-fam-hal-ahtajuh

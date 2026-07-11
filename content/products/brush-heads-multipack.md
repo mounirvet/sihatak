@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/brush-heads-multipack-1.jpg
   - /images/shop/brush-heads-multipack-2.jpg
+  - /images/shop/brush-heads-multipack-3.jpg
+  - /images/shop/brush-heads-multipack-4.jpg
+  - /images/shop/brush-heads-multipack-5.jpg
 short_desc: عبوة رؤوس بديلة متوافقة لفرشاة الأسنان الكهربائية، لتجديد الفرشاة بانتظام.
 related_articles:
   - istibdal-furshat-al-asnan

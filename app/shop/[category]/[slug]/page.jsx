@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "../../../../lib/storeCategories.js";
 import { getArticleMeta } from "../../../../lib/content.js";
 import { getSellCopy } from "../../../../lib/shopCopy.js";
+import ProductGallery from "../../../../components/ProductGallery.jsx";
 import {
   getAllProducts,
   getProductBySlug,
@@ -170,18 +171,13 @@ export default function ProductPage({ params }) {
 
         {/* HERO */}
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="relative overflow-hidden rounded-2xl bg-cream shadow-card">
+          <div className="relative">
             {savePct && (
               <span className="absolute right-4 top-4 z-10 rounded-full bg-coral px-3 py-1 text-sm font-bold text-white shadow">
                 وفّر {savePct}٪
               </span>
             )}
-            {p.images[0] ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={p.images[0]} alt={p.title_ar} className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex aspect-square items-center justify-center text-6xl text-teal/20">🦷</div>
-            )}
+            <ProductGallery images={p.images} alt={p.title_ar} />
           </div>
 
           <div>

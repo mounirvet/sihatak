@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/cocofloss-everything-set-1.jpg
   - /images/shop/cocofloss-everything-set-2.jpg
+  - /images/shop/cocofloss-everything-set-3.jpg
+  - /images/shop/cocofloss-everything-set-4.jpg
+  - /images/shop/cocofloss-everything-set-5.jpg
 short_desc: طقم خيط أسنان بنسيج مميّز وروائح متعددة، لتنظيف لطيف وفعّال بين الأسنان.
 related_articles:
   - kayfa-astakhdim-khayt-al-asnan

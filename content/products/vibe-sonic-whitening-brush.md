@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/vibe-sonic-whitening-brush-1.jpg
   - /images/shop/vibe-sonic-whitening-brush-2.jpg
+  - /images/shop/vibe-sonic-whitening-brush-3.jpg
+  - /images/shop/vibe-sonic-whitening-brush-4.jpg
+  - /images/shop/vibe-sonic-whitening-brush-5.jpg
 short_desc: فرشاة أسنان سونيك بقوة 40000 اهتزاز/د مع رؤوس متعددة، لتنظيف يومي فعّال.
 related_articles:
   - al-furshat-al-yadawiyya-am-al-kahrabaiyya

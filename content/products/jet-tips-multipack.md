@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/jet-tips-multipack-1.jpg
   - /images/shop/jet-tips-multipack-2.jpg
+  - /images/shop/jet-tips-multipack-3.jpg
+  - /images/shop/jet-tips-multipack-4.jpg
+  - /images/shop/jet-tips-multipack-5.jpg
 short_desc: عبوة رؤوس بديلة للخيط المائي تشمل رأسًا خاصًا لتقويم الأسنان، لتجديد الجهاز بانتظام.
 related_articles:
   - kayfa-astakhdim-khayt-al-asnan

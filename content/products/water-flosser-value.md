@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/water-flosser-value-1.jpg
   - /images/shop/water-flosser-value-2.jpg
+  - /images/shop/water-flosser-value-3.jpg
+  - /images/shop/water-flosser-value-4.jpg
+  - /images/shop/water-flosser-value-5.jpg
 short_desc: خيط مائي لاسلكي محمول بأوضاع تنظيف متعددة، رؤوس متبادلة، وخزّان ماء مناسب.
 related_articles:
   - kayfa-astakhdim-khayt-al-asnan

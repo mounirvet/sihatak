@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/gurunanda-6in1-prepasted-1.jpg
   - /images/shop/gurunanda-6in1-prepasted-2.jpg
+  - /images/shop/gurunanda-6in1-prepasted-3.jpg
+  - /images/shop/gurunanda-6in1-prepasted-4.jpg
+  - /images/shop/gurunanda-6in1-prepasted-5.jpg
 short_desc: فرش أسنان مسبقة التعجين متعددة الوظائف للتنظيف السريع أثناء التنقّل.
 related_articles:
   - al-tariqa-al-sahiha-li-tanzif-al-asnan

@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/kids-u-shaped-toothbrush-1.jpg
   - /images/shop/kids-u-shaped-toothbrush-2.jpg
+  - /images/shop/kids-u-shaped-toothbrush-3.jpg
+  - /images/shop/kids-u-shaped-toothbrush-4.jpg
+  - /images/shop/kids-u-shaped-toothbrush-5.jpg
 short_desc: فرشaة أسنان كهربائية للأطفال على شكل U بتصميم مرح، تنظّف الأسنان بلطف مع رؤوس بديلة.
 related_articles:
   - al-asnan-al-daima-al-atfal-mata-tazhar

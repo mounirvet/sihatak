@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/hismile-tooth-armour-serum-1.jpg
   - /images/shop/hismile-tooth-armour-serum-2.jpg
+  - /images/shop/hismile-tooth-armour-serum-3.jpg
+  - /images/shop/hismile-tooth-armour-serum-4.jpg
+  - /images/shop/hismile-tooth-armour-serum-5.jpg
 short_desc: سيروم معجون خالٍ من الفلورايد بتركيبة هيدروكسي أباتيت النانوي لدعم العناية بالمينا واللثة.
 related_articles:
   - al-kalsiyum-wa-fitamin-d-li-sihhat-al-asnan

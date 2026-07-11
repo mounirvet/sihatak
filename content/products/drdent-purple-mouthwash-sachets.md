@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/drdent-purple-mouthwash-sachets-1.jpg
   - /images/shop/drdent-purple-mouthwash-sachets-2.jpg
+  - /images/shop/drdent-purple-mouthwash-sachets-3.jpg
+  - /images/shop/drdent-purple-mouthwash-sachets-4.jpg
+  - /images/shop/drdent-purple-mouthwash-sachets-5.jpg
 short_desc: غسول فم بنفسجي بأكياس مفردة الاستخدام، يركّز على إبراز بياض الأسنان وانتعاش الفم.
 related_articles:
   - ghasul-al-fam-hal-ahtajuh

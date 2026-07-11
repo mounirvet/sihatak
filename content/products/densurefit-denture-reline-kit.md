@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/densurefit-denture-reline-kit-1.jpg
   - /images/shop/densurefit-denture-reline-kit-2.jpg
+  - /images/shop/densurefit-denture-reline-kit-3.jpg
+  - /images/shop/densurefit-denture-reline-kit-4.jpg
+  - /images/shop/densurefit-denture-reline-kit-5.jpg
 short_desc: طقم سيليكون مساعد لتحسين ثبات أطقم الأسنان المتحركة مؤقتًا. للاستخدام وفق الإرشادات وبإشراف الطبيب.
 related_articles:
   - al-inaya-bi-taqm-al-asnan-al-mutaharrik

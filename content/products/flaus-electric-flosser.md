@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/flaus-electric-flosser-1.jpg
   - /images/shop/flaus-electric-flosser-2.jpg
+  - /images/shop/flaus-electric-flosser-3.jpg
+  - /images/shop/flaus-electric-flosser-4.jpg
+  - /images/shop/flaus-electric-flosser-5.jpg
 short_desc: خيط أسنان كهربائي يجمع سهولة الفرشاة الكهربائية مع الخيط، ويأتي مع عبوات خيط بنكهة النعناع.
 related_articles:
   - kayfa-astakhdim-khayt-al-asnan

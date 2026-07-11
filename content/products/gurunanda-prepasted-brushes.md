@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/gurunanda-prepasted-brushes-1.jpg
   - /images/shop/gurunanda-prepasted-brushes-2.jpg
+  - /images/shop/gurunanda-prepasted-brushes-3.jpg
+  - /images/shop/gurunanda-prepasted-brushes-4.jpg
+  - /images/shop/gurunanda-prepasted-brushes-5.jpg
 short_desc: فرش أسنان مفردة مسبقة التعجين للاستخدام مرة واحدة، عملية للسفر والتنقّل.
 related_articles:
   - al-tariqa-al-sahiha-li-tanzif-al-asnan

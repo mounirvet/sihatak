@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/niacinamide-whitening-toothpaste-1.jpg
   - /images/shop/niacinamide-whitening-toothpaste-2.jpg
+  - /images/shop/niacinamide-whitening-toothpaste-3.jpg
+  - /images/shop/niacinamide-whitening-toothpaste-4.jpg
+  - /images/shop/niacinamide-whitening-toothpaste-5.jpg
 short_desc: معجون أسنان بتركيبة نياسيناميد للعناية اليومية وإبراز بياض الأسنان، بإحساس منعش.
 related_articles:
   - al-tabyid-al-manzili-muqabil-al-iyada

@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/combo-brush-flosser-value-1.jpg
   - /images/shop/combo-brush-flosser-value-2.jpg
+  - /images/shop/combo-brush-flosser-value-3.jpg
+  - /images/shop/combo-brush-flosser-value-4.jpg
+  - /images/shop/combo-brush-flosser-value-5.jpg
 short_desc: جهاز يجمع فرشاة أسنان سونيك وخيطًا مائيًا في وحدة واحدة، مقاوم للماء IPX7 وشحن USB-C.
 related_articles:
   - al-furshat-al-yadawiyya-am-al-kahrabaiyya

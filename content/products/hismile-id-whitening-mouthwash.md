@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/hismile-id-whitening-mouthwash-1.jpg
   - /images/shop/hismile-id-whitening-mouthwash-2.jpg
+  - /images/shop/hismile-id-whitening-mouthwash-3.jpg
+  - /images/shop/hismile-id-whitening-mouthwash-4.jpg
+  - /images/shop/hismile-id-whitening-mouthwash-5.jpg
 short_desc: غسول فم بتقنية إزالة التصبّغات لإبراز بياض الأسنان وانتعاش النفس، حسب المصنّع.
 related_articles:
   - ghasul-al-fam-hal-ahtajuh

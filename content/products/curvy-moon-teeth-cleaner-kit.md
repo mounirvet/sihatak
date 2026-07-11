@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/curvy-moon-teeth-cleaner-kit-1.jpg
   - /images/shop/curvy-moon-teeth-cleaner-kit-2.jpg
+  - /images/shop/curvy-moon-teeth-cleaner-kit-3.jpg
+  - /images/shop/curvy-moon-teeth-cleaner-kit-4.jpg
+  - /images/shop/curvy-moon-teeth-cleaner-kit-5.jpg
 short_desc: طقم تنظيف أسنان كهربائي مع أدوات مساعدة للعناية المنزلية بنظافة الأسنان.
 related_articles:
   - al-tariqa-al-sahiha-li-tanzif-al-asnan

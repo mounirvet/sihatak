@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/waterpik-cordless-hero-1.jpg
   - /images/shop/waterpik-cordless-hero-2.jpg
+  - /images/shop/waterpik-cordless-hero-3.jpg
+  - /images/shop/waterpik-cordless-hero-4.jpg
+  - /images/shop/waterpik-cordless-hero-5.jpg
 short_desc: خيط مائي لاسلكي من ووتربيك، ثلاث درجات ضغط، تصميم مقاوم للماء، وحقيبة سفر.
 related_articles:
   - kayfa-astakhdim-khayt-al-asnan

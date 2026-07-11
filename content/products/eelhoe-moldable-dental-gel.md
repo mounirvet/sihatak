@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/eelhoe-moldable-dental-gel-1.jpg
   - /images/shop/eelhoe-moldable-dental-gel-2.jpg
+  - /images/shop/eelhoe-moldable-dental-gel-3.jpg
+  - /images/shop/eelhoe-moldable-dental-gel-4.jpg
+  - /images/shop/eelhoe-moldable-dental-gel-5.jpg
 short_desc: جل مؤقت قابل للتشكيل للاستخدام العرضي على التركيبات. مساعد مؤقت فقط ولا يغني عن طبيب الأسنان.
 related_articles:
   - al-tarkibat-al-thabita-muqabil-al-mutaharrika

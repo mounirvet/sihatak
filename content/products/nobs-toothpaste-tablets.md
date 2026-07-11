@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/nobs-toothpaste-tablets-1.jpg
   - /images/shop/nobs-toothpaste-tablets-2.jpg
+  - /images/shop/nobs-toothpaste-tablets-3.jpg
+  - /images/shop/nobs-toothpaste-tablets-4.jpg
+  - /images/shop/nobs-toothpaste-tablets-5.jpg
 short_desc: أقراص معجون أسنان بتركيبة هيدروكسي أباتيت النانوي، عملية وخالية من الفوضى ومناسبة للسفر.
 related_articles:
   - al-kalsiyum-wa-fitamin-d-li-sihhat-al-asnan

@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/hismile-led-kit-hero-1.jpg
   - /images/shop/hismile-led-kit-hero-2.jpg
+  - /images/shop/hismile-led-kit-hero-3.jpg
+  - /images/shop/hismile-led-kit-hero-4.jpg
+  - /images/shop/hismile-led-kit-hero-5.jpg
 short_desc: طقم تبييض منزلي بضوء LED من هاي سمايل، بجل تبييض وقالب مضيء للاستخدام المنزلي.
 related_articles:
   - fahm-tabyid-al-asnan-al-aman

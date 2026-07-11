@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/led-kit-pap-value-1.jpg
   - /images/shop/led-kit-pap-value-2.jpg
+  - /images/shop/led-kit-pap-value-3.jpg
+  - /images/shop/led-kit-pap-value-4.jpg
+  - /images/shop/led-kit-pap-value-5.jpg
 short_desc: طقم تبييض بضوء LED مع جل PAP خالٍ من البيروكسيد، وتركيبة تحتوي على هيدروكسي أباتيت النانوي.
 related_articles:
   - fahm-tabyid-al-asnan-al-aman

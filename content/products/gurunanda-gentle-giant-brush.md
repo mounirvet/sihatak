@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/gurunanda-gentle-giant-brush-1.jpg
   - /images/shop/gurunanda-gentle-giant-brush-2.jpg
+  - /images/shop/gurunanda-gentle-giant-brush-3.jpg
+  - /images/shop/gurunanda-gentle-giant-brush-4.jpg
+  - /images/shop/gurunanda-gentle-giant-brush-5.jpg
 short_desc: عبوة 4 فرش أسنان يدوية بشعيرات ناعمة مزدوجة الحركة، لتنظيف يومي لطيف.
 related_articles:
   - kayfa-akhtar-furshat-al-asnan

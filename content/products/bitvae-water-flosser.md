@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/bitvae-water-flosser-1.jpg
   - /images/shop/bitvae-water-flosser-2.jpg
+  - /images/shop/bitvae-water-flosser-3.jpg
+  - /images/shop/bitvae-water-flosser-4.jpg
+  - /images/shop/bitvae-water-flosser-5.jpg
 short_desc: خيط مائي لاسلكي محمول بأوضاع متعددة ورؤوس متبادلة، لتنظيف ما بين الأسنان.
 related_articles:
   - kayfa-astakhdim-khayt-al-asnan

@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/ceelike-probiotic-oral-spray-1.jpg
   - /images/shop/ceelike-probiotic-oral-spray-2.jpg
+  - /images/shop/ceelike-probiotic-oral-spray-3.jpg
+  - /images/shop/ceelike-probiotic-oral-spray-4.jpg
+  - /images/shop/ceelike-probiotic-oral-spray-5.jpg
 short_desc: رذاذ فموي بتركيبة بروبيوتيك لانتعاش النفس ودعم توازن الفم، عملي للحمل.
 related_articles:
   - raihat-al-fam-wa-amrad-al-litha

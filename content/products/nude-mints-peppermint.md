@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/nude-mints-peppermint-1.jpg
   - /images/shop/nude-mints-peppermint-2.jpg
+  - /images/shop/nude-mints-peppermint-3.jpg
+  - /images/shop/nude-mints-peppermint-4.jpg
+  - /images/shop/nude-mints-peppermint-5.jpg
 short_desc: كبسولات نعناع سائلة خالية من السكر وبدون سعرات، لانتعاش سريع للنفس.
 related_articles:
   - raihat-al-fam-wa-amrad-al-litha

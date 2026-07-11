@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/uv-sanitizer-booster-1.jpg
   - /images/shop/uv-sanitizer-booster-2.jpg
+  - /images/shop/uv-sanitizer-booster-3.jpg
+  - /images/shop/uv-sanitizer-booster-4.jpg
+  - /images/shop/uv-sanitizer-booster-5.jpg
 short_desc: معقّم فرشاة أسنان بأشعة UV-C، دورة تعقيم تلقائية وشحن USB-C، يناسب الفرش اليدوية والكهربائية.
 related_articles:
   - istibdal-furshat-al-asnan

@@ -14,6 +14,9 @@ stripe_payment_link: ""
 images:
   - /images/shop/hello-kids-toothpaste-brush-bundle-1.jpg
   - /images/shop/hello-kids-toothpaste-brush-bundle-2.jpg
+  - /images/shop/hello-kids-toothpaste-brush-bundle-3.jpg
+  - /images/shop/hello-kids-toothpaste-brush-bundle-4.jpg
+  - /images/shop/hello-kids-toothpaste-brush-bundle-5.jpg
 short_desc: باقة متنوعة للأطفال تشمل معاجين وفرشًا بتصاميم محبّبة، لتشجيع روتين تنظيف ممتع.
 related_articles:
   - kammiyat-maajun-al-fluraid-lil-atfal
