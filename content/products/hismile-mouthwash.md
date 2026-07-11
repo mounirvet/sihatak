@@ -1,0 +1,27 @@
+---
+slug: hismile-mouthwash
+title_ar: غسول الفم – Hismile
+category: mouthwash
+price: 69
+currency: SAR
+compare_at_price: 89
+sku: MW-HIS-STD
+in_stock: true
+brand_neutral: false
+shipping_days_min: 7
+shipping_days_max: 14
+stripe_payment_link: ""
+images:
+  - /images/shop/hismile-mouthwash-1.jpg
+  - /images/shop/hismile-mouthwash-2.jpg
+short_desc: غسول فم من Hismile للعناية اليومية وانتعاش النفس، بتركيبة لطيفة.
+related_articles:
+  - ghasul-al-fam-hal-ahtajuh
+  - ghasul-al-fam-li-sihhat-al-litha
+---
+
+غسول الفم من Hismile يقدّم خيارًا للعناية اليومية وانتعاش النفس بتركيبة لطيفة حسب المصنّع، يُستخدم ضمن روتين تنظيف الأسنان المعتاد.
+
+المزايا كما يذكرها المصنّع. الغسول مكمّل لروتينك اليومي؛ استشر طبيب الأسنان لتحديد ما يناسب حالتك.
+
+**مدة الشحن:** من 7 إلى 14 يوم عمل داخل دول الخليج.

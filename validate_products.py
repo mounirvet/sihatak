@@ -12,6 +12,7 @@ REQUIRED = ["slug", "title_ar", "category", "price", "sku"]
 VALID_CATEGORIES = {
     "whitening","electric-brushes","interdental-care","aligner-care",
     "kids","gum-care","fresh-breath","accessories",
+    "toothpaste","mouthwash","denture-care",
 }
 # Stray non-Arabic/non-ASCII scripts that signal corruption.
 CYRILLIC = re.compile(r"[\u0400-\u04FF]")
