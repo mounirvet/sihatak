@@ -126,6 +126,16 @@ export default function ProductPage({ params }) {
           <p className="mt-3 text-xs text-ink/50">
             يتم إتمام الدفع بشكل آمن عبر Stripe.
           </p>
+
+          <p className="mt-2 text-xs text-ink/50">
+            <Link href="/shop/al-shahn/" className="text-teal hover:underline">
+              الشحن والتوصيل
+            </Link>
+            {" · "}
+            <Link href="/shop/al-istirja/" className="text-teal hover:underline">
+              الاستبدال والاسترجاع
+            </Link>
+          </p>
         </div>
       </div>
 

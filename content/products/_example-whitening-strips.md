@@ -3,7 +3,7 @@ slug: whitening-strips-14day
 title_ar: لصقات تبييض الأسنان – برنامج 14 يوم
 category: whitening
 price: 89
-currency: AED
+currency: SAR
 compare_at_price: 129
 sku: WHT-STR-14
 in_stock: true

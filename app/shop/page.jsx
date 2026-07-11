@@ -49,6 +49,17 @@ export default function ShopHomePage() {
           );
         })}
       </div>
+
+      {/* Trust + policy links */}
+      <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t border-mint pt-6 text-sm text-teal">
+        <Link href="/shop/al-shahn/" className="hover:underline">
+          الشحن والتوصيل
+        </Link>
+        <Link href="/shop/al-istirja/" className="hover:underline">
+          الاستبدال والاسترجاع
+        </Link>
+        <span className="text-ink/50">الدفع الآمن عبر Stripe</span>
+      </div>
     </main>
   );
 }
