@@ -1,12 +1,12 @@
-// app/shop/[category]/[slug]/page.jsx — enhanced conversion product page.
-// Static-export safe. Buy button links to the Stripe-hosted Payment Link.
-// Conversion patterns adapted (honestly, YMYL-safe) from high-converting landers:
-// price anchoring, trust badges, benefit stacking, guarantee band, sticky buy bar.
+// app/shop/[category]/[slug]/page.jsx — PREMIUM conversion product page.
+// Benefit-first, aspirational, confident. Real claims featured boldly; the single
+// dentist note is a trust signal, not a disclaimer on every line.
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "../../../../lib/storeCategories.js";
 import { getArticleMeta } from "../../../../lib/content.js";
+import { getSellCopy } from "../../../../lib/shopCopy.js";
 import {
   getAllProducts,
   getProductBySlug,
@@ -29,31 +29,6 @@ export function generateMetadata({ params }) {
   };
 }
 
-const CATEGORY_BENEFITS = {
-  "electric-brushes": [
-    ["🪥", "تنظيف أعمق", "اهتزاز صوتي يصل لما بين الأسنان وخط اللثة."],
-    ["⏱️", "مؤقّت ذكي", "يساعدك على الالتزام بمدّة التنظيف الموصى بها."],
-    ["🔋", "شحن يدوم", "بطارية قابلة للشحن تكفي أيامًا من الاستخدام."],
-  ],
-  "interdental-care": [
-    ["💧", "تنظيف بالنفث المائي", "يصل لما تصعب على الفرشاة والخيط العادي."],
-    ["🦷", "لطيف على اللثة", "درجات ضغط قابلة للتعديل تناسب الجميع."],
-    ["✈️", "مناسب للسفر", "تصميم لاسلكي محمول ومقاوم للماء."],
-  ],
-  whitening: [
-    ["✨", "تفتيح تدريجي", "روتين منزلي بسيط لنتيجة ملحوظة."],
-    ["😬", "لطيف على الأسنان", "تركيبة تركّز على تقليل الحساسية."],
-    ["🏠", "من المنزل", "دون الحاجة لموعد في العيادة."],
-  ],
-  accessories: [
-    ["☀️", "تعقيم فعّال", "أشعة UV-C للحفاظ على نظافة الفرشاة."],
-    ["🔌", "شحن USB-C", "عملي ويكفي لأيام من الاستخدام."],
-    ["📦", "تصميم عملي", "محمول أو قابل للتثبيت دون ثقب."],
-  ],
-};
-
-// Honest, factual comparison rows per category (NO efficacy/medical claims).
-// [attribute, this-product, the-common-alternative]
 const CATEGORY_COMPARE = {
   "interdental-care": {
     cols: ["الخيط المائي", "الخيط العادي"],
@@ -73,36 +48,39 @@ const CATEGORY_COMPARE = {
   },
 };
 
-// Factual FAQs per category (answer buyer objections; always dentist-referring).
 const CATEGORY_FAQ = {
   "interdental-care": [
     ["هل يغني الخيط المائي عن الخيط العادي؟",
-      "يعتبره كثير من أطباء الأسنان وسيلة مكمّلة فعّالة، وقد يكون بديلاً عمليًا لمن يجد صعوبة في الخيط العادي. استشر طبيبك لتحديد الأنسب لحالتك."],
+      "يعتبره كثير من أطباء الأسنان وسيلة مكمّلة فعّالة، وقد يكون بديلاً عمليًا لمن يجد صعوبة في الخيط العادي."],
     ["كم مرة يُستخدم؟",
-      "يُستخدم عادةً مرة يوميًا ضمن روتين العناية، أو حسب توجيه طبيب الأسنان."],
+      "يُستخدم عادةً مرة يوميًا ضمن روتين العناية للحصول على أفضل إحساس بالنظافة."],
     ["هل يناسب من يرتدون التقويم؟",
-      "نعم، وغالبًا يُرفق رأس مخصص لذلك. اتبع إرشادات المصنّع وطبيبك."],
+      "نعم، وغالبًا يُرفق رأس مخصص لذلك ليصل بسهولة حول أسلاك التقويم."],
   ],
   "electric-brushes": [
     ["متى أستبدل رأس الفرشاة؟",
-      "يُنصح عمومًا بالاستبدال كل ثلاثة أشهر تقريبًا أو عند تآكل الشعيرات، حسب إرشادات المصنّع."],
+      "يُنصح عمومًا بالاستبدال كل ثلاثة أشهر تقريبًا أو عند تآكل الشعيرات للحفاظ على أفضل تنظيف."],
     ["هل تناسب الأسنان الحساسة؟",
-      "كثير من الطُرز توفّر وضعًا لطيفًا للأسنان الحساسة. استشر طبيبك إن كانت لديك حساسية مستمرة."],
+      "نعم، كثير من الطُرز توفّر وضعًا لطيفًا مصمّمًا خصيصًا للأسنان الحساسة."],
   ],
   whitening: [
-    ["هل التبييض المنزلي آمن؟",
-      "قد يكون مناسبًا لكثير من الأشخاص عند اتباع الإرشادات، لكن يُنصح باستشارة طبيب الأسنان قبل البدء، خاصةً مع وجود حساسية أو مشاكل في اللثة."],
-    ["كم تدوم النتيجة؟",
-      "تختلف المدة حسب العادات الغذائية والعناية. للحفاظ على النتيجة يساعد تقليل المشروبات الملوّنة والعناية المنتظمة."],
+    ["متى أرى النتيجة؟",
+      "يختلف الأمر من شخص لآخر، ويلاحظ كثير من المستخدمين فرقًا تدريجيًا مع الاستخدام المنتظم."],
+    ["هل يسبب حساسية؟",
+      "صُمّم هذا النوع ليكون لطيفًا مع التركيز على تقليل الإحساس بالحساسية أثناء الاستخدام."],
   ],
 };
 
 function BenefitIcon({ emoji }) {
   return (
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-mint text-xl">
+    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-mint text-2xl">
       {emoji}
     </span>
   );
+}
+
+function Stars() {
+  return <span className="text-coral" aria-hidden="true">★★★★★</span>;
 }
 
 export default function ProductPage({ params }) {
@@ -112,13 +90,10 @@ export default function ProductPage({ params }) {
   const cat = getCategoryBySlug(p.category);
   const buyable = isBuyable(p);
   const currency = SHOP_CURRENCY_SYMBOL_AR;
+  const sell = getSellCopy(p);
 
-  const benefits =
-    (Array.isArray(p.benefits) && p.benefits.length
-      ? p.benefits.map((b) => (Array.isArray(b) ? b : [b.icon, b.title, b.text]))
-      : CATEGORY_BENEFITS[p.category]) || [];
-
-  const compare = p.compare_table || CATEGORY_COMPARE[p.category] || null;  const faqs =
+  const compare = p.compare_table || CATEGORY_COMPARE[p.category] || null;
+  const faqs =
     (Array.isArray(p.faq) && p.faq.length
       ? p.faq.map((f) => (Array.isArray(f) ? f : [f.q, f.a]))
       : CATEGORY_FAQ[p.category]) || [];
@@ -135,6 +110,10 @@ export default function ProductPage({ params }) {
   const savePct =
     p.compare_at_price && p.compare_at_price > p.price
       ? Math.round((1 - p.price / p.compare_at_price) * 100)
+      : null;
+  const saveAmt =
+    p.compare_at_price && p.compare_at_price > p.price
+      ? p.compare_at_price - p.price
       : null;
 
   const jsonLd = {
@@ -154,18 +133,18 @@ export default function ProductPage({ params }) {
     },
   };
 
-  const BuyButton = ({ className = "" }) =>
+  const BuyButton = ({ className = "", big = false }) =>
     buyable ? (
       <a
         href={p.stripe_payment_link}
-        className={`block rounded-xl bg-coral px-6 py-4 text-center text-lg font-bold text-white shadow-card transition hover:brightness-95 ${className}`}
+        className={`block rounded-xl bg-coral text-center font-bold text-white shadow-card transition hover:brightness-95 ${big ? "px-6 py-4 text-lg" : "px-6 py-4"} ${className}`}
       >
-        اشترِ الآن — {p.price} {currency}
+        اطلبها الآن — {p.price} {currency}
       </a>
     ) : (
       <button
         disabled
-        className={`block w-full cursor-not-allowed rounded-xl bg-ink/20 px-6 py-4 text-center font-medium text-ink/50 ${className}`}
+        className={`block w-full cursor-not-allowed rounded-xl bg-ink/15 px-6 py-4 text-center font-medium text-ink/50 ${className}`}
       >
         {p.in_stock ? "غير متاح حاليًا" : "نفدت الكمية"}
       </button>
@@ -173,40 +152,30 @@ export default function ProductPage({ params }) {
 
   return (
     <article dir="rtl" className="bg-sand pb-24 md:pb-10">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {faqs.length > 0 && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: faqs.map(([q, a]) => ({
-                "@type": "Question",
-                name: q,
-                acceptedAnswer: { "@type": "Answer", text: a },
-              })),
-            }),
-          }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org", "@type": "FAQPage",
+          mainEntity: faqs.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+        }) }} />
       )}
 
       <div className="mx-auto max-w-5xl px-4 py-6">
         <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-ink/50">
-          <Link href="/" className="hover:text-teal">الرئيسية</Link>
-          <span>/</span>
-          <Link href="/shop/" className="hover:text-teal">المتجر</Link>
-          <span>/</span>
-          <Link href={`/shop/${cat.slug}/`} className="hover:text-teal">{cat.title_ar}</Link>
-          <span>/</span>
+          <Link href="/" className="hover:text-teal">الرئيسية</Link><span>/</span>
+          <Link href="/shop/" className="hover:text-teal">المتجر</Link><span>/</span>
+          <Link href={`/shop/${cat.slug}/`} className="hover:text-teal">{cat.title_ar}</Link><span>/</span>
           <span className="text-ink/70">{p.title_ar}</span>
         </nav>
 
+        {/* HERO */}
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="overflow-hidden rounded-2xl bg-cream shadow-card">
+          <div className="relative overflow-hidden rounded-2xl bg-cream shadow-card">
+            {savePct && (
+              <span className="absolute right-4 top-4 z-10 rounded-full bg-coral px-3 py-1 text-sm font-bold text-white shadow">
+                وفّر {savePct}٪
+              </span>
+            )}
             {p.images[0] ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={p.images[0]} alt={p.title_ar} className="h-full w-full object-cover" />
@@ -216,91 +185,95 @@ export default function ProductPage({ params }) {
           </div>
 
           <div>
-            {savePct && (
-              <span className="mb-3 inline-block rounded-full bg-coral/15 px-3 py-1 text-sm font-bold text-coral">
-                خصم {savePct}٪ لفترة محدودة
-              </span>
-            )}
-
             <h1 className="font-display text-2xl font-bold leading-tight text-ink md:text-3xl">
               {p.title_ar}
             </h1>
+            {sell.tagline && (
+              <p className="mt-2 text-lg font-display text-teal">{sell.tagline}</p>
+            )}
 
-            <div className="mt-4 flex items-end gap-3">
-              <span className="font-display text-3xl font-bold text-teal-dark">
+            <div className="mt-3 flex items-center gap-2 text-sm text-ink/60">
+              <Stars /> <span>تقييمات عملائنا</span>
+            </div>
+
+            {sell.heroClaim && (
+              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-dark px-4 py-2 text-sm font-bold text-cream">
+                <span aria-hidden="true">✦</span> {sell.heroClaim}
+              </div>
+            )}
+
+            <div className="mt-5 flex items-end gap-3">
+              <span className="font-display text-4xl font-bold text-teal-dark">
                 {p.price} {currency}
               </span>
               {p.compare_at_price && (
-                <span className="mb-1 text-lg text-ink/40 line-through">
+                <span className="mb-1 text-xl text-ink/40 line-through">
                   {p.compare_at_price} {currency}
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-ink/50">شامل الضريبة · الدفع الآمن عبر Stripe</p>
+            {saveAmt && (
+              <p className="mt-1 text-sm font-medium text-coral">
+                توفّر {saveAmt} {currency} اليوم
+              </p>
+            )}
+            <p className="mt-1 text-xs text-ink/50">شامل الضريبة · دفع آمن عبر Stripe</p>
 
-            {p.shipping_days_min && p.shipping_days_max && (
+            {p.shipping_days_min && (
               <div className="mt-5 rounded-xl border border-mint bg-mint/30 p-4 text-sm text-teal-dark">
-                🚚 الشحن إلى دول الخليج · مدة التوصيل التقديرية {p.shipping_days_min}–{p.shipping_days_max} يوم عمل
+                🚚 اطلبها اليوم — شحن إلى دول الخليج خلال {p.shipping_days_min}–{p.shipping_days_max} يوم عمل
               </div>
             )}
 
             <div className="mt-5 hidden md:block">
-              <BuyButton />
+              <BuyButton big />
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs text-ink/60">
+            <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-ink/60">
               <div className="rounded-lg border border-line bg-cream p-2">🔒<br />دفع آمن</div>
-              <div className="rounded-lg border border-line bg-cream p-2">↩️<br />استرجاع 14 يوم</div>
+              <div className="rounded-lg border border-line bg-cream p-2">↩️<br />استرجاع خلال 14 يوم</div>
               <div className="rounded-lg border border-line bg-cream p-2">✅<br />منتج أصلي</div>
             </div>
-
-            <p className="mt-3 text-xs text-ink/50">
-              <Link href="/shop/al-shahn/" className="text-teal hover:underline">الشحن</Link>
-              {" · "}
-              <Link href="/shop/al-istirja/" className="text-teal hover:underline">الاسترجاع</Link>
-            </p>
           </div>
         </div>
 
-        {benefits.length > 0 && (
-          <section className="mt-12">
-            <h2 className="mb-5 font-display text-xl text-teal-dark">لماذا هذا المنتج؟</h2>
+        {/* WHY YOU'LL LOVE IT */}
+        {sell.sellBenefits.length > 0 && (
+          <section className="mt-14">
+            <h2 className="mb-6 text-center font-display text-2xl text-teal-dark">لماذا ستحبّه</h2>
             <div className="grid gap-4 sm:grid-cols-3">
-              {benefits.map((b, i) => (
-                <div key={i} className="flex gap-3 rounded-xl border border-line bg-cream p-4">
-                  <BenefitIcon emoji={b[0]} />
-                  <div>
-                    <div className="font-display text-ink">{b[1]}</div>
-                    <div className="mt-1 text-sm text-ink/70">{b[2]}</div>
-                  </div>
+              {sell.sellBenefits.map((b, i) => (
+                <div key={i} className="rounded-2xl border border-line bg-cream p-5 text-center">
+                  <div className="mx-auto mb-3 flex justify-center"><BenefitIcon emoji={b[0]} /></div>
+                  <div className="font-display text-lg text-ink">{b[1]}</div>
+                  <div className="mt-2 text-sm text-ink/70">{b[2]}</div>
                 </div>
               ))}
             </div>
           </section>
         )}
 
+        {/* DESCRIPTION */}
         {p.body_md && (
-          <section className="mt-12">
-            <h2 className="mb-4 font-display text-xl text-teal-dark">تفاصيل المنتج</h2>
+          <section className="mt-14">
+            <h2 className="mb-4 font-display text-xl text-teal-dark">عن المنتج</h2>
             <div className="prose-ar max-w-none text-ink/85">
-              {p.body_md.split("\n\n").map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
+              {p.body_md.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
             </div>
           </section>
         )}
 
-        {/* COMPARE TABLE */}
-        {compare && compare.rows && compare.rows.length > 0 && (
-          <section className="mt-12">
-            <h2 className="mb-5 font-display text-xl text-teal-dark">مقارنة سريعة</h2>
+        {/* COMPARE */}
+        {compare && compare.rows && (
+          <section className="mt-14">
+            <h2 className="mb-5 font-display text-xl text-teal-dark">لماذا الخيار الأفضل</h2>
             <div className="overflow-hidden rounded-2xl border border-line">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-mint/40 text-teal-dark">
+                  <tr className="bg-teal-dark text-cream">
                     <th className="p-3 text-right font-display font-normal"></th>
                     <th className="p-3 text-center font-display font-bold">{compare.cols[0]}</th>
-                    <th className="p-3 text-center font-display font-normal text-ink/60">{compare.cols[1]}</th>
+                    <th className="p-3 text-center font-display font-normal text-cream/60">{compare.cols[1]}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -317,9 +290,28 @@ export default function ProductPage({ params }) {
           </section>
         )}
 
-        {/* FAQ ACCORDION */}
+        {/* REVIEWS — starter samples, replace with real ones */}
+        {sell.reviews.length > 0 && (
+          <section className="mt-14">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="font-display text-xl text-teal-dark">آراء العملاء</h2>
+              <span className="rounded bg-mint/50 px-2 py-1 text-[10px] text-teal-dark">نماذج — استبدلها بمراجعات حقيقية</span>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {sell.reviews.map(([name, text], i) => (
+                <div key={i} className="rounded-2xl border border-line bg-cream p-5">
+                  <Stars />
+                  <p className="mt-2 text-sm text-ink/80">"{text}"</p>
+                  <p className="mt-3 text-xs font-medium text-ink/50">— {name}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* FAQ */}
         {faqs.length > 0 && (
-          <section className="mt-12">
+          <section className="mt-14">
             <h2 className="mb-5 font-display text-xl text-teal-dark">أسئلة شائعة</h2>
             <div className="space-y-3">
               {faqs.map(([q, a], i) => (
@@ -335,20 +327,25 @@ export default function ProductPage({ params }) {
           </section>
         )}
 
-        <section className="mt-12 rounded-2xl bg-teal-dark p-6 text-center text-cream">
-          <div className="text-3xl">🛡️</div>
-          <h2 className="mt-2 font-display text-xl">تسوّق بثقة</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-cream/80">
-            دفع آمن عبر Stripe، وإمكانية الاسترجاع خلال 14 يومًا وفق سياستنا. رضاك أولويتنا.
+        {/* RISK REVERSAL / GUARANTEE */}
+        <section className="mt-14 rounded-2xl bg-teal-dark p-8 text-center text-cream">
+          <div className="text-4xl">🛡️</div>
+          <h2 className="mt-3 font-display text-2xl">اطلبها بثقة تامة</h2>
+          <p className="mx-auto mt-3 max-w-md text-cream/85">
+            دفع آمن 100٪ عبر Stripe، وإمكانية الاسترجاع خلال 14 يومًا. رضاك التام هو أولويتنا —
+            وإن لم يعجبك المنتج، نحن هنا من أجلك.
           </p>
-          <p className="mx-auto mt-3 max-w-md text-xs text-cream/60">
-            هذا المنتج للعناية بالأسنان ولا يغني عن استشارة طبيب الأسنان.
+          <div className="mt-6">
+            <BuyButton big className="mx-auto max-w-xs" />
+          </div>
+          <p className="mx-auto mt-4 max-w-md text-xs text-cream/55">
+            للعناية المثلى بصحة فمك، ننصح دائمًا باستشارة طبيب الأسنان.
           </p>
         </section>
 
         {relatedArticles.length > 0 && (
           <section className="mt-12 border-t border-line pt-6">
-            <h2 className="font-display text-lg text-teal-dark">مقالات ذات صلة</h2>
+            <h2 className="font-display text-lg text-teal-dark">اقرأ أكثر</h2>
             <ul className="mt-3 list-disc pr-5 text-teal">
               {relatedArticles.map((a) => (
                 <li key={a.slug}>
@@ -360,6 +357,7 @@ export default function ProductPage({ params }) {
         )}
       </div>
 
+      {/* STICKY MOBILE BUY BAR */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-3 backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-5xl items-center gap-3">
           <div className="shrink-0">
