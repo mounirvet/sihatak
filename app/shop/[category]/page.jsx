@@ -12,6 +12,7 @@ import {
   getProductsByCategory,
   SHOP_CURRENCY_SYMBOL_AR,
 } from "../../../lib/products.js";
+import { ShopIcon, IcLock, IcShip, IcReturn } from "../../../components/ShopIcons.js";
 
 export function generateStaticParams() {
   return allCategorySlugs().map((category) => ({ category }));
@@ -76,7 +77,7 @@ export default function CategoryPage({ params }) {
                       loading="lazy"
                     />
                   ) : (
-                    <span className="text-3xl text-teal/20">🦷</span>
+                    <ShopIcon name="tooth" className="h-10 w-10 text-teal/25" />
                   )}
                 </div>
                 <h2 className="mt-3 text-sm font-medium text-ink line-clamp-2">
@@ -100,9 +101,9 @@ export default function CategoryPage({ params }) {
 
       {/* Trust strip */}
       <div className="mt-10 grid grid-cols-3 gap-3 border-t border-mint pt-6 text-center text-xs text-ink/60">
-        <div>🔒<br />دفع آمن عبر Stripe</div>
-        <div>🚚<br />شحن إلى دول الخليج</div>
-        <div>↩️<br />استرجاع خلال 14 يوم</div>
+        <div className="flex flex-col items-center gap-1.5"><IcLock className="h-5 w-5 text-teal" />دفع آمن عبر Stripe</div>
+        <div className="flex flex-col items-center gap-1.5"><IcShip className="h-5 w-5 text-teal" />شحن إلى دول الخليج</div>
+        <div className="flex flex-col items-center gap-1.5"><IcReturn className="h-5 w-5 text-teal" />استرجاع خلال 14 يوم</div>
       </div>
     </main>
   );

@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { STORE_CATEGORIES } from "../../lib/storeCategories.js";
+import { ShopIcon, IcLock, IcShip, IcReturn } from "../../components/ShopIcons.js";
 import {
   getProductsByCategory,
   getAllProducts,
@@ -32,10 +33,10 @@ export default function ShopHomePage() {
         <p className="mx-auto mt-3 max-w-2xl text-cream/85">
           منتجات مختارة للعناية اليومية بأسنانك، مع شحن إلى دول الخليج ودفع آمن عبر Stripe.
         </p>
-        <div className="mt-5 flex flex-wrap justify-center gap-4 text-sm text-cream/70">
-          <span>🔒 دفع آمن</span>
-          <span>🚚 شحن خليجي</span>
-          <span>↩️ استرجاع 14 يوم</span>
+        <div className="mt-5 flex flex-wrap justify-center gap-5 text-sm text-cream/75">
+          <span className="inline-flex items-center gap-1.5"><IcLock className="h-4 w-4" /> دفع آمن</span>
+          <span className="inline-flex items-center gap-1.5"><IcShip className="h-4 w-4" /> شحن خليجي</span>
+          <span className="inline-flex items-center gap-1.5"><IcReturn className="h-4 w-4" /> استرجاع 14 يوم</span>
         </div>
       </header>
 
@@ -65,7 +66,7 @@ export default function ShopHomePage() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.images[0]} alt={p.title_ar} className="h-full w-full object-cover transition group-hover:scale-105" loading="lazy" />
                     ) : (
-                      <span className="text-3xl text-teal/20">🦷</span>
+                      <ShopIcon name="tooth" className="h-10 w-10 text-teal/25" />
                     )}
                   </div>
                   <h3 className="mt-3 text-sm font-medium text-ink line-clamp-2">{p.title_ar}</h3>

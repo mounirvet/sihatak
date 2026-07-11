@@ -1,13 +1,21 @@
-// app/shop/[category]/[slug]/page.jsx — PREMIUM conversion product page.
+// app/shop/[category]/[slug]/page.jsx — PREMIUM conversion product page (v2).
 // Benefit-first, aspirational, confident. Real claims featured boldly; the single
 // dentist note is a trust signal, not a disclaimer on every line.
+//
+// v2 additions: related products (same category), similar products (cross-category),
+// a deeper description block, a "كيفية الاستخدام" (how-to-use) section, premium
+// interactive CTAs, and ZERO emojis — every glyph is an inline SVG icon.
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "../../../../lib/storeCategories.js";
 import { getArticleMeta } from "../../../../lib/content.js";
 import { getSellCopy } from "../../../../lib/shopCopy.js";
+import { getProductRecommendations } from "../../../../lib/productRelated.js";
 import ProductGallery from "../../../../components/ProductGallery.jsx";
+import BuyButton from "../../../../components/BuyButton.jsx";
+import Reveal from "../../../../components/Reveal.jsx";
+import { ShopIcon, IcLock, IcReturn, IcVerified, IcShip, IcShield, IcStar, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
 import {
   getAllProducts,
   getProductBySlug,
@@ -72,16 +80,54 @@ const CATEGORY_FAQ = {
   ],
 };
 
-function BenefitIcon({ emoji }) {
+function Stars({ className = "" }) {
   return (
-    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-mint text-2xl">
-      {emoji}
+    <span className={`inline-flex items-center gap-0.5 text-coral ${className}`} aria-hidden="true">
+      {[0, 1, 2, 3, 4].map((i) => <IcStar key={i} className="h-4 w-4" />)}
     </span>
   );
 }
 
-function Stars() {
-  return <span className="text-coral" aria-hidden="true">★★★★★</span>;
+// Compact product card reused by related + similar grids.
+function MiniProductCard({ p, currency }) {
+  const savePct =
+    p.compare_at_price && p.compare_at_price > p.price
+      ? Math.round((1 - p.price / p.compare_at_price) * 100)
+      : null;
+  return (
+    <Link
+      href={`/shop/${p.category}/${p.slug}/`}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-cream transition hover:-translate-y-1 hover:border-teal hover:shadow-card"
+    >
+      {savePct ? (
+        <span className="absolute right-3 top-3 z-10 rounded-full bg-coral px-2 py-0.5 text-xs font-bold text-white shadow">
+          -{savePct}٪
+        </span>
+      ) : null}
+      <div className="flex aspect-video items-center justify-center overflow-hidden bg-sand">
+        {p.images && p.images[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={p.images[0]}
+            alt={p.title_ar}
+            loading="lazy"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <ShopIcon name="tooth" className="h-10 w-10 text-teal/25" />
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-3">
+        <h3 className="line-clamp-2 text-sm font-medium text-ink">{p.title_ar}</h3>
+        <div className="mt-auto flex items-baseline gap-2 pt-2">
+          <span className="font-display font-bold text-teal-dark">{p.price} {currency}</span>
+          {p.compare_at_price ? (
+            <span className="text-xs text-ink/40 line-through">{p.compare_at_price}</span>
+          ) : null}
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export default function ProductPage({ params }) {
@@ -92,6 +138,9 @@ export default function ProductPage({ params }) {
   const buyable = isBuyable(p);
   const currency = SHOP_CURRENCY_SYMBOL_AR;
   const sell = getSellCopy(p);
+
+  const allProducts = getAllProducts();
+  const { related, similar } = getProductRecommendations(p, allProducts, 4, 4);
 
   const compare = p.compare_table || CATEGORY_COMPARE[p.category] || null;
   const faqs =
@@ -117,6 +166,12 @@ export default function ProductPage({ params }) {
       ? p.compare_at_price - p.price
       : null;
 
+  // Deep description = deep_desc override, else body_md. Split into paragraphs.
+  const deepParas = (p.deep_desc || p.body_md || "")
+    .split("\n\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const jsonLd = {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -134,22 +189,13 @@ export default function ProductPage({ params }) {
     },
   };
 
-  const BuyButton = ({ className = "", big = false }) =>
-    buyable ? (
-      <a
-        href={p.stripe_payment_link}
-        className={`block rounded-xl bg-coral text-center font-bold text-white shadow-card transition hover:brightness-95 ${big ? "px-6 py-4 text-lg" : "px-6 py-4"} ${className}`}
-      >
-        اطلبها الآن — {p.price} {currency}
-      </a>
-    ) : (
-      <button
-        disabled
-        className={`block w-full cursor-not-allowed rounded-xl bg-ink/15 px-6 py-4 text-center font-medium text-ink/50 ${className}`}
-      >
-        {p.in_stock ? "غير متاح حاليًا" : "نفدت الكمية"}
-      </button>
-    );
+  const buyProps = {
+    href: p.stripe_payment_link,
+    price: p.price,
+    currency,
+    buyable,
+    inStock: p.in_stock,
+  };
 
   return (
     <article dir="rtl" className="bg-sand pb-24 md:pb-10">
@@ -185,7 +231,7 @@ export default function ProductPage({ params }) {
               {p.title_ar}
             </h1>
             {sell.tagline && (
-              <p className="mt-2 text-lg font-display text-teal">{sell.tagline}</p>
+              <p className="mt-2 font-display text-lg text-teal">{sell.tagline}</p>
             )}
 
             <div className="mt-3 flex items-center gap-2 text-sm text-ink/60">
@@ -194,7 +240,7 @@ export default function ProductPage({ params }) {
 
             {sell.heroClaim && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-dark px-4 py-2 text-sm font-bold text-cream">
-                <span aria-hidden="true">✦</span> {sell.heroClaim}
+                <ShopIcon name="spark" className="h-4 w-4" /> {sell.heroClaim}
               </div>
             )}
 
@@ -213,55 +259,116 @@ export default function ProductPage({ params }) {
                 توفّر {saveAmt} {currency} اليوم
               </p>
             )}
-            <p className="mt-1 text-xs text-ink/50">شامل الضريبة · دفع آمن عبر Stripe</p>
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-ink/50">
+              <IcLock className="h-3.5 w-3.5" /> شامل الضريبة · دفع آمن عبر Stripe
+            </p>
+
+            {/* quick highlights */}
+            {Array.isArray(p.highlights) && p.highlights.length > 0 && (
+              <ul className="mt-5 space-y-2">
+                {p.highlights.map((h, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-ink/80">
+                    <IcCircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal" />
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {p.shipping_days_min && (
-              <div className="mt-5 rounded-xl border border-mint bg-mint/30 p-4 text-sm text-teal-dark">
-                🚚 اطلبها اليوم — شحن إلى دول الخليج خلال {p.shipping_days_min}–{p.shipping_days_max} يوم عمل
+              <div className="mt-5 flex items-center gap-2 rounded-xl border border-mint bg-mint/30 p-4 text-sm text-teal-dark">
+                <IcShip className="h-5 w-5 shrink-0" />
+                <span>اطلبها اليوم — شحن إلى دول الخليج خلال {p.shipping_days_min}–{p.shipping_days_max} يوم عمل</span>
               </div>
             )}
 
             <div className="mt-5 hidden md:block">
-              <BuyButton big />
+              <BuyButton {...buyProps} big block />
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-ink/60">
-              <div className="rounded-lg border border-line bg-cream p-2">🔒<br />دفع آمن</div>
-              <div className="rounded-lg border border-line bg-cream p-2">↩️<br />استرجاع خلال 14 يوم</div>
-              <div className="rounded-lg border border-line bg-cream p-2">✅<br />منتج أصلي</div>
+              <div className="flex flex-col items-center gap-1 rounded-lg border border-line bg-cream p-3">
+                <IcLock className="h-5 w-5 text-teal" /> دفع آمن
+              </div>
+              <div className="flex flex-col items-center gap-1 rounded-lg border border-line bg-cream p-3">
+                <IcReturn className="h-5 w-5 text-teal" /> استرجاع 14 يوم
+              </div>
+              <div className="flex flex-col items-center gap-1 rounded-lg border border-line bg-cream p-3">
+                <IcVerified className="h-5 w-5 text-teal" /> منتج أصلي
+              </div>
             </div>
           </div>
         </div>
 
         {/* WHY YOU'LL LOVE IT */}
         {sell.sellBenefits.length > 0 && (
-          <section className="mt-14">
+          <Reveal as="section" className="mt-16">
             <h2 className="mb-6 text-center font-display text-2xl text-teal-dark">لماذا ستحبّه</h2>
             <div className="grid gap-4 sm:grid-cols-3">
               {sell.sellBenefits.map((b, i) => (
-                <div key={i} className="rounded-2xl border border-line bg-cream p-5 text-center">
-                  <div className="mx-auto mb-3 flex justify-center"><BenefitIcon emoji={b[0]} /></div>
+                <div key={i} className="group rounded-2xl border border-line bg-cream p-6 text-center transition hover:-translate-y-1 hover:border-teal hover:shadow-card">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-mint text-teal-dark transition group-hover:bg-teal group-hover:text-cream">
+                    <ShopIcon name={b[0]} className="h-7 w-7" />
+                  </div>
                   <div className="font-display text-lg text-ink">{b[1]}</div>
                   <div className="mt-2 text-sm text-ink/70">{b[2]}</div>
                 </div>
               ))}
             </div>
-          </section>
+          </Reveal>
         )}
 
-        {/* DESCRIPTION */}
-        {p.body_md && (
-          <section className="mt-14">
-            <h2 className="mb-4 font-display text-xl text-teal-dark">عن المنتج</h2>
-            <div className="prose-ar max-w-none text-ink/85">
-              {p.body_md.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
+        {/* DEEP DESCRIPTION */}
+        {deepParas.length > 0 && (
+          <Reveal as="section" className="mt-16">
+            <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
+              <div>
+                <h2 className="font-display text-2xl text-teal-dark">عن المنتج</h2>
+                <p className="mt-2 text-sm text-ink/60">كل ما تريد معرفته قبل الطلب.</p>
+              </div>
+              <div className="prose-ar max-w-none space-y-4 text-[15px] leading-relaxed text-ink/85">
+                {deepParas.map((para, i) => {
+                  // bold-lead markdown "**...**" stays readable as a subheading
+                  const m = para.match(/^\*\*(.+?)\*\*\s*(.*)$/s);
+                  if (m) {
+                    return (
+                      <p key={i}>
+                        <span className="font-display font-bold text-teal-dark">{m[1]}</span>
+                        {m[2] ? ` ${m[2]}` : ""}
+                      </p>
+                    );
+                  }
+                  return <p key={i}>{para}</p>;
+                })}
+              </div>
             </div>
-          </section>
+          </Reveal>
+        )}
+
+        {/* HOW TO USE */}
+        {sell.howTo.length > 0 && (
+          <Reveal as="section" className="mt-16 rounded-3xl bg-teal-dark px-6 py-10 text-cream md:px-10">
+            <div className="mb-8 text-center">
+              <h2 className="font-display text-2xl">كيفية الاستخدام</h2>
+              <p className="mt-2 text-sm text-cream/70">خطوات بسيطة للحصول على أفضل نتيجة.</p>
+            </div>
+            <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {sell.howTo.map(([title, detail], i) => (
+                <li key={i} className="relative rounded-2xl bg-cream/5 p-5 ring-1 ring-cream/10">
+                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-coral font-display text-lg font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div className="font-display text-base text-cream">{title}</div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-cream/75">{detail}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
         )}
 
         {/* COMPARE */}
         {compare && compare.rows && (
-          <section className="mt-14">
+          <Reveal as="section" className="mt-16">
             <h2 className="mb-5 font-display text-xl text-teal-dark">لماذا الخيار الأفضل</h2>
             <div className="overflow-hidden rounded-2xl border border-line">
               <table className="w-full text-sm">
@@ -276,19 +383,23 @@ export default function ProductPage({ params }) {
                   {compare.rows.map((r, i) => (
                     <tr key={i} className={i % 2 ? "bg-cream" : "bg-sand"}>
                       <td className="p-3 text-right text-ink/80">{r[0]}</td>
-                      <td className="p-3 text-center font-medium text-teal-dark">✓ {r[1]}</td>
+                      <td className="p-3 text-center font-medium text-teal-dark">
+                        <span className="inline-flex items-center justify-center gap-1">
+                          <IcCircleCheck className="h-4 w-4 text-teal" /> {r[1]}
+                        </span>
+                      </td>
                       <td className="p-3 text-center text-ink/50">{r[2]}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </section>
+          </Reveal>
         )}
 
-        {/* REVIEWS — starter samples, replace with real ones */}
+        {/* REVIEWS */}
         {sell.reviews.length > 0 && (
-          <section className="mt-14">
+          <Reveal as="section" className="mt-16">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="font-display text-xl text-teal-dark">آراء العملاء</h2>
               <span className="rounded bg-mint/50 px-2 py-1 text-[10px] text-teal-dark">نماذج — استبدلها بمراجعات حقيقية</span>
@@ -297,55 +408,89 @@ export default function ProductPage({ params }) {
               {sell.reviews.map(([name, text], i) => (
                 <div key={i} className="rounded-2xl border border-line bg-cream p-5">
                   <Stars />
-                  <p className="mt-2 text-sm text-ink/80">"{text}"</p>
+                  <p className="mt-2 text-sm text-ink/80">{text}</p>
                   <p className="mt-3 text-xs font-medium text-ink/50">— {name}</p>
                 </div>
               ))}
             </div>
-          </section>
+          </Reveal>
         )}
 
         {/* FAQ */}
         {faqs.length > 0 && (
-          <section className="mt-14">
+          <Reveal as="section" className="mt-16">
             <h2 className="mb-5 font-display text-xl text-teal-dark">أسئلة شائعة</h2>
             <div className="space-y-3">
               {faqs.map(([q, a], i) => (
                 <details key={i} className="group rounded-xl border border-line bg-cream p-4">
-                  <summary className="flex cursor-pointer items-center justify-between font-display text-ink">
+                  <summary className="flex cursor-pointer list-none items-center justify-between font-display text-ink">
                     <span>{q}</span>
-                    <span className="text-teal transition group-open:rotate-180">⌄</span>
+                    <IcChevron className="h-4 w-4 text-teal transition group-open:rotate-180" />
                   </summary>
                   <p className="mt-3 text-sm leading-relaxed text-ink/75">{a}</p>
                 </details>
               ))}
             </div>
-          </section>
+          </Reveal>
         )}
 
-        {/* RISK REVERSAL / GUARANTEE */}
-        <section className="mt-14 rounded-2xl bg-teal-dark p-8 text-center text-cream">
-          <div className="text-4xl">🛡️</div>
-          <h2 className="mt-3 font-display text-2xl">اطلبها بثقة تامة</h2>
+        {/* GUARANTEE / RISK REVERSAL */}
+        <Reveal as="section" className="mt-16 rounded-3xl bg-gradient-to-br from-teal-dark to-teal px-8 py-12 text-center text-cream">
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-cream/10 ring-1 ring-cream/20">
+            <IcShield className="h-8 w-8" />
+          </div>
+          <h2 className="font-display text-2xl">اطلبها بثقة تامة</h2>
           <p className="mx-auto mt-3 max-w-md text-cream/85">
             دفع آمن 100٪ عبر Stripe، وإمكانية الاسترجاع خلال 14 يومًا. رضاك التام هو أولويتنا —
             وإن لم يعجبك المنتج، نحن هنا من أجلك.
           </p>
           <div className="mt-6">
-            <BuyButton big className="mx-auto max-w-xs" />
+            <BuyButton {...buyProps} big className="mx-auto max-w-xs" />
           </div>
-          <p className="mx-auto mt-4 max-w-md text-xs text-cream/55">
-            للعناية المثلى بصحة فمك، ننصح دائمًا باستشارة طبيب الأسنان.
+          <p className="mx-auto mt-4 flex max-w-md items-center justify-center gap-1.5 text-xs text-cream/55">
+            <IcInfo className="h-3.5 w-3.5" /> للعناية المثلى بصحة فمك، ننصح دائمًا باستشارة طبيب الأسنان.
           </p>
-        </section>
+        </Reveal>
 
+        {/* RELATED PRODUCTS — same category */}
+        {related.length > 0 && (
+          <Reveal as="section" className="mt-16">
+            <div className="mb-5 flex items-baseline justify-between">
+              <h2 className="font-display text-xl text-teal-dark">منتجات مشابهة</h2>
+              <Link href={`/shop/${cat.slug}/`} className="text-sm text-teal hover:underline">
+                عرض كل {cat.title_ar}
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {related.map((rp) => <MiniProductCard key={rp.slug} p={rp} currency={currency} />)}
+            </div>
+          </Reveal>
+        )}
+
+        {/* SIMILAR PRODUCTS — cross-category complements */}
+        {similar.length > 0 && (
+          <Reveal as="section" className="mt-14">
+            <div className="mb-5">
+              <h2 className="font-display text-xl text-teal-dark">قد يعجبك أيضًا</h2>
+              <p className="mt-1 text-sm text-ink/60">اختيارات تكمل روتين عنايتك.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {similar.map((sp) => <MiniProductCard key={sp.slug} p={sp} currency={currency} />)}
+            </div>
+          </Reveal>
+        )}
+
+        {/* READ MORE — articles */}
         {relatedArticles.length > 0 && (
-          <section className="mt-12 border-t border-line pt-6">
+          <section className="mt-14 border-t border-line pt-6">
             <h2 className="font-display text-lg text-teal-dark">اقرأ أكثر</h2>
-            <ul className="mt-3 list-disc pr-5 text-teal">
+            <ul className="mt-3 space-y-2">
               {relatedArticles.map((a) => (
                 <li key={a.slug}>
-                  <Link href={`/maqalat/${a.slug}/`} className="hover:underline">{a.title}</Link>
+                  <Link href={`/maqalat/${a.slug}/`} className="inline-flex items-center gap-2 text-teal hover:underline">
+                    <IcChevron className="h-4 w-4 -rotate-90" />
+                    {a.title}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -362,7 +507,7 @@ export default function ProductPage({ params }) {
               <div className="text-xs text-ink/40 line-through">{p.compare_at_price} {currency}</div>
             )}
           </div>
-          <BuyButton className="flex-1" />
+          <BuyButton {...buyProps} block className="flex-1" />
         </div>
       </div>
     </article>

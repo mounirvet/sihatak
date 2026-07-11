@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ShopIcon } from "./ShopIcons.js";
 
 // Product image gallery: large main image + thumbnail strip to switch.
 // Images that fail to load (file not yet added) are removed automatically,
@@ -18,8 +19,8 @@ export default function ProductGallery({ images = [], alt = "" }) {
 
   if (live.length === 0) {
     return (
-      <div className="flex aspect-square items-center justify-center rounded-2xl bg-cream text-6xl text-teal/20 shadow-card">
-        🦷
+      <div className="flex aspect-square items-center justify-center rounded-2xl bg-cream text-teal/20 shadow-card">
+        <ShopIcon name="tooth" className="h-24 w-24" />
       </div>
     );
   }
