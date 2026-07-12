@@ -315,13 +315,6 @@ export default function ProductPage({ params }) {
           </Reveal>
         )}
 
-        {/* WHAT'S IN THE BOX */}
-        {Array.isArray(p.in_box) && p.in_box.length > 0 && (
-          <Reveal as="section" className="mt-16">
-            <InTheBox items={p.in_box} />
-          </Reveal>
-        )}
-
         {/* DEEP DESCRIPTION */}
         {deepParas.length > 0 && (
           <Reveal as="section" className="mt-16">
@@ -370,6 +363,13 @@ export default function ProductPage({ params }) {
                 </li>
               ))}
             </ol>
+          </Reveal>
+        )}
+
+        {/* WHAT'S IN THE BOX */}
+        {Array.isArray(p.in_box) && p.in_box.length > 0 && (
+          <Reveal as="section" className="mt-16">
+            <InTheBox items={p.in_box} />
           </Reveal>
         )}
 
