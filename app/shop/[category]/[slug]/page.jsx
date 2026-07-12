@@ -16,6 +16,7 @@ import ProductGallery from "../../../../components/ProductGallery.jsx";
 import BuyButton from "../../../../components/BuyButton.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
 import ShippingInfo from "../../../../components/ShippingInfo.jsx";
+import InTheBox from "../../../../components/InTheBox.jsx";
 import { ShopIcon, IcLock, IcReturn, IcVerified, IcShield, IcStar, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
 import {
   getAllProducts,
@@ -311,6 +312,13 @@ export default function ProductPage({ params }) {
                 </div>
               ))}
             </div>
+          </Reveal>
+        )}
+
+        {/* WHAT'S IN THE BOX */}
+        {Array.isArray(p.in_box) && p.in_box.length > 0 && (
+          <Reveal as="section" className="mt-16">
+            <InTheBox items={p.in_box} />
           </Reveal>
         )}
 

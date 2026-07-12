@@ -133,6 +133,44 @@ export const IcInfo = (p) => (
   <S {...p}><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></S>
 );
 
+/* ---------- Box-content icons ("ما الذي ستحصل عليه") ---------- */
+export const IcBox = (p) => (
+  <S {...p}><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" /><path d="m4 7.5 8 4.5 8-4.5M12 12v9" /></S>
+);
+export const IcCable = (p) => (
+  <S {...p}><path d="M7 4v4a3 3 0 0 0 3 3h4a3 3 0 0 1 3 3v6" /><path d="M5 4h4M15 18h4" /></S>
+);
+export const IcTip = (p) => ( // replacement head / jet tip
+  <S {...p}><path d="M12 3c1.2 2 2 3.6 2 5a2 2 0 0 1-4 0c0-1.4.8-3 2-5Z" /><path d="M11 10h2v6h-2z" /><rect x="9.5" y="16" width="5" height="5" rx="1.5" /></S>
+);
+export const IcTablet = (p) => (
+  <S {...p}><circle cx="9" cy="10" r="5" /><circle cx="15.5" cy="15" r="5" /></S>
+);
+export const IcBottle = (p) => (
+  <S {...p}><path d="M10 3h4v3l1.5 2.5A3 3 0 0 1 16 10v8a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3v-8a3 3 0 0 1 .5-1.5L10 6V3Z" /><path d="M8 13h8" /></S>
+);
+export const IcCase = (p) => ( // travel case / storage
+  <S {...p}><rect x="3" y="7" width="18" height="12" rx="2.5" /><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12h18" /></S>
+);
+export const IcManual = (p) => ( // guide / instructions
+  <S {...p}><path d="M5 4h9a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4Z" /><path d="M16 6h3v14h-3" /><path d="M8 8h5M8 11h5" /></S>
+);
+export const IcGel = (p) => ( // gel pen / syringe
+  <S {...p}><path d="M5 19l3-3M9 15l6-6a2 2 0 0 1 3 3l-6 6-4 1 1-4Z" /><path d="M14 8l2 2" /></S>
+);
+export const IcMouthpiece = (p) => ( // LED tray / U-shape
+  <S {...p}><path d="M4 8a8 6 0 0 0 16 0" /><path d="M4 8c0-2 2-3 8-3s8 1 8 3" /><path d="M7 12.5a5 4 0 0 0 10 0" /></S>
+);
+export const IcFloss = (p) => (
+  <S {...p}><circle cx="12" cy="9" r="5" /><circle cx="12" cy="9" r="1.5" /><path d="M8 13.5 6 21M16 13.5 18 21" /></S>
+);
+export const IcCharger = (p) => (
+  <S {...p}><rect x="6" y="3" width="12" height="14" rx="3" /><path d="M12 17v4M9 21h6M12 7v4" /></S>
+);
+export const IcSachet = (p) => (
+  <S {...p}><path d="M6 5h12l-1 15H7L6 5Z" /><path d="M6 5V4h12v1M9 9h6" /></S>
+);
+
 /* Named lookup so markdown/copy can reference an icon by string key */
 export const SHOP_ICON = {
   glow: IcGlow, moon: IcMoon, heart: IcHeart, gem: IcGem, timer: IcTimer,
@@ -141,6 +179,10 @@ export const SHOP_ICON = {
   flask: IcFlask, wave: IcWave, wrench: IcWrench, hands: IcHands, balloon: IcBalloon,
   smile: IcSmile, family: IcFamily, check: IcCircleCheck, brush: IcBrushLine,
   spark: IcSpark, shield: IcShield, verified: IcVerified, star: IcStar, info: IcInfo,
+  // box-content keys
+  box: IcBox, cable: IcCable, tip: IcTip, tablet: IcTablet, bottle: IcBottle,
+  case: IcCase, manual: IcManual, gel: IcGel, mouthpiece: IcMouthpiece,
+  floss: IcFloss, charger: IcCharger, sachet: IcSachet,
 };
 
 export function ShopIcon({ name, className }) {
