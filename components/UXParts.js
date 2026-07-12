@@ -8,7 +8,7 @@ import { IconShare, IconWhatsApp, IconX, IconLink, IconCheck, IconArrowUp, IconC
 // copy-link button. Uses the native share sheet on mobile when available, and
 // plain share URLs otherwise. No third-party tracking scripts — privacy-friendly
 // and zero performance cost. SEO-safe (pure interaction, no content change).
-export function ShareRow({ title }) {
+export function ShareRow({ title, label = 'شارك المقال:', fallbackText = 'مقال من أسنانك' }) {
   const [url, setUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
@@ -18,7 +18,7 @@ export function ShareRow({ title }) {
     setCanNativeShare(typeof navigator !== 'undefined' && !!navigator.share);
   }, []);
 
-  const shareText = title || 'مقال من أسنانك';
+  const shareText = title || fallbackText;
   const enc = encodeURIComponent;
   const waHref = `https://wa.me/?text=${enc(`${shareText} — ${url}`)}`;
   const xHref = `https://twitter.com/intent/tweet?text=${enc(shareText)}&url=${enc(url)}`;
@@ -47,7 +47,7 @@ export function ShareRow({ title }) {
   return (
     <div className="my-8 pt-6 border-t border-line print:hidden">
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm text-ink/55">شارك المقال:</span>
+        <span className="text-sm text-ink/55">{label}</span>
 
         {canNativeShare && (
           <button type="button" onClick={nativeShare} className={btn} aria-label="مشاركة">

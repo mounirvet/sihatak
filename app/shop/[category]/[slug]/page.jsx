@@ -10,6 +10,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "../../../../lib/storeCategories.js";
 import { getArticleMeta } from "../../../../lib/content.js";
+import { SITE } from "../../../../lib/site.js";
+import { ShareRow } from "../../../../components/UXParts.js";
 import { getSellCopy } from "../../../../lib/shopCopy.js";
 import { getProductRecommendations } from "../../../../lib/productRelated.js";
 import ProductGallery from "../../../../components/ProductGallery.jsx";
@@ -33,10 +35,33 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const p = getProductBySlug(params.slug);
   if (!p) return {};
+
+  const url = `${SITE.url}/shop/${p.category}/${p.slug}/`;
+  // Share cards need an ABSOLUTE image URL — relative paths render no preview.
+  const img =
+    p.images && p.images[0]
+      ? (p.images[0].startsWith("http") ? p.images[0] : `${SITE.url}${p.images[0]}`)
+      : `${SITE.url}/images/og-default.jpg`;
+
   return {
     title: `${p.title_ar} | متجر أسنانك`,
     description: p.short_desc,
     alternates: { canonical: `/shop/${p.category}/${p.slug}/` },
+    openGraph: {
+      type: "website",
+      siteName: SITE.name,
+      locale: "ar_AR",
+      url,
+      title: p.title_ar,
+      description: p.short_desc,
+      images: [{ url: img, width: 1200, height: 1200, alt: p.title_ar }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: p.title_ar,
+      description: p.short_desc,
+      images: [img],
+    },
   };
 }
 
@@ -440,6 +465,13 @@ export default function ProductPage({ params }) {
             </div>
           </Reveal>
         )}
+
+        {/* SHARE */}
+        <ShareRow
+          title={p.title_ar}
+          label="شارك المنتج:"
+          fallbackText="منتج من متجر أسنانك"
+        />
 
         {/* GUARANTEE / RISK REVERSAL */}
         <Reveal as="section" className="mt-16 rounded-3xl bg-gradient-to-br from-teal-dark to-teal px-8 py-12 text-center text-cream">
