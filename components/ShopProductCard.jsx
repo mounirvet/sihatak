@@ -6,6 +6,7 @@
 import Link from "next/link";
 import { ShopIcon, IcStar } from "./ShopIcons.js";
 import { SHOP_CURRENCY_SYMBOL_AR } from "../lib/products.js";
+import { imageAlt } from "../lib/imageSeo.js";
 
 export default function ShopProductCard({ p, limited = false, className = "" }) {
   const currency = SHOP_CURRENCY_SYMBOL_AR;
@@ -35,8 +36,11 @@ export default function ShopProductCard({ p, limited = false, className = "" }) 
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={p.images[0]}
-            alt={p.title_ar}
+            alt={imageAlt(p, 0)}
+            width={1200}
+            height={1200}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-105"
           />
         ) : (

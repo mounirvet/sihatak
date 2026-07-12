@@ -17,6 +17,6 @@ export default function robots() {
       { userAgent: 'Google-Extended', allow: '/' },
       { userAgent: 'Bingbot', allow: '/' },
     ],
-    sitemap: `${SITE.url}/sitemap.xml`,
+    sitemap: [`${SITE.url}/sitemap.xml`, `${SITE.url}/image-sitemap.xml`],
   };
 }

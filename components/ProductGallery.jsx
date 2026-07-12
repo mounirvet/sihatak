@@ -5,10 +5,22 @@ import { ShopIcon } from "./ShopIcons.js";
 // Product image gallery: large main image + thumbnail strip to switch.
 // Images that fail to load (file not yet added) are removed automatically,
 // so unfilled slots never show a broken-image icon.
-export default function ProductGallery({ images = [], alt = "" }) {
+//
+// IMAGE SEO:
+// - `alts` gives each image a UNIQUE descriptive alt (not one repeated title).
+// - width/height are set so the browser reserves space -> no layout shift (CLS).
+// - The first image loads eagerly with fetchPriority="high" -> faster LCP.
+//   Images 2..5 stay lazy so they don't compete for bandwidth.
+export default function ProductGallery({ images = [], alt = "", alts = [] }) {
   const initial = Array.isArray(images) ? images.filter(Boolean) : [];
   const [live, setLive] = useState(initial);
   const [active, setActive] = useState(0);
+
+  // resolve the alt for a given src, keeping it stable even after drops
+  const altFor = (src) => {
+    const idx = initial.indexOf(src);
+    return (idx >= 0 && alts[idx]) || alt;
+  };
 
   const drop = (src) =>
     setLive((prev) => {
@@ -31,7 +43,12 @@ export default function ProductGallery({ images = [], alt = "" }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={live[active]}
-          alt={alt}
+          alt={altFor(live[active])}
+          width={1200}
+          height={1200}
+          loading={active === 0 ? "eager" : "lazy"}
+          fetchPriority={active === 0 ? "high" : "auto"}
+          decoding="async"
           className="h-full w-full object-contain p-4"
           onError={() => drop(live[active])}
         />
@@ -45,10 +62,19 @@ export default function ProductGallery({ images = [], alt = "" }) {
               className={`shrink-0 overflow-hidden rounded-lg border-2 transition ${
                 i === active ? "border-teal" : "border-line hover:border-teal/40"
               }`}
-              aria-label={`صورة ${i + 1}`}
+              aria-label={altFor(src)}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="h-16 w-16 object-contain p-1" onError={() => drop(src)} />
+              <img
+                src={src}
+                alt={altFor(src)}
+                width={64}
+                height={64}
+                loading="lazy"
+                decoding="async"
+                className="h-16 w-16 object-contain p-1"
+                onError={() => drop(src)}
+              />
             </button>
           ))}
         </div>
@@ -56,4 +82,3 @@ export default function ProductGallery({ images = [], alt = "" }) {
     </div>
   );
 }
-
