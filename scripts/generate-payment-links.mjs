@@ -40,6 +40,34 @@ const CURRENCY = 'sar'; // Stripe wants lowercase ISO currency
 // so 89 SAR -> 8900. Adjust ONLY if you change currency.
 const MINOR_UNITS = 100;
 
+// --- shipping ---------------------------------------------------------------
+// Flat shipping charged as a VISIBLE separate line at checkout (customer sees
+// e.g. "349.00 + Shipping 15.00 = 364.00"). The product `price` in the .md
+// therefore stays honest and matches what the product page displays.
+const SHIPPING_SAR = 15;
+const SHIPPING_LABEL = 'الشحن';
+const SHIPPING_MIN_DAYS = 5;
+const SHIPPING_MAX_DAYS = 8;
+
+// Global shipping: every country Stripe supports for shipping-address collection.
+const ALLOWED_COUNTRIES = [
+  'AC','AD','AE','AF','AG','AI','AL','AM','AO','AQ','AR','AT','AU','AW','AX','AZ',
+  'BA','BB','BD','BE','BF','BG','BH','BI','BJ','BL','BM','BN','BO','BQ','BR','BS',
+  'BT','BV','BW','BY','BZ','CA','CD','CF','CG','CH','CI','CK','CL','CM','CN','CO',
+  'CR','CV','CW','CY','CZ','DE','DJ','DK','DM','DO','DZ','EC','EE','EG','EH','ER',
+  'ES','ET','FI','FJ','FK','FO','FR','GA','GB','GD','GE','GF','GG','GH','GI','GL',
+  'GM','GN','GP','GQ','GR','GS','GT','GU','GW','GY','HK','HN','HR','HT','HU','ID',
+  'IE','IL','IM','IN','IO','IQ','IS','IT','JE','JM','JO','JP','KE','KG','KH','KI',
+  'KM','KN','KR','KW','KY','KZ','LA','LB','LC','LI','LK','LR','LS','LT','LU','LV',
+  'LY','MA','MC','MD','ME','MF','MG','MK','ML','MM','MN','MO','MQ','MR','MS','MT',
+  'MU','MV','MW','MX','MY','MZ','NA','NC','NE','NG','NI','NL','NO','NP','NR','NU',
+  'NZ','OM','PA','PE','PF','PG','PH','PK','PL','PM','PN','PR','PS','PT','PY','QA',
+  'RE','RO','RS','RU','RW','SA','SB','SC','SE','SG','SH','SI','SJ','SK','SL','SM',
+  'SN','SO','SR','SS','ST','SV','SX','SZ','TA','TC','TD','TF','TG','TH','TJ','TK',
+  'TL','TM','TN','TO','TR','TT','TV','TW','TZ','UA','UG','US','UY','UZ','VA','VC',
+  'VE','VG','VN','VU','WF','WS','XK','YE','YT','ZA','ZM','ZW','ZZ',
+];
+
 // --- args -------------------------------------------------------------------
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
@@ -89,13 +117,56 @@ function writeBackLink(filePath, raw, url) {
   fs.writeFileSync(filePath, out, 'utf8');
 }
 
+/**
+ * Find-or-create ONE flat shipping rate, reused by every Payment Link.
+ * Looked up by metadata.asnanik_shipping so re-runs never pile up duplicates
+ * in the Stripe dashboard.
+ */
+async function resolveShippingRate(stripe) {
+  const TAG = `flat_${SHIPPING_SAR}_${CURRENCY}`;
+
+  const existing = await stripe.shippingRates.list({ active: true, limit: 100 });
+  const found = existing.data.find(
+    (r) => r.metadata?.asnanik_shipping === TAG
+  );
+  if (found) {
+    console.log(`  ↷ reusing shipping rate ${found.id} (${SHIPPING_SAR} SAR)`);
+    return found.id;
+  }
+
+  const rate = await stripe.shippingRates.create({
+    display_name: SHIPPING_LABEL,
+    type: 'fixed_amount',
+    fixed_amount: {
+      amount: Math.round(SHIPPING_SAR * MINOR_UNITS),
+      currency: CURRENCY,
+    },
+    delivery_estimate: {
+      minimum: { unit: 'business_day', value: SHIPPING_MIN_DAYS },
+      maximum: { unit: 'business_day', value: SHIPPING_MAX_DAYS },
+    },
+    metadata: { asnanik_shipping: TAG },
+  });
+  console.log(`  ✓ created shipping rate ${rate.id} (${SHIPPING_SAR} SAR flat)`);
+  return rate.id;
+}
+
 async function main() {
   console.log(`\nStripe Payment Link generator — mode: ${DRY_RUN ? 'DRY-RUN' : MODE}`);
 
   let stripe = null;
+  let shippingRateId = null;
   if (!DRY_RUN) {
     const Stripe = (await import('stripe')).default;
-    stripe = new Stripe(KEY, { apiVersion: '2024-06-20' });
+    stripe = new Stripe(KEY, { apiVersion: '2025-06-30.basil' });
+    shippingRateId = await resolveShippingRate(stripe);
+  } else {
+    console.log(
+      `  • shipping: flat ${SHIPPING_SAR} SAR, shown as a separate line at checkout`
+    );
+    console.log(
+      `  • countries: ${ALLOWED_COUNTRIES.length} (global)`
+    );
   }
 
   const files = listProductFiles();
@@ -156,8 +227,9 @@ async function main() {
       const link = await stripe.paymentLinks.create({
         line_items: [{ price: price.id, quantity: 1 }],
         shipping_address_collection: {
-          allowed_countries: ['SA', 'AE', 'KW', 'QA', 'BH', 'OM'],
+          allowed_countries: ALLOWED_COUNTRIES,
         },
+        shipping_options: [{ shipping_rate: shippingRateId }],
         metadata: { slug },
       });
 
