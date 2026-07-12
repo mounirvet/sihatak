@@ -15,7 +15,8 @@ import { getProductRecommendations } from "../../../../lib/productRelated.js";
 import ProductGallery from "../../../../components/ProductGallery.jsx";
 import BuyButton from "../../../../components/BuyButton.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
-import { ShopIcon, IcLock, IcReturn, IcVerified, IcShip, IcShield, IcStar, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
+import ShippingInfo from "../../../../components/ShippingInfo.jsx";
+import { ShopIcon, IcLock, IcReturn, IcVerified, IcShield, IcStar, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
 import {
   getAllProducts,
   getProductBySlug,
@@ -104,14 +105,14 @@ function MiniProductCard({ p, currency }) {
           -{savePct}٪
         </span>
       ) : null}
-      <div className="flex aspect-video items-center justify-center overflow-hidden bg-sand">
+      <div className="flex aspect-square items-center justify-center overflow-hidden bg-white">
         {p.images && p.images[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={p.images[0]}
             alt={p.title_ar}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-105"
           />
         ) : (
           <ShopIcon name="tooth" className="h-10 w-10 text-teal/25" />
@@ -275,12 +276,7 @@ export default function ProductPage({ params }) {
               </ul>
             )}
 
-            {p.shipping_days_min && (
-              <div className="mt-5 flex items-center gap-2 rounded-xl border border-mint bg-mint/30 p-4 text-sm text-teal-dark">
-                <IcShip className="h-5 w-5 shrink-0" />
-                <span>اطلبها اليوم — شحن إلى دول الخليج خلال {p.shipping_days_min}–{p.shipping_days_max} يوم عمل</span>
-              </div>
-            )}
+            <ShippingInfo />
 
             <div className="mt-5 hidden md:block">
               <BuyButton {...buyProps} big block />
@@ -347,19 +343,22 @@ export default function ProductPage({ params }) {
 
         {/* HOW TO USE */}
         {sell.howTo.length > 0 && (
-          <Reveal as="section" className="mt-16 rounded-3xl bg-teal-dark px-6 py-10 text-cream md:px-10">
+          <Reveal as="section" className="mt-16 rounded-3xl bg-teal-dark px-6 py-10 md:px-10">
             <div className="mb-8 text-center">
-              <h2 className="font-display text-2xl">كيفية الاستخدام</h2>
+              <h2 className="font-display text-2xl font-bold text-cream">كيفية الاستخدام</h2>
               <p className="mt-2 text-sm text-cream/70">خطوات بسيطة للحصول على أفضل نتيجة.</p>
             </div>
             <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {sell.howTo.map(([title, detail], i) => (
-                <li key={i} className="relative rounded-2xl bg-cream/5 p-5 ring-1 ring-cream/10">
-                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-coral font-display text-lg font-bold text-white">
+                <li
+                  key={i}
+                  className="relative rounded-2xl border border-cream/15 bg-cream/[0.07] p-5 transition hover:border-coral/50 hover:bg-cream/[0.12]"
+                >
+                  <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-coral font-display text-lg font-bold text-white shadow-[0_6px_18px_-6px_rgba(224,120,86,0.9)]">
                     {i + 1}
                   </span>
-                  <div className="font-display text-base text-cream">{title}</div>
-                  <p className="mt-1.5 text-sm leading-relaxed text-cream/75">{detail}</p>
+                  <div className="font-display text-base font-bold text-cream">{title}</div>
+                  <p className="mt-2 text-sm leading-relaxed text-cream/80">{detail}</p>
                 </li>
               ))}
             </ol>

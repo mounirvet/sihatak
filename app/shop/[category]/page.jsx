@@ -60,7 +60,7 @@ export default function CategoryPage({ params }) {
       {/* Trust strip */}
       <div className="mt-10 grid grid-cols-3 gap-3 border-t border-mint pt-6 text-center text-xs text-ink/60">
         <div className="flex flex-col items-center gap-1.5"><IcLock className="h-5 w-5 text-teal" />دفع آمن عبر Stripe</div>
-        <div className="flex flex-col items-center gap-1.5"><IcShip className="h-5 w-5 text-teal" />شحن إلى دول الخليج</div>
+        <div className="flex flex-col items-center gap-1.5"><IcShip className="h-5 w-5 text-teal" />شحن عالمي</div>
         <div className="flex flex-col items-center gap-1.5"><IcReturn className="h-5 w-5 text-teal" />استرجاع خلال 14 يوم</div>
       </div>
     </main>

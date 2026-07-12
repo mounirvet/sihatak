@@ -30,14 +30,14 @@ export default function ShopProductCard({ p, limited = false, className = "" }) 
         </span>
       )}
 
-      <div className="flex aspect-square items-center justify-center overflow-hidden bg-sand">
+      <div className="flex aspect-square items-center justify-center overflow-hidden bg-white">
         {p.images && p.images[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={p.images[0]}
             alt={p.title_ar}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-105"
           />
         ) : (
           <ShopIcon name="tooth" className="h-12 w-12 text-teal/25" />

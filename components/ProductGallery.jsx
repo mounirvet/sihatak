@@ -32,7 +32,7 @@ export default function ProductGallery({ images = [], alt = "" }) {
         <img
           src={live[active]}
           alt={alt}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain p-4"
           onError={() => drop(live[active])}
         />
       </div>
@@ -48,7 +48,7 @@ export default function ProductGallery({ images = [], alt = "" }) {
               aria-label={`صورة ${i + 1}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="h-16 w-16 object-cover" onError={() => drop(src)} />
+              <img src={src} alt="" className="h-16 w-16 object-contain p-1" onError={() => drop(src)} />
             </button>
           ))}
         </div>

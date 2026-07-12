@@ -17,7 +17,7 @@ import ProductRail from "../../components/ProductRail.jsx";
 export const metadata = {
   title: "المتجر | أسنانك",
   description:
-    "متجر أسنانك لمنتجات العناية بالأسنان — تبييض، فرش كهربائية، عناية باللثة والتقويم الشفاف، وشحن إلى دول الخليج.",
+    "متجر أسنانك لمنتجات العناية بالأسنان — تبييض، فرش كهربائية، عناية باللثة والتقويم الشفاف، وشحن عالمي.",
   alternates: { canonical: "/shop/" },
 };
 
@@ -44,11 +44,11 @@ export default function ShopHomePage() {
           متجر منتجات العناية بالأسنان
         </h1>
         <p className="relative mx-auto mt-3 max-w-2xl text-cream/85">
-          منتجات مختارة للعناية اليومية بأسنانك، مع شحن إلى دول الخليج ودفع آمن عبر Stripe.
+          منتجات مختارة للعناية اليومية بأسنانك، مع شحن عالمي ودفع آمن عبر Stripe.
         </p>
         <div className="relative mt-6 flex flex-wrap justify-center gap-5 text-sm text-cream/80">
           <span className="inline-flex items-center gap-1.5"><IcLock className="h-4 w-4" /> دفع آمن</span>
-          <span className="inline-flex items-center gap-1.5"><IcShip className="h-4 w-4" /> شحن خليجي</span>
+          <span className="inline-flex items-center gap-1.5"><IcShip className="h-4 w-4" /> شحن عالمي</span>
           <span className="inline-flex items-center gap-1.5"><IcReturn className="h-4 w-4" /> استرجاع 14 يوم</span>
         </div>
       </header>
