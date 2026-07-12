@@ -10,7 +10,7 @@ in_stock: true
 brand_neutral: false
 shipping_days_min: 7
 shipping_days_max: 14
-stripe_payment_link: ""
+stripe_payment_link: 'https://buy.stripe.com/9B66oH96rdjz7sVbgU2400h'
 images:
   - /images/shop/hismile-led-kit-hero-1.jpg
   - /images/shop/hismile-led-kit-hero-2.jpg
