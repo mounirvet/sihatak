@@ -10,9 +10,11 @@ import {
 } from "../../../lib/storeCategories.js";
 import {
   getProductsByCategory,
+  getCatalogForBrowser,
 } from "../../../lib/products.js";
 import { ShopIcon, IcLock, IcShip, IcReturn } from "../../../components/ShopIcons.js";
 import ShopProductCard from "../../../components/ShopProductCard.jsx";
+import ShopBrowser from "../../../components/ShopBrowser.jsx";
 
 export function generateStaticParams() {
   return allCategorySlugs().map((category) => ({ category }));
@@ -33,6 +35,11 @@ export default function CategoryPage({ params }) {
   if (!cat) notFound();
 
   const products = getProductsByCategory(cat.slug);
+  // Search + sort earns its space only when there's enough to actually sift
+  // through. On a 2-product category the controls are pure noise, so we fall
+  // back to the plain grid.
+  const useBrowser = products.length >= 4;
+  const catalog = useBrowser ? getCatalogForBrowser(products) : null;
 
   return (
     <main dir="rtl" className="mx-auto max-w-6xl px-4 py-10">
@@ -49,6 +56,8 @@ export default function CategoryPage({ params }) {
 
       {products.length === 0 ? (
         <p className="text-ink/60">منتجات هذه الفئة قريبًا.</p>
+      ) : useBrowser ? (
+        <ShopBrowser products={catalog} showCategoryFilter={false} />
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (

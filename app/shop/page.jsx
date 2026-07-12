@@ -9,10 +9,12 @@ import {
   getProductsByCategory,
   getFeaturedSpread,
   getTopDiscounted,
+  getCatalogForBrowser,
 } from "../../lib/products.js";
 import { ShopIcon, IcLock, IcShip, IcReturn } from "../../components/ShopIcons.js";
 import PromoBanners from "../../components/PromoBanners.jsx";
 import ProductRail from "../../components/ProductRail.jsx";
+import ShopBrowser from "../../components/ShopBrowser.jsx";
 
 export const metadata = {
   title: "المتجر | أسنانك",
@@ -24,6 +26,7 @@ export const metadata = {
 export default function ShopHomePage() {
   const featured = getFeaturedSpread(8);
   const topDiscounted = getTopDiscounted(10);
+  const catalog = getCatalogForBrowser();
 
   const tiles = STORE_CATEGORIES.map((c) => ({
     ...c,
@@ -72,6 +75,14 @@ export default function ShopHomePage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* SEARCH / SORT / FILTER — client-side over the full catalog */}
+      <section className="mt-10">
+        <h2 className="mb-5 font-display text-xl text-teal-dark md:text-2xl">
+          كل المنتجات
+        </h2>
+        <ShopBrowser products={catalog} categories={STORE_CATEGORIES} />
       </section>
 
       {/* PROMO BANNERS */}
