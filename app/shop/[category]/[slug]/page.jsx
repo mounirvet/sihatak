@@ -21,7 +21,7 @@ import ProductAnalytics from "../../../../components/ProductAnalytics.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
 import ShippingInfo from "../../../../components/ShippingInfo.jsx";
 import InTheBox from "../../../../components/InTheBox.jsx";
-import { ShopIcon, IcLock, IcReturn, IcVerified, IcShield, IcStar, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
+import { ShopIcon, IcLock, IcReturn, IcVerified, IcShield, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
 import {
   getAllProducts,
   getProductBySlug,
@@ -108,14 +108,6 @@ const CATEGORY_FAQ = {
       "صُمّم هذا النوع ليكون لطيفًا مع التركيز على تقليل الإحساس بالحساسية أثناء الاستخدام."],
   ],
 };
-
-function Stars({ className = "" }) {
-  return (
-    <span className={`inline-flex items-center gap-0.5 text-coral ${className}`} aria-hidden="true">
-      {[0, 1, 2, 3, 4].map((i) => <IcStar key={i} className="h-4 w-4" />)}
-    </span>
-  );
-}
 
 // Compact product card reused by related + similar grids.
 function MiniProductCard({ p, currency }) {
@@ -277,9 +269,6 @@ export default function ProductPage({ params }) {
               <p className="mt-2 font-display text-lg text-teal">{sell.tagline}</p>
             )}
 
-            <div className="mt-3 flex items-center gap-2 text-sm text-ink/60">
-              <Stars /> <span>تقييمات عملائنا</span>
-            </div>
 
             {sell.heroClaim && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-dark px-4 py-2 text-sm font-bold text-cream">
@@ -446,24 +435,16 @@ export default function ProductPage({ params }) {
           </Reveal>
         )}
 
-        {/* REVIEWS */}
-        {sell.reviews.length > 0 && (
-          <Reveal as="section" className="mt-16">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-display text-xl text-teal-dark">آراء العملاء</h2>
-              <span className="rounded bg-mint/50 px-2 py-1 text-[10px] text-teal-dark">نماذج — استبدلها بمراجعات حقيقية</span>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {sell.reviews.map(([name, text], i) => (
-                <div key={i} className="rounded-2xl border border-line bg-cream p-5">
-                  <Stars />
-                  <p className="mt-2 text-sm text-ink/80">{text}</p>
-                  <p className="mt-3 text-xs font-medium text-ink/50">— {name}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        )}
+        {/* REVIEWS — REMOVED.
+            This section rendered CATEGORY_REVIEWS: invented customers with
+            invented names ("م. ع") and invented quotes ("تجربة رائعة، وصل
+            بسرعة"), five filled stars each, under the heading "آراء العملاء".
+            None of it was real. A shipped badge even read "نماذج — استبدلها
+            بمراجعات حقيقية", which is a developer note, not a disclosure — the
+            visitor still reads fabricated praise from people who never bought
+            anything.
+            When real reviews exist, render them from real data. Until then,
+            nothing. */}
 
         {/* FAQ */}
         {faqs.length > 0 && (

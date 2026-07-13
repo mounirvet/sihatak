@@ -4,7 +4,7 @@
 // counts, no fake countdowns. Server component (pure), static-export safe.
 
 import Link from "next/link";
-import { ShopIcon, IcStar } from "./ShopIcons.js";
+import { ShopIcon } from "./ShopIcons.js";
 import { SHOP_CURRENCY_SYMBOL_AR } from "../lib/products.js";
 import { imageAlt } from "../lib/imageSeo.js";
 import WishlistButton from "./WishlistButton.jsx";
@@ -67,10 +67,10 @@ export default function ShopProductCard({ p, limited = false, className = "" }) 
           {p.title_ar}
         </h3>
 
-        {/* rating display — visual only, no fabricated counts */}
-        <span className="mt-1.5 inline-flex items-center gap-0.5 text-coral" aria-hidden="true">
-          {[0, 1, 2, 3, 4].map((i) => <IcStar key={i} className="h-3.5 w-3.5" />)}
-        </span>
+        {/* No rating shown. We have no review data, and five filled stars read
+            as "rated 5/5" whether or not a count sits beside them — that's a
+            fabricated trust signal, which this site does not ship. If real
+            reviews are ever collected, render them from that data. */}
 
         <div className="mt-auto flex flex-wrap items-baseline gap-x-2 gap-y-0.5 pt-2">
           <span className="font-display text-lg font-bold text-teal-dark">

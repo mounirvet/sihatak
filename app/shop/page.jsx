@@ -10,6 +10,8 @@ import {
   getFeaturedSpread,
   getTopDiscounted,
   getCatalogForBrowser,
+  getCategoryMinPrice,
+  SHOP_CURRENCY_SYMBOL_AR,
 } from "../../lib/products.js";
 import { ShopIcon, IcLock, IcShip, IcReturn } from "../../components/ShopIcons.js";
 import PromoBanners from "../../components/PromoBanners.jsx";
@@ -31,6 +33,7 @@ export default function ShopHomePage() {
   const tiles = STORE_CATEGORIES.map((c) => ({
     ...c,
     count: getProductsByCategory(c.slug).length,
+    minPrice: getCategoryMinPrice(c.slug),
   }));
 
   return (
@@ -72,6 +75,16 @@ export default function ShopHomePage() {
               <span className="text-xs font-medium leading-tight text-ink group-hover:text-teal">
                 {cat.title_ar}
               </span>
+              {/* Price anchor: gives a cost signal BEFORE the click, so nobody
+                  lands in a category and bounces on sticker shock. Omitted when
+                  the category is empty — "ابتداءً من 0" would be nonsense. */}
+              {cat.minPrice ? (
+                <span className="text-[11px] leading-none text-ink/50">
+                  ابتداءً من {cat.minPrice} {SHOP_CURRENCY_SYMBOL_AR}
+                </span>
+              ) : (
+                <span className="text-[11px] leading-none text-ink/35">قريبًا</span>
+              )}
             </Link>
           ))}
         </div>
