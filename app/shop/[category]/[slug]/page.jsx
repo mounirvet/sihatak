@@ -213,17 +213,21 @@ export default function ProductPage({ params }) {
   // Lean product snapshot for analytics + wishlist. Deliberately NOT the whole
   // product object — `body_md`, `faq` etc would be serialized into the HTML for
   // no reason.
+  // Snipcart requires ABSOLUTE url + image: it crawls `data-item-url` to
+  // re-validate the price, and can't resolve a relative "/images/..." path.
   const productLite = {
     slug: p.slug,
     title_ar: p.title_ar,
     category: p.category,
     price: p.price,
     compare_at_price: p.compare_at_price ?? null,
-    image: p.images?.[0] || null,
+    short_desc: p.short_desc || "",
+    image: p.images?.[0] || null,                                  // relative, for wishlist UI
+    imageAbs: p.images?.[0] ? `${SITE.url}${p.images[0]}` : null,  // absolute, for Snipcart
+    url: `${SITE.url}/shop/${p.category}/${p.slug}/`,
   };
 
   const buyProps = {
-    href: p.stripe_payment_link,
     price: p.price,
     currency,
     buyable,

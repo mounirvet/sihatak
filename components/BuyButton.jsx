@@ -1,22 +1,34 @@
 "use client";
-// components/BuyButton.jsx — innovative, interactive CTA.
-// - animated sheen sweep on hover
-// - satisfying press (scale) feedback
-// - cart icon that nudges on hover
-// - disabled state for unbuyable products
-// Pure CSS/JS, static-export safe. No emojis.
+// components/BuyButton.jsx — Snipcart add-to-cart CTA.
+//
+// WAS: an <a href> to a Stripe Payment Link — checkout happened on
+// buy.stripe.com, a domain we don't own. That meant no `Purchase` event could
+// ever fire, so Meta/Google could never learn who bought and could not optimise
+// ad spend on conversions.
+//
+// NOW: a Snipcart button. The cart and checkout live on asnanik.com. Stripe is
+// STILL the processor — Snipcart settles through the same Stripe account. We
+// only replaced the cart/checkout UI, not the payments.
+//
+// ── SNIPCART VALIDATION (fails SILENTLY if you get this wrong) ───────────────
+// On add-to-cart, Snipcart fetches `data-item-url` and re-reads the product's
+// price from that page to confirm the button isn't lying. Therefore:
+//   • data-item-price MUST be a bare number ("349"), never "349 ر.س"
+//   • data-item-url    MUST be absolute and publicly crawlable
+//   • data-item-id     MUST be stable + unique (we use the slug)
+//   • data-item-image  MUST be absolute (Snipcart can't resolve "/images/...")
+// A mismatch doesn't throw — it just refuses the order.
 
 import { useState } from "react";
 import { IcCart, IcArrowLeft } from "./ShopIcons.js";
-import { trackBeginCheckout } from "../lib/analytics.js";
+import { trackAddToCart } from "../lib/analytics.js";
 
 export default function BuyButton({
-  href,
+  product,          // { slug, title_ar, category, price, image, ... }
   price,
   currency,
   buyable,
   inStock,
-  product,          // for analytics; optional so old call-sites still work
   big = false,
   block = false,
   className = "",
@@ -36,32 +48,32 @@ export default function BuyButton({
   }
 
   return (
-    <a
-      href={href}
-      onClick={() => {
-        // The LAST event we can measure. Checkout happens on buy.stripe.com —
-        // a domain we don't own — so no `purchase` event is ever recorded.
-        // This is the bottom of the measurable funnel until checkout moves
-        // onto asnanik.com.
-        if (product) trackBeginCheckout(product);
-      }}
+    <button
+      type="button"
+      className={`snipcart-add-item group relative flex items-center justify-center gap-3 overflow-hidden rounded-2xl bg-coral text-center font-bold text-white shadow-[0_10px_30px_-10px_rgba(224,120,86,0.7)] transition-all duration-200 hover:shadow-[0_16px_40px_-10px_rgba(224,120,86,0.85)] ${
+        big ? "px-8 py-5 text-lg" : "px-6 py-4"
+      } ${block ? "w-full" : ""} ${pressed ? "scale-[0.97]" : "hover:scale-[1.02]"} ${className}`}
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
-      className={`group relative flex items-center justify-center gap-3 overflow-hidden rounded-2xl bg-coral text-center font-bold text-white shadow-[0_10px_30px_-10px_rgba(224,120,86,0.7)] transition-all duration-200 hover:shadow-[0_16px_40px_-10px_rgba(224,120,86,0.85)] ${
-        big ? "px-8 py-5 text-lg" : "px-6 py-4"
-      } ${block ? "w-full" : ""} ${pressed ? "scale-[0.97]" : "hover:scale-[1.02]"} ${className}`}
+      onClick={() => trackAddToCart(product)}
+      data-item-id={product.slug}
+      data-item-name={product.title_ar}
+      data-item-price={product.price}
+      data-item-url={product.url}
+      data-item-image={product.imageAbs || undefined}
+      data-item-description={product.short_desc || undefined}
+      data-item-max-quantity={10}
     >
-      {/* animated sheen sweep */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-l from-transparent via-white/35 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
       />
       <IcCart className="relative h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1" />
       <span className="relative">
-        {label || "اطلبها الآن"} — {price} {currency}
+        {label || "أضف إلى السلة"} — {price} {currency}
       </span>
       <IcArrowLeft className="relative h-5 w-5 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-x-1" />
-    </a>
+    </button>
   );
 }

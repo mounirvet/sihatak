@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CookieConsent from '../components/CookieConsent';
+import Snipcart from '../components/Snipcart.jsx';
 import { SITE } from '../lib/site';
 
 const tajawal = Tajawal({
@@ -102,6 +103,10 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <CookieConsent />
+        {/* Cart + checkout, hosted on OUR domain (Stripe still processes the
+            payment behind it). This is what allows a real `Purchase` event to
+            fire — impossible while checkout lived on buy.stripe.com. */}
+        <Snipcart />
         {/* Vercel Analytics is cookieless and stores no personal identifiers, so
             unlike GA4/Meta it does not sit behind the consent gate. */}
         <Analytics />
