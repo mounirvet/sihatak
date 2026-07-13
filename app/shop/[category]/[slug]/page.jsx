@@ -313,9 +313,9 @@ export default function ProductPage({ params }) {
 
             <ShippingInfo />
 
-            <div className="mt-5 hidden items-stretch gap-3 md:flex">
+            <div className="mt-5 hidden items-start gap-3 md:flex">
               <BuyButton {...buyProps} big block className="flex-1" />
-              <WishlistButton product={productLite} size="lg" className="shrink-0 self-stretch !h-auto !w-14" />
+              <WishlistButton product={productLite} size="lg" className="shrink-0 !h-[68px] !w-14" />
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-ink/60">
@@ -486,7 +486,7 @@ export default function ProductPage({ params }) {
             وإن لم يعجبك المنتج، نحن هنا من أجلك.
           </p>
           <div className="mt-6">
-            <BuyButton {...buyProps} big className="mx-auto max-w-xs" />
+            <BuyButton {...buyProps} big showAddToCart={false} className="mx-auto max-w-xs" />
           </div>
           <p className="mx-auto mt-4 flex max-w-md items-center justify-center gap-1.5 text-xs text-cream/55">
             <IcInfo className="h-3.5 w-3.5" /> للعناية المثلى بصحة فمك، ننصح دائمًا باستشارة طبيب الأسنان.
@@ -548,7 +548,7 @@ export default function ProductPage({ params }) {
               <div className="text-xs text-ink/40 line-through">{p.compare_at_price} {currency}</div>
             )}
           </div>
-          <BuyButton {...buyProps} block className="flex-1" />
+          <BuyButton {...buyProps} block showAddToCart={false} className="flex-1" />
         </div>
       </div>
     </article>
