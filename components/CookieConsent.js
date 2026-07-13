@@ -6,6 +6,13 @@ import Link from 'next/link';
 // GA4 measurement ID — kept here because this component is now the ONLY place
 // that may load Analytics, and only after explicit user consent.
 const GA_ID = 'G-B1YP77CM1Z';
+
+// Meta Pixel — leave EMPTY until you create the pixel in Meta Events Manager.
+// When you have it (15–16 digits), paste it here and nothing else changes: the
+// pixel loads through the same consent gate as GA4, and lib/analytics.js already
+// fires ViewContent / InitiateCheckout / AddToWishlist into it.
+const META_PIXEL_ID = ''; // e.g. '1234567890123456'
+
 const STORAGE_KEY = 'asnanik-cookie-consent'; // values: 'accepted' | 'declined'
 
 // Inject GA4 exactly once, only after consent. Mirrors the previous setup
@@ -27,6 +34,36 @@ function loadAnalytics() {
   gtag('config', GA_ID, { anonymize_ip: true });
 }
 
+// Meta Pixel — same consent gate. No-op while META_PIXEL_ID is empty.
+function loadMetaPixel() {
+  if (typeof window === 'undefined') return;
+  if (!META_PIXEL_ID) return; // not configured yet
+  if (window.__asnanikFbLoaded) return;
+  window.__asnanikFbLoaded = true;
+
+  /* eslint-disable */
+  !(function (f, b, e, v, n, t, s) {
+    if (f.fbq) return;
+    n = f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!f._fbq) f._fbq = n;
+    n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+    t = b.createElement(e); t.async = !0; t.src = v;
+    s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+  })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+  /* eslint-enable */
+
+  window.fbq('init', META_PIXEL_ID);
+  window.fbq('track', 'PageView');
+}
+
+// Everything that requires consent, loaded together.
+function loadTrackers() {
+  loadAnalytics();
+  loadMetaPixel();
+}
+
 export default function CookieConsent() {
   // null = not yet decided this session/render; 'accepted' | 'declined' otherwise.
   const [choice, setChoice] = useState(null);
@@ -42,7 +79,7 @@ export default function CookieConsent() {
     }
     if (saved === 'accepted') {
       setChoice('accepted');
-      loadAnalytics();
+      loadTrackers();
     } else if (saved === 'declined') {
       setChoice('declined');
     }
@@ -60,7 +97,7 @@ export default function CookieConsent() {
   function accept() {
     persist('accepted');
     setChoice('accepted');
-    loadAnalytics();
+    loadTrackers();
   }
 
   function decline() {

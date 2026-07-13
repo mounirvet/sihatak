@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ShopIcon, IcStar } from "./ShopIcons.js";
 import { SHOP_CURRENCY_SYMBOL_AR } from "../lib/products.js";
 import { imageAlt } from "../lib/imageSeo.js";
+import WishlistButton from "./WishlistButton.jsx";
 
 export default function ShopProductCard({ p, limited = false, className = "" }) {
   const currency = SHOP_CURRENCY_SYMBOL_AR;
@@ -15,10 +16,23 @@ export default function ShopProductCard({ p, limited = false, className = "" }) 
       ? Math.round((1 - p.price / p.compare_at_price) * 100)
       : 0;
 
+  const productLite = {
+    slug: p.slug,
+    title_ar: p.title_ar,
+    category: p.category,
+    price: p.price,
+    compare_at_price: p.compare_at_price ?? null,
+    image: p.images?.[0] || null,
+  };
+
   return (
+    <div className={`relative ${className}`}>
+    <div className="absolute right-3 top-3 z-20">
+      <WishlistButton product={productLite} />
+    </div>
     <Link
       href={`/shop/${p.category}/${p.slug}/`}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-cream transition hover:-translate-y-1 hover:border-teal hover:shadow-card ${className}`}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-cream transition hover:-translate-y-1 hover:border-teal hover:shadow-card"
     >
       {limited && (
         <span className="absolute right-0 top-3 z-10 rounded-l-full bg-teal-dark px-3 py-1 text-[11px] font-bold text-cream shadow">
@@ -73,5 +87,6 @@ export default function ShopProductCard({ p, limited = false, className = "" }) 
         </div>
       </div>
     </Link>
+    </div>
   );
 }

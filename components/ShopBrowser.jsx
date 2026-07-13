@@ -16,6 +16,8 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import WishlistButton from "./WishlistButton.jsx";
+import { trackSearch } from "../lib/analytics.js";
 
 const CURRENCY = "ر.س";
 
@@ -201,9 +203,13 @@ function BrowserCard({ p }) {
   const save = discountPct(p);
 
   return (
+    <div className="relative">
+    <div className="absolute right-3 top-3 z-20">
+      <WishlistButton product={p} />
+    </div>
     <Link
       href={`/shop/${p.category}/${p.slug}/`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-cream transition hover:-translate-y-1 hover:border-teal hover:shadow-card"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-cream transition hover:-translate-y-1 hover:border-teal hover:shadow-card"
     >
       {save > 0 && (
         <span className="absolute left-3 top-3 z-10 rounded-full bg-coral px-2 py-0.5 text-xs font-bold text-white shadow">
@@ -255,5 +261,6 @@ function BrowserCard({ p }) {
         </div>
       </div>
     </Link>
+    </div>
   );
 }

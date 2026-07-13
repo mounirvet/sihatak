@@ -8,6 +8,7 @@
 
 import { useState } from "react";
 import { IcCart, IcArrowLeft } from "./ShopIcons.js";
+import { trackBeginCheckout } from "../lib/analytics.js";
 
 export default function BuyButton({
   href,
@@ -15,6 +16,7 @@ export default function BuyButton({
   currency,
   buyable,
   inStock,
+  product,          // for analytics; optional so old call-sites still work
   big = false,
   block = false,
   className = "",
@@ -36,6 +38,13 @@ export default function BuyButton({
   return (
     <a
       href={href}
+      onClick={() => {
+        // The LAST event we can measure. Checkout happens on buy.stripe.com —
+        // a domain we don't own — so no `purchase` event is ever recorded.
+        // This is the bottom of the measurable funnel until checkout moves
+        // onto asnanik.com.
+        if (product) trackBeginCheckout(product);
+      }}
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}

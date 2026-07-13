@@ -1,5 +1,7 @@
 import '../styles/globals.css';
 import { Tajawal, Reem_Kufi } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CookieConsent from '../components/CookieConsent';
@@ -100,6 +102,10 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <CookieConsent />
+        {/* Vercel Analytics is cookieless and stores no personal identifiers, so
+            unlike GA4/Meta it does not sit behind the consent gate. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

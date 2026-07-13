@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { SITE, NAV } from '../lib/site';
 import { IconSearch, IconMenu, IconClose } from './Icons';
+import WishlistLink from './WishlistLink.jsx';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -39,6 +40,7 @@ export default function Header() {
           >
             <IconSearch className="w-5 h-5" />
           </Link>
+          <WishlistLink />
         </nav>
 
         {/* Mobile controls — search + hamburger, shown only on mobile */}
@@ -51,6 +53,7 @@ export default function Header() {
           >
             <IconSearch className="w-5 h-5" />
           </Link>
+          <WishlistLink />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

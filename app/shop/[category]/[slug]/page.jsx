@@ -16,6 +16,8 @@ import { getSellCopy } from "../../../../lib/shopCopy.js";
 import { getProductRecommendations } from "../../../../lib/productRelated.js";
 import ProductGallery from "../../../../components/ProductGallery.jsx";
 import BuyButton from "../../../../components/BuyButton.jsx";
+import WishlistButton from "../../../../components/WishlistButton.jsx";
+import ProductAnalytics from "../../../../components/ProductAnalytics.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
 import ShippingInfo from "../../../../components/ShippingInfo.jsx";
 import InTheBox from "../../../../components/InTheBox.jsx";
@@ -216,16 +218,30 @@ export default function ProductPage({ params }) {
     },
   };
 
+  // Lean product snapshot for analytics + wishlist. Deliberately NOT the whole
+  // product object — `body_md`, `faq` etc would be serialized into the HTML for
+  // no reason.
+  const productLite = {
+    slug: p.slug,
+    title_ar: p.title_ar,
+    category: p.category,
+    price: p.price,
+    compare_at_price: p.compare_at_price ?? null,
+    image: p.images?.[0] || null,
+  };
+
   const buyProps = {
     href: p.stripe_payment_link,
     price: p.price,
     currency,
     buyable,
     inStock: p.in_stock,
+    product: productLite,
   };
 
   return (
     <article dir="rtl" className="bg-sand pb-24 md:pb-10">
+      <ProductAnalytics product={productLite} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {faqs.length > 0 && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -304,8 +320,9 @@ export default function ProductPage({ params }) {
 
             <ShippingInfo />
 
-            <div className="mt-5 hidden md:block">
-              <BuyButton {...buyProps} big block />
+            <div className="mt-5 hidden items-stretch gap-3 md:flex">
+              <BuyButton {...buyProps} big block className="flex-1" />
+              <WishlistButton product={productLite} size="lg" className="shrink-0 self-stretch !h-auto !w-14" />
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-ink/60">
