@@ -4,6 +4,7 @@ import MaqalatExplorer from '../../components/MaqalatExplorer';
 export const metadata = {
   title: 'جميع المقالات',
   description: 'تصفّح جميع مقالات أسنانك التثقيفية عن صحة الأسنان والفم.',
+  alternates: { canonical: '/maqalat/' },
 };
 
 export default async function ArticlesIndex() {

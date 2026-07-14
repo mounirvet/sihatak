@@ -1,6 +1,7 @@
 export const metadata = {
   title: 'سياسة التحرير والمراجعة الطبية',
   description: 'كيف نكتب محتوانا ونراجعه طبياً ونحدّثه لضمان الدقة والموثوقية.',
+  alternates: { canonical: '/man-nahnu/siyasat-al-tahrir/' },
 };
 
 export default function EditorialPolicy() {

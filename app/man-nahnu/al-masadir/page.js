@@ -1,6 +1,7 @@
 export const metadata = {
   title: 'مصادرنا العلمية',
   description: 'الجهات والمصادر العلمية الموثوقة التي نعتمد عليها في إعداد محتوانا.',
+  alternates: { canonical: '/man-nahnu/al-masadir/' },
 };
 
 export default function SourcesPage() {

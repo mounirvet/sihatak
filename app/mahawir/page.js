@@ -3,6 +3,7 @@ import { PillarCard } from '../../components/Cards';
 export const metadata = {
   title: 'المحاور الرئيسية',
   description: 'محاور صحة الأسنان والفم: أمراض اللثة، التسوّس، أسنان الأطفال، التبييض، العناية اليومية، الزراعة، التقويم، والتغذية.',
+  alternates: { canonical: '/mahawir/' },
 };
 export default function PillarsIndex() {
   return (

@@ -4,6 +4,7 @@ import { SITE } from '../../lib/site';
 export const metadata = {
   title: 'من نحن',
   description: 'أسنانك منصة تثقيفية مستقلة لصحة الأسنان والفم في الخليج العربي، يراجع محتواها أطباء أسنان مختصون.',
+  alternates: { canonical: '/man-nahnu/' },
 };
 
 export default function AboutPage() {
