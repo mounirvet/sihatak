@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CookieConsent from '../components/CookieConsent';
 import Snipcart from '../components/Snipcart.jsx';
+import { AuthProvider } from '../components/Auth/AuthProvider.jsx';
 import { SITE } from '../lib/site';
 
 const tajawal = Tajawal({
@@ -99,6 +100,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <AuthProvider>
         <Header />
         <main>{children}</main>
         <Footer />
@@ -111,6 +113,7 @@ export default function RootLayout({ children }) {
             unlike GA4/Meta it does not sit behind the consent gate. */}
         <Analytics />
         <SpeedInsights />
+        </AuthProvider>
       </body>
     </html>
   );

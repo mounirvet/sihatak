@@ -6,6 +6,7 @@ import { SITE, NAV } from '../lib/site';
 import { IconSearch, IconMenu, IconClose } from './Icons';
 import WishlistLink from './WishlistLink.jsx';
 import CartLink from './CartLink.jsx';
+import AccountLink from './Auth/AccountLink.jsx';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -42,6 +43,7 @@ export default function Header() {
             <IconSearch className="w-5 h-5" />
           </Link>
           <WishlistLink />
+          <AccountLink />
           <CartLink />
         </nav>
 
@@ -56,6 +58,7 @@ export default function Header() {
             <IconSearch className="w-5 h-5" />
           </Link>
           <WishlistLink />
+          <AccountLink />
           <CartLink />
           <button
             type="button"
