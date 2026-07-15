@@ -193,21 +193,51 @@ export default function ProductPage({ params }) {
     .map((s) => s.trim())
     .filter(Boolean);
 
+  // Price valid until end of next year — a rolling, always-future date so the
+  // Offer never shows as stale in Search Console (Google warns on past dates).
+  const priceValidUntil = `${new Date().getFullYear() + 1}-12-31`;
+
   const jsonLd = {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: p.title_ar,
-    image: p.images,
+    image: p.images?.map((img) => `${SITE.url}${img}`),
     description: p.short_desc,
     sku: p.sku,
     offers: {
       "@type": "Offer",
+      url: `${SITE.url}/shop/${p.category}/${p.slug}/`,
       priceCurrency: p.currency || SHOP_CURRENCY,
       price: p.price,
+      priceValidUntil,
+      itemCondition: "https://schema.org/NewCondition",
       availability: p.in_stock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: SITE.name },
     },
+  };
+
+  // BreadcrumbList: puts "المتجر › الفئة › المنتج" in the search result instead
+  // of a bare URL. Built from the real category title.
+  const breadcrumbLd = {
+    "@context": "https://schema.org/",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "المتجر", item: `${SITE.url}/shop/` },
+      cat && {
+        "@type": "ListItem",
+        position: 2,
+        name: cat.title_ar,
+        item: `${SITE.url}/shop/${p.category}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: p.title_ar,
+        item: `${SITE.url}/shop/${p.category}/${p.slug}/`,
+      },
+    ].filter(Boolean),
   };
 
   // Lean product snapshot for analytics + wishlist. Deliberately NOT the whole
@@ -239,6 +269,7 @@ export default function ProductPage({ params }) {
     <article dir="rtl" className="bg-sand pb-24 md:pb-10">
       <ProductAnalytics product={productLite} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       {faqs.length > 0 && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org", "@type": "FAQPage",
