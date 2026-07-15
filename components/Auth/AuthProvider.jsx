@@ -102,18 +102,27 @@ export function AuthProvider({ children }) {
     return { data, error };
   }, []);
 
-  // Let an existing user set/change their name (stored in user metadata).
-  const updateProfile = useCallback(async ({ firstName, familyName }) => {
+  // Let an existing user set/change their profile (stored in user metadata).
+  // Only overwrites keys that are passed in, so partial updates are safe.
+  const updateProfile = useCallback(async (fields = {}) => {
     const supabase = getSupabase();
     if (!supabase) return { error: new Error("auth disabled") };
-    const { data, error } = await supabase.auth.updateUser({
-      data: {
-        first_name: firstName?.trim() || null,
-        family_name: familyName?.trim() || null,
-      },
-    });
-    if (!error && data?.user) setUser(data.user);
-    return { data, error };
+    const map = {
+      firstName: "first_name",
+      familyName: "family_name",
+      phone: "phone",
+      gender: "gender",
+    };
+    const data = {};
+    for (const [key, col] of Object.entries(map)) {
+      if (key in fields) {
+        const v = fields[key];
+        data[col] = typeof v === "string" ? v.trim() || null : v ?? null;
+      }
+    }
+    const { data: res, error } = await supabase.auth.updateUser({ data });
+    if (!error && res?.user) setUser(res.user);
+    return { data: res, error };
   }, []);
 
   return (
