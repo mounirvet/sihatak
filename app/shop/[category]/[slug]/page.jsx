@@ -21,6 +21,7 @@ import ProductAnalytics from "../../../../components/ProductAnalytics.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
 import ShippingInfo from "../../../../components/ShippingInfo.jsx";
 import InTheBox from "../../../../components/InTheBox.jsx";
+import Reviews from "../../../../components/Reviews.jsx";
 import { ShopIcon, IcLock, IcReturn, IcVerified, IcShield, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
 import {
   getAllProducts,
@@ -438,6 +439,11 @@ export default function ProductPage({ params }) {
             <InTheBox items={p.in_box} />
           </Reveal>
         )}
+
+        {/* REVIEWS */}
+        <Reveal as="section" className="mt-16">
+          <Reviews productSlug={p.slug} productName={p.title_ar} />
+        </Reveal>
 
         {/* COMPARE */}
         {compare && compare.rows && (
