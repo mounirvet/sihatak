@@ -1,17 +1,20 @@
 "use client";
 // components/Auth/AuthForm.jsx — email + password signup / login / reset.
 //
-// Three modes in one component (login | signup | reset), toggled by links.
-// All copy is Arabic. Errors from Supabase are mapped to friendly Arabic
-// messages rather than shown raw.
+// Three modes (login | signup | reset). Arabic throughout. Supabase errors are
+// mapped to friendly Arabic messages.
 //
-// NOTE ON "confirm email": if that setting is ON in Supabase, a fresh signup
-// does NOT log the person in — they must click the emailed link first. We show
-// a "check your inbox" panel in that case. If it's OFF, signup logs them in
-// immediately and the parent redirects.
+// Signup now also collects first + family name (both required) and shows a live
+// password checklist. The same password rule is enforced server-side in
+// Supabase, so the checklist is UX, not the security boundary.
 
 import { useState } from "react";
 import { useAuth } from "./AuthProvider.jsx";
+import {
+  passwordChecks,
+  passwordValid,
+  PASSWORD_RULE_LABELS,
+} from "../../lib/passwordRules.js";
 
 const MODES = { LOGIN: "login", SIGNUP: "signup", RESET: "reset" };
 
@@ -19,8 +22,8 @@ function friendlyError(msg = "") {
   const m = msg.toLowerCase();
   if (m.includes("invalid login")) return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
   if (m.includes("already registered")) return "هذا البريد مسجّل بالفعل. جرّب تسجيل الدخول.";
-  if (m.includes("password should be at least"))
-    return "كلمة المرور قصيرة جدًا (6 أحرف على الأقل).";
+  if (m.includes("password should be at least") || m.includes("weak"))
+    return "كلمة المرور لا تحقّق الشروط المطلوبة.";
   if (m.includes("email not confirmed"))
     return "لم يُؤكَّد بريدك بعد. افتح رسالة التأكيد في بريدك أولًا.";
   if (m.includes("rate limit") || m.includes("too many"))
@@ -28,9 +31,38 @@ function friendlyError(msg = "") {
   return "حدث خطأ. تحقّق من بياناتك وأعد المحاولة.";
 }
 
+function PasswordChecklist({ password }) {
+  const c = passwordChecks(password);
+  const keys = ["length", "letter", "number"];
+  return (
+    <ul className="mt-2 space-y-1">
+      {keys.map((k) => (
+        <li
+          key={k}
+          className={`flex items-center gap-2 text-xs ${
+            c[k] ? "text-teal-dark" : "text-ink/45"
+          }`}
+        >
+          <span
+            className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] ${
+              c[k] ? "bg-mint text-teal-dark" : "bg-line text-ink/40"
+            }`}
+            aria-hidden="true"
+          >
+            {c[k] ? "✓" : "•"}
+          </span>
+          {PASSWORD_RULE_LABELS[k]}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function AuthForm({ onSuccess }) {
   const { signIn, signUp, resetPassword, enabled } = useAuth();
   const [mode, setMode] = useState(MODES.LOGIN);
+  const [firstName, setFirstName] = useState("");
+  const [familyName, setFamilyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -45,28 +77,47 @@ export default function AuthForm({ onSuccess }) {
     );
   }
 
-  async function submit(e) {
-    e.preventDefault();
+  function reset() {
     setError("");
     setNotice("");
-    setBusy(true);
+  }
 
+  async function submit(e) {
+    e.preventDefault();
+    reset();
+
+    // Client-side guard for signup: names + password rule. Supabase enforces
+    // the password rule again server-side regardless.
+    if (mode === MODES.SIGNUP) {
+      if (!firstName.trim() || !familyName.trim()) {
+        setError("يرجى إدخال الاسم واسم العائلة.");
+        return;
+      }
+      if (!passwordValid(password)) {
+        setError("كلمة المرور لا تحقّق الشروط المطلوبة بالأسفل.");
+        return;
+      }
+    }
+
+    setBusy(true);
     try {
       if (mode === MODES.LOGIN) {
         const { error } = await signIn(email.trim(), password);
         if (error) setError(friendlyError(error.message));
         else onSuccess?.();
       } else if (mode === MODES.SIGNUP) {
-        const { data, error } = await signUp(email.trim(), password);
+        const { data, error } = await signUp(email.trim(), password, {
+          firstName,
+          familyName,
+        });
         if (error) {
           setError(friendlyError(error.message));
         } else if (data?.user && !data.session) {
-          // confirm-email is ON: no session yet
           setNotice(
             "أرسلنا رابط تأكيد إلى بريدك. افتحه لتفعيل حسابك ثم سجّل الدخول."
           );
         } else {
-          onSuccess?.(); // confirm-email OFF: logged in immediately
+          onSuccess?.();
         }
       } else if (mode === MODES.RESET) {
         const { error } = await resetPassword(email.trim());
@@ -95,6 +146,9 @@ export default function AuthForm({ onSuccess }) {
       ? "إنشاء الحساب"
       : "إرسال الرابط";
 
+  const inputCls =
+    "w-full rounded-xl border border-line bg-white px-4 py-2.5 text-ink outline-none focus:border-teal";
+
   return (
     <div className="mx-auto w-full max-w-sm">
       <h2 className="mb-1 text-center font-display text-2xl text-ink">{title}</h2>
@@ -118,6 +172,33 @@ export default function AuthForm({ onSuccess }) {
       )}
 
       <form onSubmit={submit} className="space-y-3">
+        {mode === MODES.SIGNUP && (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-sm text-ink/70">الاسم</label>
+              <input
+                type="text"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className={inputCls}
+                placeholder="محمد"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-ink/70">اسم العائلة</label>
+              <input
+                type="text"
+                required
+                value={familyName}
+                onChange={(e) => setFamilyName(e.target.value)}
+                className={inputCls}
+                placeholder="العبّاس"
+              />
+            </div>
+          </div>
+        )}
+
         <div>
           <label className="mb-1 block text-sm text-ink/70">البريد الإلكتروني</label>
           <input
@@ -126,7 +207,7 @@ export default function AuthForm({ onSuccess }) {
             dir="ltr"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-line bg-white px-4 py-2.5 text-ink outline-none focus:border-teal"
+            className={inputCls}
             placeholder="you@example.com"
           />
         </div>
@@ -137,13 +218,13 @@ export default function AuthForm({ onSuccess }) {
             <input
               type="password"
               required
-              minLength={6}
               dir="ltr"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-line bg-white px-4 py-2.5 text-ink outline-none focus:border-teal"
+              className={inputCls}
               placeholder="••••••••"
             />
+            {mode === MODES.SIGNUP && <PasswordChecklist password={password} />}
           </div>
         )}
 
@@ -162,8 +243,7 @@ export default function AuthForm({ onSuccess }) {
             <button
               onClick={() => {
                 setMode(MODES.SIGNUP);
-                setError("");
-                setNotice("");
+                reset();
               }}
               className="text-teal hover:underline"
             >
@@ -173,8 +253,7 @@ export default function AuthForm({ onSuccess }) {
             <button
               onClick={() => {
                 setMode(MODES.RESET);
-                setError("");
-                setNotice("");
+                reset();
               }}
               className="text-ink/50 hover:underline"
             >
@@ -186,8 +265,7 @@ export default function AuthForm({ onSuccess }) {
           <button
             onClick={() => {
               setMode(MODES.LOGIN);
-              setError("");
-              setNotice("");
+              reset();
             }}
             className="text-teal hover:underline"
           >
@@ -198,8 +276,7 @@ export default function AuthForm({ onSuccess }) {
           <button
             onClick={() => {
               setMode(MODES.LOGIN);
-              setError("");
-              setNotice("");
+              reset();
             }}
             className="text-teal hover:underline"
           >

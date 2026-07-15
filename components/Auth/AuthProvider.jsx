@@ -20,6 +20,7 @@ const AuthContext = createContext({
   signIn: async () => ({ error: new Error("auth disabled") }),
   signOut: async () => {},
   resetPassword: async () => ({ error: new Error("auth disabled") }),
+  updateProfile: async () => ({ error: new Error("auth disabled") }),
 });
 
 export function AuthProvider({ children }) {
@@ -47,13 +48,20 @@ export function AuthProvider({ children }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  const signUp = useCallback(async (email, password) => {
+  const signUp = useCallback(async (email, password, meta = {}) => {
     const supabase = getSupabase();
     if (!supabase) return { error: new Error("auth disabled") };
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        // Store the person's name on the account itself (user metadata),
+        // separate from the wishlist table. first_name / family_name show up
+        // under supabase auth.users -> raw_user_meta_data.
+        data: {
+          first_name: meta.firstName?.trim() || null,
+          family_name: meta.familyName?.trim() || null,
+        },
         // After the user clicks the confirmation link, send them back to the
         // account page. window.location keeps this correct on any domain.
         emailRedirectTo:
@@ -94,6 +102,20 @@ export function AuthProvider({ children }) {
     return { data, error };
   }, []);
 
+  // Let an existing user set/change their name (stored in user metadata).
+  const updateProfile = useCallback(async ({ firstName, familyName }) => {
+    const supabase = getSupabase();
+    if (!supabase) return { error: new Error("auth disabled") };
+    const { data, error } = await supabase.auth.updateUser({
+      data: {
+        first_name: firstName?.trim() || null,
+        family_name: familyName?.trim() || null,
+      },
+    });
+    if (!error && data?.user) setUser(data.user);
+    return { data, error };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -104,6 +126,7 @@ export function AuthProvider({ children }) {
         signIn,
         signOut,
         resetPassword,
+        updateProfile,
       }}
     >
       {children}
