@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import Script from 'next/script';
 import { Tajawal, Reem_Kufi } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -12,13 +13,13 @@ import { SITE } from '../lib/site';
 const tajawal = Tajawal({
   subsets: ['arabic', 'latin'],
   weight: ['400', '500', '700'],
-  variable: '--font-tajawal',
+  variable: '--font-body',
   display: 'swap',
 });
 const reemKufi = Reem_Kufi({
   subsets: ['arabic', 'latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-reem',
+  weight: ['400', '700'],
+  variable: '--font-display',
   display: 'swap',
 });
 
@@ -93,11 +94,6 @@ export default function RootLayout({ children }) {
     <html lang="ar" dir="rtl" className={`${tajawal.variable} ${reemKufi.variable}`}>
       <head>
         <SiteSchema />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2689172979896587"
-          crossOrigin="anonymous"
-        />
       </head>
       <body>
         <AuthProvider>
@@ -114,6 +110,13 @@ export default function RootLayout({ children }) {
         <Analytics />
         <SpeedInsights />
         </AuthProvider>
+        <Script
+          id="adsbygoogle-init"
+          strategy="afterInteractive"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2689172979896587"
+          crossOrigin="anonymous"
+        />
       </body>
     </html>
   );
