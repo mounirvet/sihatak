@@ -2,9 +2,9 @@
 slug: autobrush-sonic-pro-ushape
 title_ar: فرشاة سونيك على شكل U – Autobrush Sonic Pro
 category: electric-brushes
-price: 329
+price: 289
 currency: SAR
-compare_at_price: 399
+compare_at_price: 359
 sku: EB-AB-USHAPE
 in_stock: true
 brand_neutral: false

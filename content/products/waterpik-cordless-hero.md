@@ -2,9 +2,9 @@
 slug: waterpik-cordless-hero
 title_ar: خيط مائي لاسلكي – ووتربيك كوردلس أدفانسد (WP-560)
 category: interdental-care
-price: 599
+price: 449
 currency: SAR
-compare_at_price: 699
+compare_at_price: 549
 sku: ID-WP-560
 in_stock: true
 brand_neutral: false

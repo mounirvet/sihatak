@@ -2,9 +2,9 @@
 slug: hismile-led-kit-hero
 title_ar: طقم تبييض الأسنان بالضوء LED – هاي سمايل (HiSmile)
 category: whitening
-price: 349
+price: 229
 currency: SAR
-compare_at_price: 439
+compare_at_price: 289
 sku: WH-HISMILE-LED
 in_stock: true
 brand_neutral: false

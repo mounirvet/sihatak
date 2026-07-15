@@ -2,9 +2,9 @@
 slug: vibe-sonic-whitening-brush
 title_ar: فرشاة سونيك للتبييض 40000 اهتزاز – Vibe Series
 category: electric-brushes
-price: 199
+price: 169
 currency: SAR
-compare_at_price: 259
+compare_at_price: 219
 sku: EB-VIBE-40K
 in_stock: true
 brand_neutral: false
