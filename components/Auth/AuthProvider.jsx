@@ -62,11 +62,11 @@ export function AuthProvider({ children }) {
           first_name: meta.firstName?.trim() || null,
           family_name: meta.familyName?.trim() || null,
         },
-        // After the user clicks the confirmation link, send them back to the
-        // account page. window.location keeps this correct on any domain.
+        // After the user clicks the confirmation link, send them to the
+        // "email verified" success page.
         emailRedirectTo:
           typeof window !== "undefined"
-            ? `${window.location.origin}/shop/hisabi/`
+            ? `${window.location.origin}/shop/tam-altakid/`
             : undefined,
       },
     });
