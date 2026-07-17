@@ -21,6 +21,8 @@ import WishlistButton from "../../../../components/WishlistButton.jsx";
 import ProductAnalytics from "../../../../components/ProductAnalytics.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
 import ShippingInfo from "../../../../components/ShippingInfo.jsx";
+import { DeliveryEstimate, PaymentMethods, FeatureChips } from "../../../../components/TrustStrip.jsx";
+import { SectionNav, StickyBuyBar } from "../../../../components/StickyNav.jsx";
 import InTheBox from "../../../../components/InTheBox.jsx";
 import Reviews from "../../../../components/Reviews.jsx";
 import { ShopIcon, IcLock, IcReturn, IcVerified, IcShield, IcChevron, IcCircleCheck, IcInfo } from "../../../../components/ShopIcons.js";
@@ -344,9 +346,13 @@ export default function ProductPage({ params }) {
               </ul>
             )}
 
+            <FeatureChips chips={p.trust_chips} />
+
             <ShippingInfo />
 
-            <div className="mt-5 hidden items-start gap-3 md:flex">
+            <DeliveryEstimate minDays={p.shipping_days_min} maxDays={p.shipping_days_max} />
+
+            <div id="primary-cta" className="mt-5 hidden items-start gap-3 md:flex">
               {Array.isArray(p.bundles) && p.bundles.length > 1 ? (
                 <div className="flex-1">
                   <BundleSelector
@@ -361,6 +367,8 @@ export default function ProductPage({ params }) {
               )}
               <WishlistButton product={productLite} size="lg" className="shrink-0 !h-[68px] !w-14" />
             </div>
+
+            <PaymentMethods />
 
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-ink/60">
               <div className="flex flex-col items-center gap-1 rounded-lg border border-line bg-cream p-3">
@@ -600,6 +608,13 @@ export default function ProductPage({ params }) {
           <BuyButton {...buyProps} block showAddToCart={false} className="flex-1" />
         </div>
       </div>
+      <StickyBuyBar
+        product={productLite}
+        price={p.price}
+        currency={currency}
+        buyable={buyable}
+        title={p.title_ar}
+      />
     </article>
   );
 }
