@@ -352,7 +352,7 @@ export default function ProductPage({ params }) {
 
             <DeliveryEstimate minDays={p.shipping_days_min} maxDays={p.shipping_days_max} />
 
-            <div id="primary-cta" className="mt-5 hidden items-start gap-3 md:flex">
+            <div id="primary-cta" className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-start">
               {Array.isArray(p.bundles) && p.bundles.length > 1 ? (
                 <div className="flex-1">
                   <BundleSelector
@@ -365,7 +365,7 @@ export default function ProductPage({ params }) {
               ) : (
                 <BuyButton {...buyProps} big block className="flex-1" />
               )}
-              <WishlistButton product={productLite} size="lg" className="shrink-0 !h-[68px] !w-14" />
+              <WishlistButton product={productLite} size="lg" className="shrink-0 sm:!h-[68px] sm:!w-14" />
             </div>
 
             <PaymentMethods />
