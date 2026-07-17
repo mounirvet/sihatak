@@ -96,7 +96,7 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo:
         typeof window !== "undefined"
-          ? `${window.location.origin}/shop/hisabi/`
+          ? `${window.location.origin}/shop/kalima-jadida/`
           : undefined,
     });
     return { data, error };
