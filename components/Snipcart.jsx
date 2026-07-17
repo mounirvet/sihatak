@@ -18,11 +18,32 @@ import Script from "next/script";
 import { useEffect } from "react";
 import { trackBeginCheckout, trackPurchase } from "../lib/analytics.js";
 
-const SNIPCART_PUBLIC_KEY =
+// Two PUBLIC keys. The site auto-selects based on where it runs, so we never
+// risk shipping the test key to production or forgetting to swap back.
+//   • asnanik.com            -> LIVE key  (real customers, real payments)
+//   • localhost / *.vercel.app -> TEST key (test card 4242..., no charges)
+const SNIPCART_LIVE_KEY =
   "NzRhOGFlYjEtZGFlOS00MWZiLWFhZDgtMTM0ZmY1YjNhM2Q4NjM5MTk1NDAwMTA1NzYxMzAz";
+const SNIPCART_TEST_KEY =
+  "YmNmZGRjYjMtZjkxYS00ZTg4LWIyMmItYzJlZmQ0M2M0NzQ1NjM5MTk1NDAwMTA1NzYxMzAz";
+
+function pickSnipcartKey() {
+  if (typeof window === "undefined") return SNIPCART_LIVE_KEY; // SSR/static build default
+  const host = window.location.hostname;
+  const isProd = host === "asnanik.com" || host === "www.asnanik.com";
+  return isProd ? SNIPCART_LIVE_KEY : SNIPCART_TEST_KEY;
+}
 
 export default function Snipcart() {
+  const SNIPCART_PUBLIC_KEY = pickSnipcartKey();
+
   useEffect(() => {
+    // Static export bakes the build-time key into the HTML. Correct it in the
+    // browser BEFORE Snipcart initializes, so localhost/preview truly use the
+    // test key. Snipcart reads data-api-key when its script boots.
+    const el = document.getElementById("snipcart");
+    if (el) el.setAttribute("data-api-key", pickSnipcartKey());
+
     // Snipcart loads async; `snipcart.ready` fires once its API exists.
     function bind() {
       const S = window.Snipcart;
