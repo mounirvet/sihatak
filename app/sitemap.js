@@ -3,6 +3,8 @@ import { getAllArticles } from '../lib/content';
 import { getGlossarySlugs } from '../lib/glossary';
 import { getAllInsights } from '../lib/insights';
 import { getToolSlugs, getProductSlugs } from '../lib/tools';
+import { getAllProducts } from '../lib/products';
+import { STORE_CATEGORIES } from '../lib/storeCategories';
 
 export const dynamic = 'force-static';
 
@@ -75,6 +77,19 @@ export default async function sitemap() {
     lastModified: SITE_BASELINE,
   }));
 
+  // --- SHOP: the real e-commerce pages (buy buttons, bundles, Snipcart). These
+  // are the converting pages and MUST be indexable. /adawat/muntaj canonicals
+  // defer to these, so no cannibalization. ---
+  const shopIndex = [{ url: `${SITE.url}/shop/`, lastModified: SITE_BASELINE }];
+  const shopCategoryPages = STORE_CATEGORIES.map((c) => ({
+    url: `${SITE.url}/shop/${c.slug}/`,
+    lastModified: SITE_BASELINE,
+  }));
+  const shopProductPages = getAllProducts().map((p) => ({
+    url: `${SITE.url}/shop/${p.category}/${p.slug}/`,
+    lastModified: SITE_BASELINE,
+  }));
+
   return [
     ...pages,
     ...pillarPages,
@@ -83,5 +98,8 @@ export default async function sitemap() {
     ...glossaryPages,
     ...toolCategoryPages,
     ...productPages,
+    ...shopIndex,
+    ...shopCategoryPages,
+    ...shopProductPages,
   ];
 }
