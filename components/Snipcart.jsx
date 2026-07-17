@@ -72,7 +72,13 @@ export default function Snipcart() {
       // Bind BOTH events — whichever fires first triggers the redirect once.
       // `cart.confirmed` is the SDK event; `order.completed` is the classic one.
       S.events.on("cart.confirmed", (order) => {
-        trackPurchase(order);
+        // Analytics must never block the redirect: if it throws, swallow it.
+        try {
+          trackPurchase(order);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn("[asnanik] trackPurchase failed (non-fatal)", e);
+        }
         goToThankYou(order);
       });
       S.events.on("order.completed", (order) => {
