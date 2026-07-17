@@ -10,7 +10,7 @@ in_stock: true
 brand_neutral: false
 shipping_days_min: 7
 shipping_days_max: 14
-stripe_payment_link: 'https://buy.stripe.com/cNi3cv4Qb5R728Bdp22400v'
+stripe_payment_link: 'https://buy.stripe.com/7sY00jciD6Vb28B70E2400x'
 images:
   - /images/shop/waterpik-cordless-hero-1.jpg
   - /images/shop/waterpik-cordless-hero-2.jpg

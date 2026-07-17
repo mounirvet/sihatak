@@ -10,7 +10,7 @@ in_stock: true
 brand_neutral: false
 shipping_days_min: 7
 shipping_days_max: 14
-stripe_payment_link: 'https://buy.stripe.com/dRm9ATciD7Zf14x84I2400t'
+stripe_payment_link: 'https://buy.stripe.com/4gM8wP5UfgvLbJbckY2400z'
 images:
   - /images/shop/vibe-sonic-whitening-brush-1.jpg
   - /images/shop/vibe-sonic-whitening-brush-2.jpg

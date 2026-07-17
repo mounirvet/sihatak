@@ -10,7 +10,7 @@ in_stock: true
 brand_neutral: false
 shipping_days_min: 7
 shipping_days_max: 14
-stripe_payment_link: 'https://buy.stripe.com/bJe14n5Uf0wNbJb1Gk24000'
+stripe_payment_link: 'https://buy.stripe.com/aFa14ndmHdjz00t98M2400A'
 images:
   - /images/shop/autobrush-sonic-pro-ushape-1.jpg
   - /images/shop/autobrush-sonic-pro-ushape-2.jpg
