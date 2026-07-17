@@ -40,18 +40,37 @@ export function DeliveryEstimate({ minDays, maxDays }) {
 }
 
 // ---- payment methods --------------------------------------------------------
+// Real brand logos (PNG, transparent) live in /public/images/pay/. Only the
+// rails the checkout ACTUALLY accepts are shown — Visa, Mastercard, Apple Pay.
+// No mada/STC Pay: Snipcart→Stripe doesn't process them here, so showing them
+// would be a false trust signal. Logos are height-locked so different aspect
+// ratios line up cleanly.
+const PAY_METHODS = [
+  { src: "/images/pay/visa.png", alt: "Visa" },
+  { src: "/images/pay/mastercard.png", alt: "Mastercard" },
+  { src: "/images/pay/applepay.png", alt: "Apple Pay" },
+];
+
 export function PaymentMethods() {
-  const pill =
-    "flex h-7 items-center rounded-md border border-line bg-white px-2 text-[10px] font-bold text-ink/70";
   return (
     <div className="mt-3">
       <p className="mb-1.5 text-[11px] text-ink/45">طرق دفع آمنة ومعتمدة</p>
-      <div className="flex flex-wrap items-center gap-1.5">
-        <span className={pill}>mada</span>
-        <span className={pill}>VISA</span>
-        <span className={pill}>Mastercard</span>
-        <span className={pill}> Pay</span>
-        <span className={pill}>STC Pay</span>
+      <div className="flex flex-wrap items-center gap-2">
+        {PAY_METHODS.map((m) => (
+          <span
+            key={m.alt}
+            className="flex h-9 items-center justify-center rounded-lg border border-line bg-white px-3"
+          >
+            <img
+              src={m.src}
+              alt={m.alt}
+              className="h-4 w-auto"
+              loading="lazy"
+              width="40"
+              height="16"
+            />
+          </span>
+        ))}
       </div>
     </div>
   );
