@@ -45,7 +45,7 @@ trust_chips:
 guarantee: منتج RiseWell أصلي · شحن عالمي · تركيبة نظيفة موثّقة على العبوة
 related_articles:
   - al-tabyid-al-manzili-muqabil-al-iyada
-  - hal-al-asnan-al-hassasa
+  - al-majun-al-munasib-lil-asnan-al-hassasa
 faq:
   - q: ما الذي يميّز معجون RiseWell بلا نكهة عن غيره؟
     a: >-
