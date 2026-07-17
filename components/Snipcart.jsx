@@ -45,28 +45,38 @@ export default function Snipcart() {
     if (el) el.setAttribute("data-api-key", pickSnipcartKey());
 
     // Snipcart loads async; `snipcart.ready` fires once its API exists.
+    let redirected = false;
+    function goToThankYou(order) {
+      if (redirected) return;
+      redirected = true;
+      // eslint-disable-next-line no-console
+      console.log("[asnanik] order confirmed → redirecting to /shop/shukran/", order);
+      const token =
+        order?.token ||
+        order?.cart?.token ||
+        order?.invoiceNumber ||
+        order?.publicOrderId ||
+        "";
+      const q = token ? `?token=${encodeURIComponent(token)}` : "";
+      // Longer delay lets Snipcart finish its own confirm navigation first,
+      // then we override it with a full document navigation (clears the hash).
+      setTimeout(() => {
+        window.location.href = `${window.location.origin}/shop/shukran/${q}`;
+      }, 1200);
+    }
+
     function bind() {
       const S = window.Snipcart;
       if (!S?.events) return;
 
+      // Bind BOTH events — whichever fires first triggers the redirect once.
+      // `cart.confirmed` is the SDK event; `order.completed` is the classic one.
       S.events.on("cart.confirmed", (order) => {
-        // Fires on a COMPLETED, PAID order. This is the event that makes
-        // conversion optimisation and ROAS possible.
         trackPurchase(order);
-
-        // Redirect to our branded "order received" page (شكرًا) instead of
-        // leaving the customer on Snipcart's default screen. Pass the order
-        // token so the page can show a reference number. Small delay lets the
-        // purchase event flush first.
-        const token =
-          order?.token ||
-          order?.cart?.token ||
-          order?.invoiceNumber ||
-          "";
-        setTimeout(() => {
-          const q = token ? `?token=${encodeURIComponent(token)}` : "";
-          window.location.assign(`/shop/shukran/${q}`);
-        }, 400);
+        goToThankYou(order);
+      });
+      S.events.on("order.completed", (order) => {
+        goToThankYou(order);
       });
 
       S.events.on("theme.routechanged", ({ to }) => {
