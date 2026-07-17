@@ -16,6 +16,7 @@ import { getSellCopy } from "../../../../lib/shopCopy.js";
 import { getProductRecommendations } from "../../../../lib/productRelated.js";
 import ProductGallery from "../../../../components/ProductGallery.jsx";
 import BuyButton from "../../../../components/BuyButton.jsx";
+import BundleSelector from "../../../../components/BundleSelector.jsx";
 import WishlistButton from "../../../../components/WishlistButton.jsx";
 import ProductAnalytics from "../../../../components/ProductAnalytics.jsx";
 import Reveal from "../../../../components/Reveal.jsx";
@@ -346,7 +347,18 @@ export default function ProductPage({ params }) {
             <ShippingInfo />
 
             <div className="mt-5 hidden items-start gap-3 md:flex">
-              <BuyButton {...buyProps} big block className="flex-1" />
+              {Array.isArray(p.bundles) && p.bundles.length > 1 ? (
+                <div className="flex-1">
+                  <BundleSelector
+                    product={productLite}
+                    bundles={p.bundles}
+                    currency={currency}
+                    buyable={buyable}
+                  />
+                </div>
+              ) : (
+                <BuyButton {...buyProps} big block className="flex-1" />
+              )}
               <WishlistButton product={productLite} size="lg" className="shrink-0 !h-[68px] !w-14" />
             </div>
 

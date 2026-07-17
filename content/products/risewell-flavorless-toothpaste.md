@@ -7,6 +7,19 @@ category: toothpaste
 price: 109
 currency: SAR
 compare_at_price: 149
+bundles:
+  - qty: 1
+    price: 109
+    label: عبوة واحدة
+  - qty: 2
+    price: 194
+    label: عبوتان
+    badge: توفّر 24 ر.س
+  - qty: 3
+    price: 269
+    label: ثلاث عبوات
+    badge: الأكثر توفيرًا · وفّر 58 ر.س
+    best: true
 sku: TP-RW-FLV96
 in_stock: true
 brand_neutral: false
