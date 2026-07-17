@@ -4,9 +4,9 @@ title_ar: >-
   معجون أسنان معدني بلا نكهة – RiseWell، بالهيدروكسي أباتيت، خالٍ من الفلورايد
   (96غ)
 category: toothpaste
-price: 79
+price: 109
 currency: SAR
-compare_at_price: 109
+compare_at_price: 149
 sku: TP-RW-FLV96
 in_stock: true
 brand_neutral: false
