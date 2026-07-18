@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useAuth } from "./AuthProvider.jsx";
 import AuthForm from "./AuthForm.jsx";
 import { useWishlist } from "../../lib/wishlist.js";
+import OrderHistory from "./OrderHistory.jsx";
 import { useAddress, EMPTY_ADDRESS } from "../../lib/address.js";
 
 const inputCls =
@@ -330,8 +331,8 @@ export default function AccountClient() {
       <PersonalDetails user={user} updateProfile={updateProfile} />
       <ShippingAddress />
 
-      {/* Wishlist + Orders */}
-      <section className="space-y-2 rounded-2xl border border-line bg-cream/60 p-5">
+      {/* Wishlist */}
+      <section className="rounded-2xl border border-line bg-cream/60 p-5">
         <Link
           href="/shop/al-mufaddala/"
           className="flex items-center justify-between rounded-xl bg-mint/40 px-4 py-3 text-teal-dark transition hover:bg-mint/60"
@@ -341,16 +342,10 @@ export default function AccountClient() {
             {count}
           </span>
         </Link>
-        <button
-          type="button"
-          className="snipcart-customer-signin flex w-full items-center justify-between rounded-xl bg-sand px-4 py-3 text-ink/80 transition hover:bg-sand/70"
-        >
-          <span>طلباتي وتتبّع الشحن</span>
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M9 6l6 6-6 6" />
-          </svg>
-        </button>
       </section>
+
+      {/* Orders — our own history, matched by email so guest orders appear too */}
+      <OrderHistory />
 
       <button
         onClick={signOut}
