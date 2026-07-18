@@ -1,2 +1,5 @@
 [functions.snipcart-webhook]
 verify_jwt = false
+
+[functions.send-abandoned-carts]
+verify_jwt = false

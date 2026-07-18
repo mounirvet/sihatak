@@ -7,14 +7,12 @@
 //   order.completed            -> send confirmation email + schedule review request
 //   order.status.changed       -> send processing / shipped / delivered email
 //   order.trackingNumber.changed -> send shipped email with tracking (fallback)
-//   *.abandoned                -> send cart-recovery email now
 //
 // Review requests are delayed: order.completed stores a row in `pending_reviews`
 // with a send_after timestamp; the scheduled `send-review-requests` function
 // mails them later.
 
 import {
-  abandonedCartEmail,
   orderConfirmationEmail,
   processingEmail,
   shippedEmail,
@@ -338,25 +336,13 @@ Deno.serve(async (req) => {
     return json({ ok: true, tracking: false });
   }
 
-  // ---- Cart abandoned: recovery now ----
-  if (
-    eventName === "customer.abandoned" ||
-    eventName === "order.abandoned" ||
-    eventName === "cart.abandoned"
-  ) {
-    const email = content?.email;
-    const checkoutUrl = content?.resumeUrl || "https://asnanik.com/shop/";
-    const items = itemsOf(content);
-    if (email && items.length) {
-      const { subject, html } = abandonedCartEmail(
-        firstNameOf(content),
-        checkoutUrl,
-        items
-      );
-      await sendEmail(email, subject, html);
-    }
-    return json({ ok: true, event: "abandoned" });
-  }
+  // NOTE: there is deliberately NO abandoned-cart handler here. Snipcart has no
+  // `cart.abandoned` webhook — its order events are only order.completed,
+  // order.status.changed, order.paymentStatus.changed,
+  // order.trackingNumber.changed, order.refund.created,
+  // order.notification.created and order.withdrawal.created. Abandoned carts
+  // are reachable only via the REST API, so recovery lives in the scheduled
+  // `send-abandoned-carts` function instead.
 
   return json({ ok: true, ignored: eventName });
 });
