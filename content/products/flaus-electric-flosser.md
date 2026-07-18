@@ -8,7 +8,7 @@ compare_at_price: 289
 sku: ID-FLAUS
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/7sY9AT96r5R77sVdp22400a'
 images:

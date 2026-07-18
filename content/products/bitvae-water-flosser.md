@@ -8,7 +8,7 @@ compare_at_price: 199
 sku: ID-BITVAE
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/fZuaEX96r2EV28BacQ24001'
 images:

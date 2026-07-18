@@ -8,7 +8,7 @@ compare_at_price: 289
 sku: WH-HISMILE-LED
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/dRm28rbezgvLcNfbgU2400y'
 images:

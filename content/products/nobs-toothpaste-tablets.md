@@ -10,7 +10,7 @@ compare_at_price: 119
 sku: TP-NOBS-TAB
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/eVq6oH82n0wN7sVfxa2400p'
 images:

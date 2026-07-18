@@ -8,7 +8,7 @@ compare_at_price: 219
 sku: EB-VIBE-40K
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/4gM8wP5UfgvLbJbckY2400z'
 images:

@@ -8,7 +8,7 @@ compare_at_price: 79
 sku: FB-CEE-SPRAY
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/3cI00j96rgvL9B32Ko24003'
 images:

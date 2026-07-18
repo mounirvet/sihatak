@@ -8,7 +8,7 @@ compare_at_price: 799
 sku: EB-SONIC-HERO
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/bJe9AT1DZ6VbfZr2Ko2400r'
 images:

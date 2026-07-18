@@ -10,7 +10,7 @@ compare_at_price: 79
 sku: TP-NIA-8X
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/4gM8wP2I3cfv6oRbgU2400o'
 images:

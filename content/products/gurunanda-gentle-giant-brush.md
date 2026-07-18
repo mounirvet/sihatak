@@ -8,7 +8,7 @@ compare_at_price: 59
 sku: AC-GN-GG4
 in_stock: true
 brand_neutral: false
-shipping_days_min: 7
+shipping_days_min: 8
 shipping_days_max: 14
 stripe_payment_link: 'https://buy.stripe.com/4gMaEX2I35R700t4Sw2400c'
 images:
