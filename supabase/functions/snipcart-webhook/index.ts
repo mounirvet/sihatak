@@ -19,6 +19,9 @@ import {
   processingEmail,
   shippedEmail,
   deliveredEmail,
+  cancelledEmail,
+  disputedCustomerEmail,
+  disputedAdminEmail,
   sendEmail,
 } from "../_shared/email.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -102,7 +105,15 @@ function emailForStatus(status: string, content: any) {
       reviewUrl: firstItemUrl(content),
     });
   }
-  return null; // Cancelled / Disputed / unknown -> no automated email
+  if (s.includes("cancel") || s.includes("إلغاء") || s.includes("ملغ")) {
+    return cancelledEmail({ ...base, items: itemsOf(content) });
+  }
+  if (s.includes("disput") || s.includes("نزاع") || s.includes("chargeback")) {
+    // Customer gets a neutral, non-accusatory notice. The admin alert is sent
+    // separately in the handler (it goes to a different address).
+    return disputedCustomerEmail(base);
+  }
+  return null; // Pending / unknown -> no automated email
 }
 
 function firstItemUrl(content: any): string | undefined {
@@ -117,7 +128,8 @@ function simpleStatus(status: string): string {
   if (s.includes("process") || s.includes("تجهيز") || s.includes("progress")) return "processing";
   if (s.includes("ship") || s.includes("شحن") || s.includes("transit")) return "shipped";
   if (s.includes("deliver") || s.includes("تسليم")) return "delivered";
-  if (s.includes("cancel") || s.includes("إلغاء")) return "cancelled";
+  if (s.includes("cancel") || s.includes("إلغاء") || s.includes("ملغ")) return "cancelled";
+  if (s.includes("disput") || s.includes("نزاع") || s.includes("chargeback")) return "disputed";
   return "confirmed";
 }
 
@@ -262,6 +274,22 @@ Deno.serve(async (req) => {
 
     // Keep the stored order in sync so the customer's history is accurate.
     await updateStoredOrder(supabase, content, { status: simple });
+
+    // A dispute (chargeback) also alerts YOU — it needs a manual, time-limited
+    // response to the payment provider. Sent to ADMIN_ALERT_EMAIL if set.
+    if (simple === "disputed") {
+      const adminTo = Deno.env.get("ADMIN_ALERT_EMAIL");
+      if (adminTo) {
+        const alert = disputedAdminEmail({
+          invoiceNumber: content?.invoiceNumber,
+          customerEmail: content?.email,
+          customerName: content?.billingAddressName,
+          total: content?.finalGrandTotal ?? content?.grandTotal,
+          orderToken: content?.token,
+        });
+        await sendEmail(adminTo, alert.subject, alert.html);
+      }
+    }
 
     // DUPLICATE GUARD: marking an order Shipped *and* adding a tracking number
     // fires TWO events (status.changed + trackingNumber.changed), which used to

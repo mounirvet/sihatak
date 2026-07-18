@@ -304,6 +304,100 @@ export function deliveredEmail(opts: {
   return { subject: "وصل طلبك من أسنانك 🎉", html };
 }
 
+// ---- 5. Cancelled (fires on status -> Cancelled) ----
+export function cancelledEmail(opts: {
+  firstName?: string;
+  invoiceNumber?: string;
+  items?: { name: string; qty: number }[];
+}) {
+  const { firstName, invoiceNumber, items } = opts;
+  const hi = firstName ? `مرحبًا ${firstName}،` : "مرحبًا،";
+  const html = shell(
+    `
+    <h1 class="t-ink" style="font-size:22px;color:${TEAL_DARK};margin:0 0 8px;">تم إلغاء طلبك</h1>
+    <p class="t-muted" style="font-size:14px;color:${MUTED};margin:0 0 20px;">
+      ${hi} نؤكّد إلغاء طلبك${invoiceNumber ? ` رقم <strong>${invoiceNumber}</strong>` : ""}.
+    </p>
+    ${items && items.length ? itemList(items) : ""}
+    ${infoBox(
+      `<strong>بخصوص المبلغ:</strong> إن كان قد تم خصم قيمة الطلب، تُعاد إليك تلقائيًا
+       خلال <strong>5–10 أيام عمل</strong> حسب مصرفك وطريقة الدفع.
+       لا يتطلّب ذلك أي إجراء منك.`
+    )}
+    <p class="t-ink" style="font-size:14px;color:${INK};margin:0 0 16px;">
+      إن لم يكن الإلغاء بطلب منك، أو لديك أي استفسار، تواصل معنا وسنساعدك.
+    </p>
+    <div style="text-align:center;">${button("تواصل معنا", `${SITE_URL}/man-nahnu/ittasil-bina/`)}</div>
+  `,
+    "تم إلغاء طلبك — تفاصيل استرداد المبلغ"
+  );
+  return { subject: "تم إلغاء طلبك من أسنانك", html };
+}
+
+// ---- 6. Disputed — CUSTOMER notice (fires on status -> Disputed) ----
+// Deliberately neutral and non-accusatory. A dispute usually means the bank is
+// reviewing the charge; the customer may not have initiated it. We state the
+// facts, avoid blame or legal claims, and invite contact. Nothing here should
+// escalate the situation or prejudice the dispute resolution.
+export function disputedCustomerEmail(opts: {
+  firstName?: string;
+  invoiceNumber?: string;
+}) {
+  const { firstName, invoiceNumber } = opts;
+  const hi = firstName ? `مرحبًا ${firstName}،` : "مرحبًا،";
+  const html = shell(
+    `
+    <h1 class="t-ink" style="font-size:22px;color:${TEAL_DARK};margin:0 0 8px;">بخصوص عملية الدفع لطلبك</h1>
+    <p class="t-ink" style="font-size:15px;line-height:1.9;color:${INK};margin:0 0 16px;">
+      ${hi} وصلَنا إشعار من مزوّد الدفع بشأن عملية الدفع الخاصة بطلبك${
+        invoiceNumber ? ` رقم <strong>${invoiceNumber}</strong>` : ""
+      }، وهي حاليًا قيد المراجعة لدى الجهة المصرفية.
+    </p>
+    ${infoBox(
+      `قد يحدث ذلك لأسباب عديدة، وأحيانًا دون أي إجراء منك. نحن هنا للمساعدة —
+       إن كان لديك أي استفسار حول طلبك أو عملية الدفع، تواصل معنا مباشرة.`
+    )}
+    <div style="text-align:center;">${button("تواصل معنا", `${SITE_URL}/man-nahnu/ittasil-bina/`)}</div>
+  `,
+    "بخصوص عملية الدفع لطلبك"
+  );
+  return { subject: "بخصوص عملية الدفع لطلبك", html };
+}
+
+// ---- 7. Disputed — ADMIN alert ----
+export function disputedAdminEmail(opts: {
+  invoiceNumber?: string;
+  customerEmail?: string;
+  customerName?: string;
+  total?: number | string;
+  orderToken?: string;
+}) {
+  const { invoiceNumber, customerEmail, customerName, total, orderToken } = opts;
+  const html = shell(
+    `
+    <h1 class="t-ink" style="font-size:22px;color:${CORAL};margin:0 0 8px;">⚠️ نزاع على عملية دفع</h1>
+    <p class="t-muted" style="font-size:14px;color:${MUTED};margin:0 0 20px;">
+      تم تحويل حالة طلب إلى <strong>Disputed</strong>. يتطلّب ذلك مراجعة يدوية عاجلة.
+    </p>
+    ${infoBox(
+      `<strong>رقم الطلب:</strong> ${invoiceNumber || "—"}<br>
+       <strong>العميل:</strong> ${customerName || "—"}<br>
+       <strong>البريد:</strong> ${customerEmail || "—"}<br>
+       <strong>الإجمالي:</strong> ${total ?? "—"}<br>
+       ${orderToken ? `<strong>المعرّف:</strong> ${orderToken}` : ""}`,
+      SAND
+    )}
+    <p class="t-ink" style="font-size:14px;color:${INK};margin:0 0 16px;">
+      راجع الطلب في لوحة Snipcart وردّ على النزاع لدى مزوّد الدفع ضمن المهلة المحدّدة
+      (عادةً 7–14 يومًا). أرفق إثبات الشحن ورقم التتبّع إن توفّرا.
+    </p>
+    <div style="text-align:center;">${button("فتح لوحة Snipcart", "https://app.snipcart.com/dashboard/orders", CORAL)}</div>
+  `,
+    `نزاع دفع — طلب ${invoiceNumber || ""}`
+  );
+  return { subject: `⚠️ نزاع على عملية دفع — طلب ${invoiceNumber || ""}`, html };
+}
+
 // =============================================================================
 //  REFRESHED EXISTING TEMPLATES
 // =============================================================================
