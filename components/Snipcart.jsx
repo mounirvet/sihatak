@@ -99,85 +99,25 @@ export default function Snipcart() {
     if (window.Snipcart) bind();
     else document.addEventListener("snipcart.ready", bind, { once: true });
 
-    // ---- Close the cart/checkout overlay when the customer navigates away ----
-    // Snipcart renders as an overlay ON TOP of the site. Clicking a nav link
-    // changes the page underneath, but the overlay stays open covering it — so
-    // it looks like the site is stuck on checkout. We listen for clicks on any
-    // internal link and close the overlay, which reveals the page they asked
-    // for. Handled centrally here so it covers every link on the site (header,
-    // footer, in-page) without touching each component.
-    // Timestamp of the last time Snipcart opened. We refuse to auto-close
-    // within a short grace window — on mobile, the buy flow can fire several
-    // events in quick succession, and closing a cart that just opened is what
-    // made checkout "flash and disappear".
-    let lastOpenedAt = 0;
-    try {
-      window.Snipcart?.events?.on?.("theme.routechanged", () => {
-        lastOpenedAt = Date.now();
-      });
-    } catch {
-      /* SDK not ready yet; bind() attaches the real listeners later */
-    }
-
-    function closeOverlay() {
-      // Never close within 1.2s of the cart opening.
-      if (Date.now() - lastOpenedAt < 1200) return;
-      // Snipcart.api.theme.cart.close() is the documented v3 method. We call it
-      // unconditionally — checking cart.isOpen first was unreliable (the state
-      // path differs) and silently blocked the close. Calling close() when the
-      // cart is already closed is a harmless no-op.
-      try {
-        window.Snipcart?.api?.theme?.cart?.close();
-      } catch {
-        /* SDK not ready yet — nothing to close */
-      }
-    }
-
-    function onDocumentClick(e) {
-      // FIRST: bail out if the tap was on ANY Snipcart control, whatever the
-      // element type. The buy button is a <button class="snipcart-add-item">,
-      // not a link — but a tap on it can still match an ancestor <a> (e.g. a
-      // product card wrapper), which previously let this handler run and strip
-      // the hash while Snipcart was mid-open. On mobile that produced a flash
-      // of checkout followed by a bounce back to the shop.
-      const snipTrigger = e.target?.closest?.(
-        '[class*="snipcart"], #snipcart, [data-item-id]'
-      );
-      if (snipTrigger) return;
-
-      const link = e.target?.closest?.("a[href]");
-      if (!link) return;
-
-      const href = link.getAttribute("href") || "";
-      // Ignore new tabs and non-navigating links.
-      if (link.target === "_blank") return;
-      if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
-
-      closeOverlay();
-
-      // Snipcart's cart/checkout lives on a hash route (#/checkout, #/cart).
-      // If the hash survives the navigation, Snipcart re-opens itself and the
-      // overlay appears stuck. Strip it only when we're genuinely navigating
-      // away — never while a Snipcart control is being used.
-      setTimeout(() => {
-        if (window.location.hash && window.location.hash.startsWith("#/")) {
-          history.replaceState(
-            null,
-            "",
-            window.location.pathname + window.location.search
-          );
-        }
-      }, 50);
-    }
-
-    document.addEventListener("click", onDocumentClick, true); // capture phase
-    // Browser back/forward while the overlay is open should close it too.
-    window.addEventListener("popstate", closeOverlay);
+    // NOTE: there is deliberately NO auto-close-on-navigate logic here.
+    //
+    // An earlier version listened for clicks anywhere on the site and called
+    // Snipcart.api.theme.cart.close() so that tapping a nav link would exit the
+    // checkout overlay. It also stripped Snipcart's hash route (#/cart,
+    // #/checkout) after a click.
+    //
+    // That broke the store: on mobile the cart would open and be closed again
+    // within milliseconds — a "flash" of checkout, then back to the page —
+    // making purchase impossible. Guarding by element type and adding a grace
+    // period did not fix it reliably.
+    //
+    // A working cart is worth far more than the convenience of exiting checkout
+    // via the nav. Customers can close the overlay with Snipcart's own X button.
+    // If we revisit this, it must be built on a Snipcart event that fires only
+    // AFTER the overlay is fully open — never on a generic document click.
 
     return () => {
       document.removeEventListener("snipcart.ready", bind);
-      document.removeEventListener("click", onDocumentClick, true);
-      window.removeEventListener("popstate", closeOverlay);
     };
   }, []);
 
