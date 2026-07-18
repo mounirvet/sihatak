@@ -12,6 +12,10 @@
 // Keep these numbers identical to SHIP in supabase/functions/_shared/email.ts
 // and to shipping_days_min/max in content/products/*.md.
 //
+// Collapsed label is deliberately just "الشحن" — a clean, uncluttered product
+// page. Every detail (total window, per-stage timing, cost, tracking) lives
+// inside the dropdown for anyone who wants it. Nothing is hidden, just tidied.
+//
 // Collapsed by default; pure CSS <details>, no JS, static-export safe.
 
 import { IcShip, IcChevron, IcLock, IcReturn } from "./ShopIcons.js";
@@ -21,7 +25,7 @@ export default function ShippingInfo() {
     <details className="group mt-5 overflow-hidden rounded-xl border border-mint bg-mint/25 open:bg-mint/35">
       <summary className="flex cursor-pointer list-none items-center gap-2.5 p-4 text-sm font-medium text-teal-dark">
         <IcShip className="h-5 w-5 shrink-0" />
-        <span className="flex-1">شحن عالمي — التوصيل خلال 8 إلى 14 يومًا</span>
+        <span className="flex-1">الشحن</span>
         <IcChevron className="h-4 w-4 shrink-0 transition group-open:rotate-180" />
       </summary>
 
