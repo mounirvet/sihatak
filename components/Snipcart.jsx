@@ -107,18 +107,14 @@ export default function Snipcart() {
     // for. Handled centrally here so it covers every link on the site (header,
     // footer, in-page) without touching each component.
     function closeOverlay() {
-      const S = window.Snipcart;
+      // Snipcart.api.theme.cart.close() is the documented v3 method. We call it
+      // unconditionally — checking cart.isOpen first was unreliable (the state
+      // path differs) and silently blocked the close. Calling close() when the
+      // cart is already closed is a harmless no-op.
       try {
-        // Only act if the overlay is actually open.
-        const isOpen = S?.store?.getState?.()?.cart?.isOpen;
-        if (isOpen) S?.api?.theme?.cart?.close();
+        window.Snipcart?.api?.theme?.cart?.close();
       } catch {
-        // If state isn't readable, closing is still safe.
-        try {
-          S?.api?.theme?.cart?.close();
-        } catch {
-          /* ignore */
-        }
+        /* SDK not ready yet — nothing to close */
       }
     }
 
@@ -135,6 +131,20 @@ export default function Snipcart() {
       if (link.className && /snipcart-/.test(String(link.className))) return;
 
       closeOverlay();
+
+      // Snipcart's cart/checkout lives on a hash route (#/checkout, #/cart).
+      // If the hash survives the navigation, Snipcart re-opens itself and the
+      // overlay appears stuck. Strip it right after the click so the new page
+      // renders clean.
+      setTimeout(() => {
+        if (window.location.hash && window.location.hash.startsWith("#/")) {
+          history.replaceState(
+            null,
+            "",
+            window.location.pathname + window.location.search
+          );
+        }
+      }, 50);
     }
 
     document.addEventListener("click", onDocumentClick, true); // capture phase
