@@ -99,7 +99,53 @@ export default function Snipcart() {
     if (window.Snipcart) bind();
     else document.addEventListener("snipcart.ready", bind, { once: true });
 
-    return () => document.removeEventListener("snipcart.ready", bind);
+    // ---- Close the cart/checkout overlay when the customer navigates away ----
+    // Snipcart renders as an overlay ON TOP of the site. Clicking a nav link
+    // changes the page underneath, but the overlay stays open covering it — so
+    // it looks like the site is stuck on checkout. We listen for clicks on any
+    // internal link and close the overlay, which reveals the page they asked
+    // for. Handled centrally here so it covers every link on the site (header,
+    // footer, in-page) without touching each component.
+    function closeOverlay() {
+      const S = window.Snipcart;
+      try {
+        // Only act if the overlay is actually open.
+        const isOpen = S?.store?.getState?.()?.cart?.isOpen;
+        if (isOpen) S?.api?.theme?.cart?.close();
+      } catch {
+        // If state isn't readable, closing is still safe.
+        try {
+          S?.api?.theme?.cart?.close();
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+
+    function onDocumentClick(e) {
+      const link = e.target?.closest?.("a[href]");
+      if (!link) return;
+
+      const href = link.getAttribute("href") || "";
+      // Ignore Snipcart's own UI, new tabs, and non-navigating links.
+      if (link.closest("#snipcart")) return;
+      if (link.target === "_blank") return;
+      if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+      // Snipcart's own trigger classes should NOT close it.
+      if (link.className && /snipcart-/.test(String(link.className))) return;
+
+      closeOverlay();
+    }
+
+    document.addEventListener("click", onDocumentClick, true); // capture phase
+    // Browser back/forward while the overlay is open should close it too.
+    window.addEventListener("popstate", closeOverlay);
+
+    return () => {
+      document.removeEventListener("snipcart.ready", bind);
+      document.removeEventListener("click", onDocumentClick, true);
+      window.removeEventListener("popstate", closeOverlay);
+    };
   }, []);
 
   return (
