@@ -121,3 +121,21 @@
   .shadow-card, .shadow-soft { box-shadow: none !important; }
   img { max-width: 100% !important; }
 }
+
+/* ====== Snipcart overlay: keep site chrome underneath ====== */
+/* ROOT CAUSE of the mobile "can't exit checkout" problem.
+   Our header is `sticky top-0 z-50` and the product page's mobile buy bar is
+   `fixed bottom-0 z-40`. When Snipcart's cart opens, its back-arrow renders in
+   the exact strip our header occupies — so the header COVERS the arrow. The
+   arrow was never scrolled away; it was underneath our own chrome. Dragging
+   down showed it for a moment (overscroll shifts content), then the bounce put
+   it back under the header — which is why it could never be tapped.
+   Same class of bug as: https://discourse.webflow.com/t/snipcart-behaviour-on-mobile-set/159761
+
+   Fix: while the cart is open, Snipcart puts `snipcart-cart--opened` on <html>.
+   We use that to drop our own sticky/fixed chrome behind the overlay. Pure CSS,
+   zero JavaScript, touches ONLY our elements — Snipcart is not modified. */
+html.snipcart-cart--opened header,
+html.snipcart-cart--opened .fixed.bottom-0 {
+  z-index: 0 !important;
+}
