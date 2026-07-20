@@ -31,10 +31,13 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 // Snipcart's supported timeRange values.
-const RANGES = {
-  touch1: "LessThan1Day",   // covers carts abandoned within the last day
-  touch2: "LessThan1Week",  // wider net for the second nudge
-} as const;
+// Snipcart's ONLY valid timeRange values, matching the dashboard filters:
+//   LessThan4Hours · LessThan1Day · LessThan1Week · LessThan1Month
+// Earlier this used invented values, so the API returned nothing at all
+// (found: 0) and no cart was ever emailed. We now pull ONE wide window
+// (LessThan1Month) and do the age filtering ourselves in code — simpler, and
+// it means a cart can never fall through a gap between two ranges.
+const CART_RANGE = "LessThan1Month";
 
 // Only email carts older than this many hours (gives the customer time to come
 // back on their own before we interrupt them).
@@ -59,6 +62,13 @@ function authHeader(key: string) {
 }
 
 // Fetch every abandoned cart in a time range, following continuationToken.
+// Diagnostic info from the last API call, surfaced in the function's response.
+// Previously `if (!res.ok) break;` swallowed every failure — a 401 (wrong key)
+// or 403 (key lacks permission) looked identical to "no carts exist":
+// found: 0, errors: 0. That made the real problem invisible.
+let lastApiStatus: number | null = null;
+let lastApiBody: string | null = null;
+
 async function fetchAbandoned(key: string, timeRange: string): Promise<Cart[]> {
   const out: Cart[] = [];
   let continuation: string | null = null;
@@ -71,9 +81,29 @@ async function fetchAbandoned(key: string, timeRange: string): Promise<Cart[]> {
     if (continuation) url.searchParams.set("continuationToken", continuation);
 
     const res = await fetch(url.toString(), { headers: authHeader(key) });
-    if (!res.ok) break;
+    lastApiStatus = res.status;
+
+    if (!res.ok) {
+      // Keep a short snippet of the error body so we can see WHY.
+      try {
+        lastApiBody = (await res.text()).slice(0, 300);
+      } catch {
+        lastApiBody = "(could not read body)";
+      }
+      break;
+    }
 
     const data = await res.json();
+    // Record the shape of a successful response so we can tell "API returned
+    // an empty list" apart from "API returned data in a shape we don't parse".
+    if (guard === 0) {
+      lastApiBody = JSON.stringify({
+        totalItems: data?.totalItems,
+        itemsLength: Array.isArray(data?.items) ? data.items.length : null,
+        keys: Object.keys(data || {}).slice(0, 12),
+      });
+    }
+
     const items: Cart[] = data?.items || data?.data || [];
     out.push(...items);
 
@@ -106,6 +136,24 @@ function firstNameOf(cart: Cart): string | undefined {
   return typeof n === "string" ? n.split(" ")[0] : undefined;
 }
 
+// Snipcart returns the customer email in different places depending on how far
+// the shopper got before abandoning. Check every documented/observed location
+// rather than assuming a top-level `email`.
+function emailOf(cart: any): string | undefined {
+  const candidates = [
+    cart?.email,
+    cart?.user?.email,
+    cart?.customer?.email,
+    cart?.billingAddress?.email,
+    cart?.user?.billingAddress?.email,
+    cart?.shippingAddress?.email,
+  ];
+  for (const c of candidates) {
+    if (typeof c === "string" && c.includes("@")) return c.trim();
+  }
+  return undefined;
+}
+
 Deno.serve(async (req) => {
   // Allow POST (cron) and GET (manual test from the dashboard).
   if (req.method !== "POST" && req.method !== "GET") {
@@ -116,7 +164,22 @@ Deno.serve(async (req) => {
   if (!key) return json({ ok: false, error: "no Snipcart secret key set" }, 500);
 
   const supabase = createClient(SUPABASE_URL!, SERVICE_ROLE!);
-  const results = { touch1: 0, touch2: 0, skipped: 0, errors: 0 };
+  // Diagnostic counters. `found` = carts returned by Snipcart; the rest explain
+  // exactly why a cart wasn't emailed, so a run that sends nothing is no longer
+  // a black box.
+  const results = {
+    found: 0,
+    touch1: 0,
+    touch2: 0,
+    skipped: 0,
+    noToken: 0,
+    noEmail: 0,
+    outOfWindow: 0,
+    alreadySent: 0,
+    ordered: 0,
+    noItems: 0,
+    errors: 0,
+  };
 
   for (const touch of ["touch1", "touch2"] as const) {
     const minHours = touch === "touch1" ? TOUCH1_MIN_HOURS : TOUCH2_MIN_HOURS;
@@ -124,17 +187,29 @@ Deno.serve(async (req) => {
 
     let carts: Cart[] = [];
     try {
-      carts = await fetchAbandoned(key, RANGES[touch]);
+      carts = await fetchAbandoned(key, CART_RANGE);
     } catch {
       results.errors++;
       continue;
     }
+    results.found += carts.length;
 
     for (const cart of carts) {
-      const email = cart?.email;
+      // Snipcart's abandoned-carts API does NOT reliably expose the customer
+      // email as a top-level `email` field — depending on how far the customer
+      // got in checkout it can live under `user`, `billingAddress`, or
+      // `customer`. Reading only `cart.email` meant every cart was skipped
+      // silently: the function ran hourly, returned 200, and sent nothing.
+      const email = emailOf(cart);
       const token = cart?.token;
-      if (!email || !token) {
+      if (!token) {
         results.skipped++;
+        results.noToken++;
+        continue;
+      }
+      if (!email) {
+        results.skipped++;
+        results.noEmail++;
         continue;
       }
 
@@ -142,12 +217,14 @@ Deno.serve(async (req) => {
       const age = hoursSince(cart.modificationDate || cart.creationDate);
       if (age < minHours || age > maxHours) {
         results.skipped++;
+        results.outOfWindow++;
         continue;
       }
 
       const items = itemsOf(cart);
       if (!items.length) {
         results.skipped++;
+        results.noItems++;
         continue;
       }
 
@@ -161,6 +238,7 @@ Deno.serve(async (req) => {
           .maybeSingle();
         if (seen) {
           results.skipped++;
+          results.alreadySent++;
           continue;
         }
       } catch {
@@ -178,6 +256,7 @@ Deno.serve(async (req) => {
           .maybeSingle();
         if (ordered) {
           results.skipped++;
+          results.ordered++;
           continue;
         }
       } catch {
@@ -203,7 +282,19 @@ Deno.serve(async (req) => {
     }
   }
 
-  return json({ ok: true, ...results });
+  return json({
+    ok: true,
+    ...results,
+    // --- diagnostics (safe: no secrets, only shapes and statuses) ---
+    apiStatus: lastApiStatus,          // 200 = OK, 401 = bad key, 403 = no permission
+    apiBody: lastApiBody,              // error text, or the shape of a success response
+    usingKey: SNIPCART_API_KEY
+      ? "live-secret"
+      : SNIPCART_TEST_API_KEY
+      ? "test-secret"
+      : "NONE SET",
+    keyLength: (SNIPCART_API_KEY || SNIPCART_TEST_API_KEY || "").length,
+  });
 });
 
 function json(obj: unknown, status = 200) {

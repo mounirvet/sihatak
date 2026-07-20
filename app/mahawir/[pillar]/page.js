@@ -55,6 +55,18 @@ export default async function PillarPage({ params }) {
       </section>
 
       <section className="max-w-6xl mx-auto px-5 py-14">
+        {/* h2 bridges the gap between the page <h1> and the <h3> inside each
+            ArticleCard. Without it the hierarchy jumped h1 → h3, which Semrush
+            flags as "poor heading hierarchy" and which makes the page harder
+            for answer engines to segment. The count also gives readers a sense
+            of the pillar's depth. */}
+        <h2 className="font-display text-2xl text-ink mb-6">
+          مقالات {pillar.title}
+          {articles.length > 0 && (
+            <span className="text-ink/40 text-lg font-normal"> ({articles.length})</span>
+          )}
+        </h2>
+
         {articles.length === 0 ? (
           <p className="text-ink/50">مقالات هذا المحور قيد الإعداد.</p>
         ) : (

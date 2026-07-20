@@ -32,7 +32,13 @@ export default async function ArticlesIndex() {
       {articles.length === 0 ? (
         <p className="text-ink/50">لا توجد مقالات بعد.</p>
       ) : (
-        <MaqalatExplorer articles={articles} />
+        <>
+          {/* h2 bridges h1 → the h3 headings inside each article card. Without
+              it the hierarchy skips a level, which Semrush flags and which
+              makes the page harder for answer engines to segment. */}
+          <h2 className="sr-only">قائمة المقالات ({articles.length})</h2>
+          <MaqalatExplorer articles={articles} />
+        </>
       )}
     </div>
   );
