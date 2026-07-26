@@ -43,6 +43,17 @@ export default function InsightSchema({ slug, meta }) {
                 : {}),
               ...(reviewer.sameAs && reviewer.sameAs.length ? { sameAs: reviewer.sameAs } : {}),
         ...(reviewer.photo ? { image: `https://asnanik.com${reviewer.photo}` } : {}),
+        ...(reviewer.clinic ? { worksFor: {
+          '@type': 'Dentist',
+          name: reviewer.clinic.name,
+          telephone: reviewer.clinic.phoneIntl,
+          url: reviewer.clinic.mapUrl,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: reviewer.clinic.city,
+            addressCountry: reviewer.clinic.countryCode,
+          },
+        } } : {}),
             },
             lastReviewed: meta.updated || meta.date,
           }

@@ -55,6 +55,17 @@ function ReviewerSchema() {
     worksFor: { '@type': 'Organization', name: SITE.name, url: SITE.url },
     ...(reviewer.sameAs && reviewer.sameAs.length ? { sameAs: reviewer.sameAs } : {}),
     ...(reviewer.photo ? { image: `https://asnanik.com${reviewer.photo}` } : {}),
+    ...(reviewer.clinic ? { worksFor: {
+      '@type': 'Dentist',
+      name: reviewer.clinic.name,
+      telephone: reviewer.clinic.phoneIntl,
+      url: reviewer.clinic.mapUrl,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: reviewer.clinic.city,
+        addressCountry: reviewer.clinic.countryCode,
+      },
+    } } : {}),
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
@@ -137,6 +148,25 @@ export default function MedicalTeamPage() {
                   <dt className="text-ink/45">الترخيص</dt>
                   <dd className="text-ink">{r.license}</dd>
                 </div>
+                {r.clinic && (
+                  <div className="sm:col-span-2 border-t border-line pt-3 mt-1">
+                    <dt className="text-ink/45">العيادة</dt>
+                    <dd className="text-ink">
+                      {r.clinic.name}
+                      <span className="block text-ink/70 text-sm mt-0.5">
+                        {r.clinic.district}، {r.clinic.city} — {r.clinic.country}
+                      </span>
+                      <span className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                        <a href={`tel:${r.clinic.phoneIntl}`} className="text-teal-dark hover:underline" dir="ltr">
+                          {r.clinic.phone}
+                        </a>
+                        <a href={r.clinic.mapUrl} target="_blank" rel="noopener noreferrer" className="text-teal-dark hover:underline">
+                          عرض على الخريطة ↗
+                        </a>
+                      </span>
+                    </dd>
+                  </div>
+                )}
               </dl>
             </div>
           </div>
