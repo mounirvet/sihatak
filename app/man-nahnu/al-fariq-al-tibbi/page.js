@@ -54,6 +54,7 @@ function ReviewerSchema() {
     // author↔site relationship that engines use to attribute expertise.
     worksFor: { '@type': 'Organization', name: SITE.name, url: SITE.url },
     ...(reviewer.sameAs && reviewer.sameAs.length ? { sameAs: reviewer.sameAs } : {}),
+    ...(reviewer.photo ? { image: `https://asnanik.com${reviewer.photo}` } : {}),
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }

@@ -42,6 +42,7 @@ export default function ArticleSchema({ slug, meta }) {
           },
         } : {}),
         ...(reviewer.sameAs && reviewer.sameAs.length ? { sameAs: reviewer.sameAs } : {}),
+        ...(reviewer.photo ? { image: `https://asnanik.com${reviewer.photo}` } : {}),
       },
       lastReviewed: meta.updated || meta.date,
       audience: {
